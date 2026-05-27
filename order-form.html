@@ -85,6 +85,16 @@
   .items-table th.right,.items-table td.right { text-align:right; }
   .items-table td { padding:6px 10px; border-bottom:1px solid var(--purple-lightest); vertical-align:top; }
   .items-table td.price-cell input,.items-table td.qty-cell input { text-align:right; }
+  .desc-toolbar { display:flex; gap:3px; margin-bottom:3px; flex-wrap:wrap; }
+  .desc-toolbar button { background:var(--purple-lightest); border:1px solid var(--grey-border); border-radius:4px; padding:1px 7px; cursor:pointer; font-family:'Lato',Arial,sans-serif; font-size:11px; color:var(--purple-dark); line-height:1.5; }
+  .desc-toolbar button:hover { background:var(--purple-lighter); }
+  .desc-toolbar .desc-color-btn { display:flex; align-items:center; gap:2px; background:var(--purple-lightest); border:1px solid var(--grey-border); border-radius:4px; padding:1px 5px; }
+  .desc-toolbar .desc-color-btn label { font-size:11px; color:var(--purple-dark); cursor:pointer; }
+  .desc-toolbar .desc-color-btn input[type=color] { width:18px; height:16px; border:none; padding:0; background:none; cursor:pointer; }
+  .item-desc-wrap { display:flex; flex-direction:column; }
+  .item-desc[contenteditable] { border:none; border-bottom:1.5px solid var(--purple-lighter); width:100%; min-height:22px; font-size:13px; padding:2px 0; font-family:'Lato',Arial,sans-serif; outline:none; line-height:1.5; }
+  .item-desc[contenteditable]:focus { border-bottom-color:var(--purple); }
+  .item-desc[contenteditable].error { border-bottom-color:#e74c3c; background:#fff5f5; }
   .items-table td.total-cell { text-align:right; font-weight:700; vertical-align:middle; color:var(--purple-dark); }
   .items-table tr:nth-child(even) td { background:var(--purple-lightest); }
   .add-row-btn { margin:8px 0; background:none; border:2px dashed var(--purple-lighter); color:var(--purple-light); padding:6px 14px; border-radius:20px; cursor:pointer; font-size:12px; font-family:'Lato',Arial,sans-serif; font-weight:700; width:100%; transition:all .2s; }
@@ -106,8 +116,30 @@
   .vat-rate-wrap { display:flex; align-items:center; gap:6px; justify-content:flex-end; font-size:12px; color:#666; margin-bottom:4px; }
   .vat-rate-wrap input { width:55px; text-align:right; }
 
-  /* NOTES */
-  .notes-area { width:100%; border:1.5px solid var(--grey-border); border-radius:8px; padding:10px 12px; font-family:'Lato',Arial,sans-serif; font-size:13px; resize:vertical; min-height:80px; outline:none; }
+  /* NOTES + CAMPAIGN DATES */
+  .notes-dates-row { display:flex; gap:20px; align-items:flex-start; }
+  .notes-col { flex:1; min-width:0; }
+  .dates-col { flex:0 0 370px; }
+  .camp-dates-label { font-size:12px; font-weight:700; color:var(--purple-dark); margin-bottom:6px; }
+  .camp-dates-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .camp-dates-table th { font-weight:700; padding:5px 4px 4px; border-bottom:2px solid var(--purple-lighter); color:var(--purple-dark); font-size:11px; text-align:left; }
+  .camp-dates-table td { padding:3px 4px; vertical-align:middle; }
+  .camp-dates-table input[type=date] { width:100%; font-size:11px; padding:2px 3px; }
+  .camp-dates-table .months-cell { text-align:center; font-weight:700; color:var(--purple); min-width:40px; }
+  .camp-dates-table .notes-input { width:100%; font-size:11px; padding:2px 4px; border:none; border-bottom:1px solid var(--purple-lighter); background:transparent; font-family:'Lato',Arial,sans-serif; outline:none; min-width:70px; }
+  .camp-dates-table .notes-input:focus { border-bottom-color:var(--purple); }
+  .camp-dates-table tfoot tr { border-top:2px solid var(--purple-lighter); }
+  .camp-dates-table tfoot td { font-weight:700; padding:6px 4px 3px; }
+  .camp-total-val { text-align:center; font-size:15px; font-weight:700; color:var(--purple); }
+
+  /* NOTES RICH TEXT */
+  .notes-toolbar { display:flex; gap:4px; margin-bottom:4px; }
+  .notes-toolbar button { background:var(--purple-lightest); border:1px solid var(--grey-border); border-radius:5px; padding:3px 9px; cursor:pointer; font-family:'Lato',Arial,sans-serif; font-size:12px; color:var(--purple-dark); line-height:1.4; }
+  .notes-toolbar button:hover { background:var(--purple-lighter); }
+  .notes-toolbar button.active { background:var(--purple); color:#fff; border-color:var(--purple); }
+  .notes-toolbar .color-btn { display:flex; align-items:center; gap:4px; }
+  .notes-toolbar .color-btn input[type=color] { width:22px; height:22px; border:none; padding:0; background:none; cursor:pointer; vertical-align:middle; }
+  .notes-area { width:100%; border:1.5px solid var(--grey-border); border-radius:8px; padding:10px 12px; font-family:'Lato',Arial,sans-serif; font-size:13px; min-height:120px; outline:none; overflow-y:auto; line-height:1.6; }
   .notes-area:focus { border-color:var(--purple); }
   .notes-area.error { border-color:#e74c3c; background:#fff5f5; }
 
@@ -197,10 +229,14 @@
   .pl-field-line.med { max-width:130pt; }
 
   /* T&Cs */
+  #pl-camp-dates-wrap { page-break-inside:avoid; }
   .pl-tc-title { font-weight:bold; font-size:9.5pt; border-top:1pt solid #000; padding-top:6pt; margin:8pt 0 4pt; }
   .pl-tc-body { font-size:7.5pt; line-height:1.55; color:#222; }
   .pl-tc-body p { margin-bottom:5pt; }
   .pl-bank { font-size:7.5pt; color:#444; border-top:1pt solid #ccc; padding-top:5pt; margin-top:6pt; line-height:1.8; }
+
+  .last-updated-bar { text-align:right; font-size:10px; color:#aaa; padding:10px 0 0; border-top:1px solid var(--grey-border); margin-top:20px; }
+  .last-updated-bar span { font-weight:700; color:#999; }
 
   @media print {
     @page { margin:1.2cm 1.5cm; size:A4; }
@@ -233,8 +269,9 @@
     </div>
     <div style="text-align:right">
       <div class="order-tag">ORDER</div>
-      <div class="meta-row"><span><label>REF NO:</label><input type="text" id="ref-no" placeholder="e.g. UNI03001" style="width:120px" required></span></div>
+      <div class="meta-row"><span><label>REF NO:</label><input type="text" id="ref-no" placeholder="e.g. UNI03001" style="width:120px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required></span></div>
       <div class="meta-row"><span><label>Date:</label><input type="date" id="order-date" required></span></div>
+      <div class="meta-row"><span><label>Initials *</label><input type="text" id="initials" placeholder="e.g. JB" maxlength="5" style="width:60px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required><span class="error-label" id="err-initials" style="display:inline;margin-left:6px;font-size:10px;">Required</span></span></div>
     </div>
   </div>
 
@@ -305,10 +342,52 @@
   </div>
 
   <div class="section-title">Campaign Notes *</div>
-  <textarea class="notes-area" id="campaign-notes" rows="4"
-    placeholder="e.g. Full Site Takeover — Nottingham&#10;Live: 1st Feb – 30th Apr 2026 (3 months)&#10;KPIs: 25,000 impressions/month, 300+ click-throughs/month"
-    required></textarea>
-  <span class="error-label" id="err-campaign-notes">Campaign notes are required</span>
+  <div class="notes-dates-row">
+    <div class="notes-col">
+      <div class="notes-toolbar">
+        <button type="button" onclick="fmt('bold')" title="Bold"><b>B</b></button>
+        <button type="button" onclick="fmt('italic')" title="Italic"><i>I</i></button>
+        <button type="button" onclick="fmt('underline')" title="Underline"><u>U</u></button>
+        <button type="button" onclick="fmt('strikeThrough')" title="Strikethrough"><s>S</s></button>
+        <button type="button" onclick="fmt('foreColor','#000000')" title="Black text" style="font-weight:900;color:#000;letter-spacing:-1px;">A</button>
+        <span class="color-btn notes-toolbar" style="margin:0;border:1px solid var(--grey-border);border-radius:5px;padding:2px 6px;background:var(--purple-lightest);">
+          <label style="font-size:11px;color:var(--purple-dark);cursor:pointer;" title="Text colour">A
+            <input type="color" id="text-color-picker" value="#e74c3c" onchange="fmt('foreColor',this.value)" style="width:20px;height:16px;">
+          </label>
+        </span>
+      </div>
+      <div class="notes-area" id="campaign-notes" contenteditable="true" spellcheck="true">Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month. Content:</div>
+      <span class="error-label" id="err-campaign-notes">Campaign notes are required</span>
+    </div>
+    <div class="dates-col">
+      <div class="camp-dates-label">Campaign Dates</div>
+      <table class="camp-dates-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Start</th>
+            <th>End</th>
+            <th style="text-align:center">Mo.</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><input type="date" id="cs1" class="camp-start"></td><td><input type="date" id="ce1" class="camp-end"></td><td class="months-cell" id="cm1">—</td><td><input type="text" id="cn1" class="notes-input" placeholder="Optional notes"></td></tr>
+          <tr><td>2</td><td><input type="date" id="cs2" class="camp-start"></td><td><input type="date" id="ce2" class="camp-end"></td><td class="months-cell" id="cm2">—</td><td><input type="text" id="cn2" class="notes-input" placeholder="Optional notes"></td></tr>
+          <tr><td>3</td><td><input type="date" id="cs3" class="camp-start"></td><td><input type="date" id="ce3" class="camp-end"></td><td class="months-cell" id="cm3">—</td><td><input type="text" id="cn3" class="notes-input" placeholder="Optional notes"></td></tr>
+          <tr><td>4</td><td><input type="date" id="cs4" class="camp-start"></td><td><input type="date" id="ce4" class="camp-end"></td><td class="months-cell" id="cm4">—</td><td><input type="text" id="cn4" class="notes-input" placeholder="Optional notes"></td></tr>
+          <tr><td>5</td><td><input type="date" id="cs5" class="camp-start"></td><td><input type="date" id="ce5" class="camp-end"></td><td class="months-cell" id="cm5">—</td><td><input type="text" id="cn5" class="notes-input" placeholder="Optional notes"></td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="text-align:right;padding-right:8px;font-size:12px;">Total Months:</td>
+            <td class="camp-total-val" id="total-camp-months" style="text-align:center;">—</td>
+          </tr>
+        </tfoot>
+      </table>
+      <span class="error-label" id="err-camp-months" style="display:block;margin-top:5px;">At least 1 month of campaign dates is required</span>
+    </div>
+  </div>
 
   <div class="section-title">Sign-off</div>
   <div class="bottom-boxes">
@@ -349,6 +428,9 @@
       Bank: Barclays &nbsp;|&nbsp; 62/64 High Street, Watford, WD17 2BT &nbsp;|&nbsp; Payment Terms: 30 Days
     </div>
   </div>
+  <div class="last-updated-bar">
+    Last updated: <span id="last-updated-display"></span>
+  </div>
 </div>
 
 <!-- PRINT LAYOUT -->
@@ -361,7 +443,7 @@
     </div>
     <div class="pl-header-right">
       <div class="pl-order-word">ORDER</div>
-      <div class="pl-meta-row"><span class="pl-meta-label">REF NO:</span> <span id="pl-ref"></span></div>
+      <div class="pl-meta-row"><span class="pl-meta-label">REF NO:</span> <span id="pl-ref"></span><span id="pl-initials" style="color:#555;"></span></div>
       <div class="pl-meta-row"><span class="pl-meta-label">Date:</span> <span id="pl-date"></span></div>
     </div>
   </div>
@@ -403,6 +485,24 @@
   <hr class="pl-hr">
   <div class="pl-notes-label">Notes:</div>
   <div id="pl-notes" class="pl-notes-body"></div>
+
+  <div id="pl-camp-dates-wrap" style="display:none;margin-top:6pt;">
+    <div style="font-weight:bold;font-size:9.5pt;margin-bottom:3pt;">Campaign Dates:</div>
+    <table style="width:100%;border-collapse:collapse;font-size:9pt;">
+      <thead><tr style="border-bottom:1pt solid #000;">
+        <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">#</th>
+        <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">Start</th>
+        <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">End</th>
+        <th style="text-align:center;padding:2pt 6pt 2pt 0;font-weight:bold;">Mo.</th>
+        <th style="text-align:left;padding:2pt 0;font-weight:bold;">Notes</th>
+      </tr></thead>
+      <tbody id="pl-camp-dates-body"></tbody>
+      <tfoot><tr style="border-top:1pt solid #000;">
+        <td colspan="4" style="text-align:right;padding:3pt 6pt 0 0;font-weight:bold;">Total Months:</td>
+        <td id="pl-total-months" style="text-align:center;font-weight:bold;padding:3pt 0 0;"></td>
+      </tr></tfoot>
+    </table>
+  </div>
   <hr class="pl-hr">
 
   <div class="pl-please">**Please fill in both boxes</div>
@@ -449,10 +549,20 @@ function addRow() {
   var tbody = document.getElementById('items-body');
   var tr = document.createElement('tr');
   tr.id = 'row-' + id;
+  var defaultDesc = 'Full Site Takeover + Social Retargeting – <span style="color:#e74c3c;font-weight:bold;">CITY</span>';
   tr.innerHTML =
     '<td>' +
-      '<input type="text" placeholder="Description of product/service" class="item-desc">' +
-      '<span class="error-label" id="err-desc-' + id + '">Description is required</span>' +
+      '<div class="item-desc-wrap">' +
+        '<div class="desc-toolbar">' +
+          '<button type="button" onclick="fmtDesc(this,\'bold\')" title="Bold"><b>B</b></button>' +
+          '<button type="button" onclick="fmtDesc(this,\'italic\')" title="Italic"><i>I</i></button>' +
+          '<button type="button" onclick="fmtDesc(this,\'underline\')" title="Underline"><u>U</u></button>' +
+          '<button type="button" onclick="fmtDescBlack(this)" title="Black text" style="font-weight:900;color:#000;letter-spacing:-1px;">A</button>' +
+          '<span class="desc-color-btn"><label title="Text colour">A<input type="color" value="#e74c3c" onchange="fmtDescColor(this)" style="width:18px;height:14px;"></label></span>' +
+        '</div>' +
+        '<div class="item-desc" contenteditable="true" spellcheck="true">' + defaultDesc + '</div>' +
+        '<span class="error-label" id="err-desc-' + id + '">Description required — replace CITY with actual city</span>' +
+      '</div>' +
     '</td>' +
     '<td class="price-cell">' +
       '<input type="number" placeholder="0.00" step="0.01" min="0" class="item-price" oninput="recalc()">' +
@@ -534,6 +644,8 @@ function populatePrintLayout() {
   var dateStr = dateVal ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB') : '';
 
   document.getElementById('pl-ref').textContent  = refVal;
+  var initialsVal = document.getElementById('initials').value || '';
+  if (document.getElementById('pl-initials')) document.getElementById('pl-initials').textContent = initialsVal ? ' (' + initialsVal + ')' : '';
   document.getElementById('pl-date').textContent = dateStr;
 
   document.getElementById('pl-client-company').textContent = document.getElementById('client-company').value || '';
@@ -543,7 +655,8 @@ function populatePrintLayout() {
   var plBody = document.getElementById('pl-items-body');
   plBody.innerHTML = '';
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
-    var desc   = tr.querySelector('.item-desc')   ? tr.querySelector('.item-desc').value   : '';
+    var descEl2 = tr.querySelector('.item-desc');
+    var desc   = descEl2 ? (descEl2.innerText || descEl2.value || '') : '';
     var price  = parseFloat(tr.querySelector('.item-price')  ? tr.querySelector('.item-price').value  : 0) || 0;
     var qty    = parseFloat(tr.querySelector('.item-qty')    ? tr.querySelector('.item-qty').value    : 0) || 0;
     var months = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 1) || 1;
@@ -565,7 +678,33 @@ function populatePrintLayout() {
   var vatRate = parseFloat(document.getElementById('vat-rate').value) || 20;
   document.getElementById('pl-vat-label').textContent = 'VAT (' + vatRate + '%):';
 
-  document.getElementById('pl-notes').textContent = document.getElementById('campaign-notes').value || '';
+  document.getElementById('pl-notes').innerHTML = document.getElementById('campaign-notes').innerHTML || '';
+
+  // Campaign dates
+  var campBody = document.getElementById('pl-camp-dates-body');
+  campBody.innerHTML = '';
+  var campTotal = 0; var campHas = false;
+  for (var i = 1; i <= 5; i++) {
+    var sv = document.getElementById('cs' + i).value;
+    var ev = document.getElementById('ce' + i).value;
+    var mv = document.getElementById('cm' + i).textContent;
+    var nv = document.getElementById('cn' + i).value || '';
+    if (sv && ev && mv !== '—') {
+      var sDate = new Date(sv + 'T00:00:00').toLocaleDateString('en-GB');
+      var eDate = new Date(ev + 'T00:00:00').toLocaleDateString('en-GB');
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td style="padding:2pt 6pt 2pt 0;">' + i + '</td>' +
+        '<td style="padding:2pt 6pt 2pt 0;">' + sDate + '</td>' +
+        '<td style="padding:2pt 6pt 2pt 0;">' + eDate + '</td>' +
+        '<td style="text-align:center;padding:2pt 6pt 2pt 0;">' + mv + '</td>' +
+        '<td style="padding:2pt 0;">' + (nv ? nv.replace(/</g,'&lt;').replace(/>/g,'&gt;') : '') + '</td>';
+      campBody.appendChild(tr);
+      campHas = true;
+      campTotal += parseInt(mv) || 0;
+    }
+  }
+  document.getElementById('pl-camp-dates-wrap').style.display = campHas ? 'block' : 'none';
+  document.getElementById('pl-total-months').textContent = campHas ? campTotal : '';
 }
 
 function validateForm() {
@@ -580,9 +719,20 @@ function validateForm() {
     if (bad) valid = false;
   }
   // Your fields only — partner fields left blank for Adobe Sign
+  check('initials', 'err-initials');
   check('client-company', 'err-client-company');
   check('client-address', 'err-client-address');
-  check('campaign-notes', 'err-campaign-notes');
+  // campaign-notes is a contenteditable div — check innerText and that CITY NAME has been replaced
+  var notesEl = document.getElementById('campaign-notes');
+  var notesErrEl = document.getElementById('err-campaign-notes');
+  var notesText = notesEl.innerText.trim();
+  var notesBad = !notesText || notesText.indexOf('CITY NAME') !== -1;
+  notesEl.classList.toggle('error', notesBad);
+  if (notesErrEl) {
+    notesErrEl.textContent = notesText.indexOf('CITY NAME') !== -1 ? 'Replace CITY NAME with the actual city before saving' : 'Campaign notes are required';
+    notesErrEl.classList.toggle('show', notesBad);
+  }
+  if (notesBad) valid = false;
 
   var refEl  = document.getElementById('ref-no');
   var dateEl = document.getElementById('order-date');
@@ -590,17 +740,31 @@ function validateForm() {
   dateEl.classList.toggle('error', !dateEl.value.trim());
   if (!refEl.value.trim() || !dateEl.value.trim()) valid = false;
 
+  // Campaign months — must have at least 1
+  calcCampaignMonths();
+  var campMonthsVal = document.getElementById('total-camp-months').textContent;
+  var campMonthsNum = parseInt(campMonthsVal) || 0;
+  var campMonthsBad = campMonthsNum < 1;
+  var campMonthsErrEl = document.getElementById('err-camp-months');
+  document.getElementById('total-camp-months').style.color = campMonthsBad ? '#e74c3c' : '';
+  if (campMonthsErrEl) campMonthsErrEl.classList.toggle('show', campMonthsBad);
+  if (campMonthsBad) valid = false;
+
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
     var id     = tr.id.replace('row-', '');
     var descEl  = tr.querySelector('.item-desc');
     var priceEl = tr.querySelector('.item-price');
     var errD = document.getElementById('err-desc-' + id);
     var errP = document.getElementById('err-price-' + id);
-    var badDesc  = !descEl  || !descEl.value.trim();
+    var descText = descEl ? (descEl.innerText || descEl.value || '').trim() : '';
+    var badDesc  = !descEl || !descText || descText.indexOf('CITY') !== -1;
     var badPrice = !priceEl || !priceEl.value || parseFloat(priceEl.value) < 0;
     if (descEl)  descEl.classList.toggle('error', badDesc);
     if (priceEl) priceEl.classList.toggle('error', badPrice);
-    if (errD) errD.classList.toggle('show', badDesc);
+    if (errD) {
+      errD.textContent = descText.indexOf('CITY') !== -1 ? 'Replace CITY with the actual city' : 'Description is required';
+      errD.classList.toggle('show', badDesc);
+    }
     if (errP) errP.classList.toggle('show', badPrice);
     if (badDesc || badPrice) valid = false;
   });
@@ -624,6 +788,7 @@ function validateForm() {
 
 document.addEventListener('input', function(e) {
   if (e.target.matches('input, textarea')) {
+    updateLastUpdated();
     // Clear this field's error state as soon as it has a value
     if (e.target.value.trim()) {
       e.target.classList.remove('error');
@@ -656,92 +821,142 @@ function clearForm() {
   addRow();
   recalc();
   document.getElementById('order-date').value = new Date().toISOString().split('T')[0];
+  // Reset contenteditable campaign notes to default text
+  document.getElementById('campaign-notes').innerHTML = 'Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month. Content:';
+  document.getElementById('campaign-notes').classList.remove('error');
+
+function updateLastUpdated() {
+  var now = new Date();
+  var str = no
+  localStorage.setItem('orderFormLastUpdated', str);
 }
 
-function printForm() {
-  if (!validateForm()) return;
-  populatePrintLayout();
-  window.print();
+// Set last updated — today's date on load, updates on every edit
+updateLastUpdated();
+  for (var i = 1; i <= 5; i++) {
+    document.getElementById('cs' + i).value = '';
+    document.getElementById('ce' + i).value = '';
+    document.getElementById('cm' + i).textContent = '—';
+    document.getElementById('cn' + i).value = '';
+  }
+  document.getElementById('total-camp-months').textContent = '—';
+  document.getElementById('initials').value = '';
+  document.getElementById('initials').classList.remove('error');
+  document.getElementById('err-initials').classList.remove('show');
 }
 
-function saveAsPDF() {
-  if (!validateForm()) return;
-  populatePrintLayout();
-  var refNo = (document.getElementById('ref-no').value || 'order').replace(/[^a-zA-Z0-9_\-]/g, '_');
-  var el = document.getElementById('print-layout');
-  // styles are already loaded (not in @media print); just make element visible off-screen
-  el.style.display = 'block';
-  el.style.position = 'absolute';
-  el.style.left = '-9999px';
-  el.style.top = '0';
-  el.style.width = '18cm';
-  el.style.background = '#fff';
-  var opt = {
-    margin: [1.2, 1.5],
-    filename: 'Order-' + refNo + '.pdf',
-    image: { type: 'jpeg', quality: 0.99 },
-    html2canvas: { scale: 2, useCORS: true, logging: false, letterRendering: true },
-    jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(el).save().then(function() {
-    el.style.display = '';
-    el.style.position = '';
-    el.style.left = '';
-    el.style.top = '';
-    el.style.width = '';
-    el.style.background = '';
-  })['catch'](function() {
-    el.style.display = '';
-    el.style.position = '';
-    el.style.left = '';
-    el.style.top = '';
-    el.style.width = '';
-    el.style.background = '';
-    alert('PDF save failed. Use the Print button and choose Save as PDF from your print dialog.');
-  });
+// ─── Page load setup ────────────────────────────────────────────────────────
+addRow();
+document.getElementById('order-date').value = new Date().toISOString().split('T')[0];
+
+function updateLastUpdated() {
+  var now = new Date();
+  var str = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) +
+            ' ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+  var el = document.getElementById('last-updated-display');
+  if (el) el.textContent = str;
+  localStorage.setItem('orderFormLastUpdated', str);
+}
+updateLastUpdated();
+
+// ─── Campaign date months ────────────────────────────────────────────────────
+function calcCampaignMonths() {
+  var total = 0; var hasAny = false;
+  for (var i = 1; i <= 5; i++) {
+    var s = document.getElementById('cs' + i).value;
+    var e = document.getElementById('ce' + i).value;
+    var cell = document.getElementById('cm' + i);
+    if (s && e) {
+      var sd = new Date(s + 'T00:00:00');
+      var ed = new Date(e + 'T00:00:00');
+      if (!isNaN(sd) && !isNaN(ed) && ed >= sd) {
+        var m = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth()) + 1;
+        if (m > 0) { cell.textContent = m; total += m; hasAny = true; } else { cell.textContent = '—'; }
+      } else { cell.textContent = '—'; }
+    } else { cell.textContent = '—'; }
+  }
+  document.getElementById('total-camp-months').textContent = hasAny ? total : '—';
 }
 
-// Discount inputs: keep % and £ in sync
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('discount-pct').addEventListener('input', function() {
-    var pct = parseFloat(this.value) || 0;
-    var net = getNetTotal();
-    document.getElementById('discount-amt').value = (pct > 0 && net > 0) ? (net * pct / 100).toFixed(2) : '';
-    recalc();
-  });
-  document.getElementById('discount-amt').addEventListener('input', function() {
-    var amt = parseFloat(this.value) || 0;
-    var net = getNetTotal();
-    document.getElementById('discount-pct').value = (amt > 0 && net > 0) ? (amt / net * 100).toFixed(2) : '';
-    recalc();
-  });
+document.querySelectorAll('.camp-start, .camp-end').forEach(function(inp) {
+  inp.addEventListener('change', calcCampaignMonths);
 });
 
-addRow();
+// ─── Rich text formatting ────────────────────────────────────────────────────
+function fmt(cmd, val) {
+  document.getElementById('campaign-notes').focus();
+  document.execCommand(cmd, false, val || null);
+}
+function fmtDesc(btn, cmd) {
+  var wrap = btn.closest('.item-desc-wrap');
+  if (wrap) wrap.querySelector('.item-desc').focus();
+  document.execCommand(cmd, false, null);
+}
+function fmtDescColor(input) {
+  var wrap = input.closest('.item-desc-wrap');
+  if (wrap) wrap.querySelector('.item-desc').focus();
+  document.execCommand('foreColor', false, input.value);
+}
+function fmtDescBlack(btn) {
+  var wrap = btn.closest('.item-desc-wrap');
+  if (wrap) wrap.querySelector('.item-desc').focus();
+  document.execCommand('foreColor', false, '#000000');
+}
 
-// ═══ GOOGLE DRIVE CONFIGURATION ═══
-// After setup paste your Client ID and Folder ID below
+// Default new typed characters to black in any contenteditable area
+document.addEventListener('keydown', function(e) {
+  if (!e.target.isContentEditable) return;
+  if (e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1) return;
+  // If cursor is inside a coloured span, reset to black before keystroke
+  var sel = window.getSelection();
+  if (!sel || !sel.rangeCount) return;
+  var node = sel.getRangeAt(0).startContainer;
+  var parent = node.nodeType === 3 ? node.parentElement : node;
+  if (parent && parent !== e.target && parent.style && parent.style.color &&
+      parent.style.color !== 'rgb(0, 0, 0)' && parent.style.color !== '#000000') {
+    document.execCommand('foreColor', false, '#000000');
+  }
+}, true);
+
+// Click on a coloured span inside a contenteditable → auto-select the whole span
+// This makes it easy to click CITY NAME / CITY and immediately replace or turn it black
+document.addEventListener('click', function(e) {
+  var target = e.target;
+  // Must be a styled span (has inline color) inside a contenteditable
+  if (target.tagName !== 'SPAN') return;
+  var ce = target.closest('[contenteditable]');
+  if (!ce) return;
+  var col = target.style.color;
+  if (!col || col === 'rgb(0, 0, 0)' || col === '#000000') return;
+  // Select all text inside the span
+  var range = document.createRange();
+  range.selectNodeContents(target);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}, false);
+
+// ─── Google Drive configuration ─────────────────────────────────────────────
+// Paste your Client ID below after setting up in Google Cloud Console
 var GDRIVE_CONFIG = {
-  clientId: '978032756141-mm8qj0l7dtlrkka8l378s8nsgsfnnhhi.apps.googleusercontent.com',
+  clientId: 'PASTE_YOUR_CLIENT_ID_HERE.apps.googleusercontent.com',
   folderId: '1ZR9uhvtNc_6fMlR4SSGQv4FSPxQ8_fbe'
 };
 
 function saveToDrive() {
   if (!validateForm()) return;
   if (!GDRIVE_CONFIG.clientId || GDRIVE_CONFIG.clientId.indexOf('PASTE_') === 0) {
-    alert('Google Drive not configured yet.\nOpen this HTML file in a text editor and paste your Client ID and Folder ID into the GDRIVE_CONFIG section near the bottom.');
+    alert('Google Drive not configured yet.\nOpen this HTML file in a text editor and paste your Client ID into the GDRIVE_CONFIG section near the bottom.');
     return;
   }
   var btn = document.getElementById('btn-drive');
-  btn.textContent = '⏳ Connecting...';
-  btn.disabled = true;
+  btn.disabled = true; btn.textContent = 'Uploading…';
   var tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: GDRIVE_CONFIG.clientId,
     scope: 'https://www.googleapis.com/auth/drive.file',
     callback: function(response) {
       if (response.error) {
-        btn.textContent = '☁ Save to Drive';
-        btn.disabled = false;
+        btn.disabled = false; btn.textContent = '☁ Save to Drive';
         alert('Google sign-in failed: ' + response.error);
         return;
       }
@@ -752,70 +967,76 @@ function saveToDrive() {
 }
 
 function uploadToDrive(accessToken, btn) {
-  btn.textContent = '⏳ Generating PDF...';
+  calcCampaignMonths();
   populatePrintLayout();
-  var refNo   = document.getElementById('ref-no').value || 'REF';
-  var company = document.getElementById('client-company').value || 'Client';
-  var filename = (refNo + ' - ' + company).replace(/[<>:"/\\|?*]/g, '').trim() + '.pdf';
-  var el = document.getElementById('print-layout');
-  el.style.display = 'block';
-  el.style.position = 'absolute';
-  el.style.left = '-9999px';
-  el.style.top = '0';
-  el.style.width = '18cm';
-  el.style.background = '#fff';
-  var opt = {
-    margin: [1.2, 1.5],
-    image: { type: 'jpeg', quality: 0.99 },
-    html2canvas: { scale: 2, useCORS: true, logging: false, letterRendering: true },
-    jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
-  };
-  function resetEl() {
-    el.style.display = '';
-    el.style.position = '';
-    el.style.left = '';
-    el.style.top = '';
-    el.style.width = '';
-    el.style.background = '';
-  }
-  html2pdf().set(opt).from(el).outputPdf('blob').then(function(blob) {
-    resetEl();
-    btn.textContent = '⏳ Uploading...';
-    var metadata = {
-      name: filename,
-      mimeType: 'application/pdf',
-      parents: GDRIVE_CONFIG.folderId ? [GDRIVE_CONFIG.folderId] : []
-    };
-    var formData = new FormData();
-    formData.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-    formData.append('file', blob);
-    fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + accessToken },
-      body: formData
+  window.scrollTo(0, 0);
+  var refNo = document.getElementById('ref-no').value || 'REF';
+  var companyFull = document.getElementById('client-company').value || 'Client';
+  var company = companyFull.split(/[,\n]/)[0].trim();
+  var filename = (refNo + ' - ' + company).replace(/[<>:"\/\\|?*]/g, '').trim() + '.pdf';
+  html2pdf().set(pdfOpts(filename)).from(getPdfHtml(), 'string').outputPdf('blob')
+    .then(function(blob) {
+      var metadata = { name: filename, mimeType: 'application/pdf', parents: [GDRIVE_CONFIG.folderId] };
+      var form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+      form.append('file', blob);
+      return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + accessToken },
+        body: form
+      });
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      btn.textContent = '☁ Save to Drive';
-      btn.disabled = false;
-      if (data.id) {
-        alert('✓ Saved to Google Drive!\n\nFilename: ' + filename);
-      } else {
-        console.error('Drive upload error:', data);
-        alert('Upload failed — check the browser console for details.');
-      }
+      btn.disabled = false; btn.textContent = '☁ Save to Drive';
+      if (data.id) { alert('✅ Saved to Google Drive!\nFilename: ' + filename); }
+      else { alert('Upload error: ' + JSON.stringify(data)); }
     })
     ['catch'](function(err) {
-      btn.textContent = '☁ Save to Drive';
-      btn.disabled = false;
-      alert('Upload error: ' + err.message);
+      btn.disabled = false; btn.textContent = '☁ Save to Drive';
+      alert('Upload failed: ' + (err.message || err));
     });
-  })['catch'](function(err) {
-    resetEl();
-    btn.textContent = '☁ Save to Drive';
-    btn.disabled = false;
-    alert('PDF generation failed: ' + err.message);
-  });
+}
+
+// ─── Print / PDF ─────────────────────────────────────────────────────────────
+function printForm() {
+  if (!validateForm()) return;
+  calcCampaignMonths();
+  populatePrintLayout();
+  window.print();
+}
+
+function getPdfHtml() {
+  return '<div style="font-family:Arial,sans-serif;font-size:10pt;color:#000;' +
+    'width:210mm;padding:12mm 15mm;box-sizing:border-box;background:#fff;">' +
+    document.getElementById('print-layout').innerHTML +
+    '</div>';
+}
+
+function pdfOpts(filename) {
+  return {
+    margin: 0,
+    filename: filename,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0, scrollX: 0 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+}
+
+function saveAsPDF() {
+  if (!validateForm()) return;
+  calcCampaignMonths();
+  populatePrintLayout();
+  window.scrollTo(0, 0);
+  var refNo = document.getElementById('ref-no').value || 'order';
+  var companyFull2 = document.getElementById('client-company').value || 'Client';
+  var company2 = companyFull2.split(/[,\n]/)[0].trim();
+  var pdfFilename = (refNo + ' - ' + company2).replace(/[<>:"/\\|?*]/g, '').trim() + '.pdf';
+  html2pdf().set(pdfOpts(pdfFilename))
+    .from(getPdfHtml(), 'string').save()
+    ['catch'](function() {
+      alert('PDF save failed. Use the Print button and choose Save as PDF from your print dialog.');
+    });
 }
 </script>
 </body>
