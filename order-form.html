@@ -411,7 +411,12 @@
   </div>
 
   <div class="section-title">Terms &amp; Conditions</div>
-  <div class="tc-box">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:6px;">
+    <button type="button" id="tc-lock-btn" onclick="toggleTcEdit()" style="background:none;border:1.5px solid var(--purple-lighter);border-radius:20px;padding:4px 14px;font-size:11px;color:var(--purple-dark);cursor:pointer;font-family:'Lato',Arial,sans-serif;display:flex;align-items:center;gap:5px;">
+      <span id="tc-lock-icon">🔒</span> <span id="tc-lock-label">Edit T&amp;Cs</span>
+    </button>
+  </div>
+  <div class="tc-box" id="tc-box">
     <div class="tc-title">Terms &amp; Conditions</div>
     <p>By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.</p>
     <p>The order value (plus VAT if applicable) is payable within 30 days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin.</p>
@@ -908,6 +913,36 @@ function fmtDescBlack(btn) {
   var wrap = btn.closest('.item-desc-wrap');
   if (wrap) wrap.querySelector('.item-desc').focus();
   document.execCommand('foreColor', false, '#000000');
+}
+
+// ─── T&C password lock ────────────────────────────────────────────────────────
+var TC_UNLOCKED = false;
+function toggleTcEdit() {
+  var box = document.getElementById('tc-box');
+  var icon = document.getElementById('tc-lock-icon');
+  var label = document.getElementById('tc-lock-label');
+  if (TC_UNLOCKED) {
+    // Lock it back
+    box.contentEditable = 'false';
+    box.style.background = '';
+    box.style.borderColor = '';
+    icon.textContent = '🔒';
+    label.textContent = 'Edit T&Cs';
+    TC_UNLOCKED = false;
+  } else {
+    var pw = prompt('Enter password to edit T&Cs:');
+    if (pw === 'Unifresher2026!') {
+      box.contentEditable = 'true';
+      box.style.background = '#fffef5';
+      box.style.borderColor = 'var(--purple)';
+      box.focus();
+      icon.textContent = '🔓';
+      label.textContent = 'Lock T&Cs';
+      TC_UNLOCKED = true;
+    } else if (pw !== null) {
+      alert('Incorrect password.');
+    }
+  }
 }
 
 // Default new typed characters to black in any contenteditable area
