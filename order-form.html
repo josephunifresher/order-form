@@ -919,7 +919,9 @@ function calcCampaignMonths() {
       var sd = new Date(s + 'T00:00:00');
       var ed = new Date(e + 'T00:00:00');
       if (!isNaN(sd) && !isNaN(ed) && ed >= sd) {
-        var m = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth()) + 1;
+        var m = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth());
+        if (ed.getDate() > sd.getDate()) m++; // end day is later in month, add the partial month
+        m = Math.max(1, m);                   // minimum 1 month for any valid date range
         if (m > 0) { cell.textContent = m; total += m; hasAny = true; } else { cell.textContent = '—'; }
       } else { cell.textContent = '—'; }
     } else { cell.textContent = '—'; }
