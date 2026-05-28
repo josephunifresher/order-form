@@ -638,8 +638,8 @@ function getNetTotal() {
     var qty    = (qtyEl && qtyEl.value !== '') ? (parseFloat(qtyEl.value) || 1) : 1;
     var months = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
     var weeks  = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
-    var multiplier = months + weeks || 1;
-    n += price * qty * multiplier;
+    // Weeks are billed at price/4 (weekly rate = monthly rate ÷ 4)
+    n += price * qty * months + (price / 4) * qty * weeks;
   });
   return n;
 }
@@ -654,8 +654,8 @@ function recalc() {
     var qty      = (qtyEl2 && qtyEl2.value !== '') ? (parseFloat(qtyEl2.value) || 1) : 1;
     var months   = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
     var weeks    = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
-    var multiplier = months + weeks || 1;
-    var rowTotal = price * qty * multiplier;
+    // Weeks are billed at price/4 (weekly rate = monthly rate ÷ 4)
+    var rowTotal = price * qty * months + (price / 4) * qty * weeks;
     net += rowTotal;
     var cell = document.getElementById('row-total-' + id);
     if (cell) cell.textContent = '£' + rowTotal.toFixed(2);
