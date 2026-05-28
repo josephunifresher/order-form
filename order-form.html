@@ -259,6 +259,23 @@
   <button class="btn btn-drive" id="btn-drive" onclick="saveToDrive()">☁ Save to Drive</button>
 </div>
 
+<!-- T&C approval modal -->
+<div id="tc-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:14px;padding:32px 36px;max-width:440px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.25);text-align:center;position:relative;">
+    <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
+    <p style="color:#c0392b;font-size:15px;font-weight:900;font-family:'Roboto',Arial,sans-serif;line-height:1.5;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">
+      HAVE YOU APPROVED THIS WITH FIZZ OR CHRIS??
+    </p>
+    <p style="color:#c0392b;font-size:13px;font-weight:700;font-family:'Lato',Arial,sans-serif;line-height:1.6;margin-bottom:24px;">
+      T&amp;Cs SHOULD NOT BE CHANGED WITHOUT APPROVAL.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;">
+      <button onclick="tcModalConfirm()" style="background:#c0392b;color:#fff;border:none;border-radius:20px;padding:9px 26px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Lato',Arial,sans-serif;">Yes, I have approval</button>
+      <button onclick="tcModalCancel()" style="background:#eee;color:#333;border:none;border-radius:20px;padding:9px 26px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Lato',Arial,sans-serif;">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="page-wrap">
   <div id="validation-banner"></div>
 
@@ -411,8 +428,22 @@
   </div>
 
   <div class="section-title">Terms &amp; Conditions</div>
-  <div style="display:flex;justify-content:flex-end;margin-bottom:6px;">
-    <button type="button" id="tc-lock-btn" onclick="toggleTcEdit()" style="background:none;border:1.5px solid var(--purple-lighter);border-radius:20px;padding:4px 14px;font-size:11px;color:var(--purple-dark);cursor:pointer;font-family:'Lato',Arial,sans-serif;display:flex;align-items:center;gap:5px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+    <div class="notes-toolbar" id="tc-toolbar" style="display:none;margin-bottom:0;">
+      <button type="button" onclick="fmtTc('bold')" title="Bold"><b>B</b></button>
+      <button type="button" onclick="fmtTc('italic')" title="Italic"><i>I</i></button>
+      <button type="button" onclick="fmtTc('underline')" title="Underline"><u>U</u></button>
+      <button type="button" onclick="fmtTc('strikeThrough')" title="Strikethrough"><s>S</s></button>
+      <button type="button" onclick="fmtTc('foreColor','#000000')" title="Black text" style="font-weight:900;color:#000;letter-spacing:-1px;">A</button>
+      <span class="color-btn notes-toolbar" style="margin:0;border:1px solid var(--grey-border);border-radius:5px;padding:2px 6px;background:var(--purple-lightest);">
+        <label style="font-size:11px;color:var(--purple-dark);cursor:pointer;" title="Text colour">A
+          <input type="color" value="#e74c3c" onchange="fmtTc('foreColor',this.value)" style="width:20px;height:16px;">
+        </label>
+      </span>
+      <button type="button" onclick="fmtTc('insertUnorderedList')" title="Bullet list">☰</button>
+      <button type="button" onclick="fmtTc('removeFormat')" title="Clear formatting" style="font-size:10px;">✕ Clear</button>
+    </div>
+    <button type="button" id="tc-lock-btn" onclick="toggleTcEdit()" style="background:none;border:1.5px solid var(--purple-lighter);border-radius:20px;padding:4px 14px;font-size:11px;color:var(--purple-dark);cursor:pointer;font-family:'Lato',Arial,sans-serif;display:flex;align-items:center;gap:5px;margin-left:auto;">
       <span id="tc-lock-icon">🔒</span> <span id="tc-lock-label">Edit T&amp;Cs</span>
     </button>
   </div>
@@ -935,31 +966,53 @@ function fmtDescBlack(btn) {
 // ─── T&C password lock ────────────────────────────────────────────────────────
 var TC_UNLOCKED = false;
 function toggleTcEdit() {
-  var box = document.getElementById('tc-box');
-  var icon = document.getElementById('tc-lock-icon');
-  var label = document.getElementById('tc-lock-label');
   if (TC_UNLOCKED) {
-    // Lock it back
-    box.contentEditable = 'false';
-    box.style.background = '';
-    box.style.borderColor = '';
-    icon.textContent = '🔒';
-    label.textContent = 'Edit T&Cs';
-    TC_UNLOCKED = false;
+    tcLock();
   } else {
-    var pw = prompt('Enter password to edit T&Cs:');
-    if (pw === 'Unifresher2026!') {
-      box.contentEditable = 'true';
-      box.style.background = '#fffef5';
-      box.style.borderColor = 'var(--purple)';
-      box.focus();
-      icon.textContent = '🔓';
-      label.textContent = 'Lock T&Cs';
-      TC_UNLOCKED = true;
-    } else if (pw !== null) {
-      alert('Incorrect password.');
-    }
+    // Show approval warning modal first
+    var overlay = document.getElementById('tc-modal-overlay');
+    overlay.style.display = 'flex';
   }
+}
+function tcModalCancel() {
+  document.getElementById('tc-modal-overlay').style.display = 'none';
+}
+function tcModalConfirm() {
+  document.getElementById('tc-modal-overlay').style.display = 'none';
+  var pw = prompt('Enter password to edit T&Cs:');
+  if (pw === 'Unifresher2026!') {
+    var box     = document.getElementById('tc-box');
+    var icon    = document.getElementById('tc-lock-icon');
+    var label   = document.getElementById('tc-lock-label');
+    var toolbar = document.getElementById('tc-toolbar');
+    box.contentEditable = 'true';
+    box.style.background  = '#fffef5';
+    box.style.borderColor = 'var(--purple)';
+    toolbar.style.display = 'flex';
+    box.focus();
+    icon.textContent  = '🔓';
+    label.textContent = 'Lock T&Cs';
+    TC_UNLOCKED = true;
+  } else if (pw !== null) {
+    alert('Incorrect password.');
+  }
+}
+function tcLock() {
+  var box     = document.getElementById('tc-box');
+  var icon    = document.getElementById('tc-lock-icon');
+  var label   = document.getElementById('tc-lock-label');
+  var toolbar = document.getElementById('tc-toolbar');
+  box.contentEditable = 'false';
+  box.style.background  = '';
+  box.style.borderColor = '';
+  toolbar.style.display = 'none';
+  icon.textContent  = '🔒';
+  label.textContent = 'Edit T&Cs';
+  TC_UNLOCKED = false;
+}
+function fmtTc(cmd, val) {
+  document.getElementById('tc-box').focus();
+  document.execCommand(cmd, false, val || null);
 }
 
 // Default new typed characters to black in any contenteditable area
