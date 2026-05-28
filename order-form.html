@@ -891,7 +891,24 @@ function calcCampaignMonths() {
 }
 
 document.querySelectorAll('.camp-start, .camp-end').forEach(function(inp) {
-  inp.addEventListener('change', calcCampaignMonths);
+  inp.addEventListener('change', function() {
+    calcCampaignMonths();
+    if (!this.value) return;
+    var entered = new Date(this.value + 'T00:00:00');
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    // Allow up to 1 month back, warn for anything older
+    var oneMonthAgo = new Date(today);
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    if (entered < oneMonthAgo) {
+      alert(
+        '⚠️ Date Check Required\n\n' +
+        'The date you entered (' + entered.toLocaleDateString('en-GB') + ') is more than one month in the past.\n\n' +
+        'Today\'s date is ' + today.toLocaleDateString('en-GB') + '.\n\n' +
+        'Campaign dates should not be in the past — please check this is correct before continuing.'
+      );
+    }
+  });
 });
 
 // ─── Rich text formatting ────────────────────────────────────────────────────
