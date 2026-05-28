@@ -610,10 +610,10 @@ function addRow() {
       '<input type="number" placeholder="1" step="1" min="1" value="1" class="item-qty" oninput="recalc()">' +
     '</td>' +
     '<td class="qty-cell">' +
-      '<input type="number" placeholder="1" step="1" min="1" value="1" class="item-months" oninput="recalc()">' +
+      '<input type="number" placeholder="0" step="1" min="0" class="item-months" oninput="recalc()">' +
     '</td>' +
     '<td class="qty-cell">' +
-      '<input type="number" placeholder="" step="1" min="1" class="item-weeks">' +
+      '<input type="number" placeholder="" step="1" min="0" class="item-weeks" oninput="recalc()">' +
     '</td>' +
     '<td class="total-cell" id="row-total-' + id + '">£0.00</td>' +
     '<td style="text-align:center;vertical-align:middle">' +
@@ -635,8 +635,10 @@ function getNetTotal() {
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
     var price  = parseFloat(tr.querySelector('.item-price')  ? tr.querySelector('.item-price').value  : 0) || 0;
     var qty    = parseFloat(tr.querySelector('.item-qty')    ? tr.querySelector('.item-qty').value    : 1) || 0;
-    var months = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 1) || 1;
-    n += price * qty * months;
+    var months = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
+    var weeks  = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
+    var multiplier = months + weeks || 1;
+    n += price * qty * multiplier;
   });
   return n;
 }
@@ -648,8 +650,10 @@ function recalc() {
     var id       = tr.id.replace('row-', '');
     var price    = parseFloat(tr.querySelector('.item-price')  ? tr.querySelector('.item-price').value  : 0) || 0;
     var qty      = parseFloat(tr.querySelector('.item-qty')    ? tr.querySelector('.item-qty').value    : 1) || 0;
-    var months   = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 1) || 1;
-    var rowTotal = price * qty * months;
+    var months   = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
+    var weeks    = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
+    var multiplier = months + weeks || 1;
+    var rowTotal = price * qty * multiplier;
     net += rowTotal;
     var cell = document.getElementById('row-total-' + id);
     if (cell) cell.textContent = '£' + rowTotal.toFixed(2);
