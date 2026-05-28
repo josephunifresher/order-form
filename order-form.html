@@ -607,7 +607,7 @@ function addRow() {
       '<span class="error-label" id="err-price-' + id + '">Price is required</span>' +
     '</td>' +
     '<td class="qty-cell">' +
-      '<input type="number" placeholder="1" step="1" min="1" value="1" class="item-qty" oninput="recalc()">' +
+      '<input type="number" placeholder="" step="1" min="1" class="item-qty" oninput="recalc()">' +
     '</td>' +
     '<td class="qty-cell">' +
       '<input type="number" placeholder="0" step="1" min="0" class="item-months" oninput="recalc()">' +
@@ -634,7 +634,8 @@ function getNetTotal() {
   var n = 0;
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
     var price  = parseFloat(tr.querySelector('.item-price')  ? tr.querySelector('.item-price').value  : 0) || 0;
-    var qty    = parseFloat(tr.querySelector('.item-qty')    ? tr.querySelector('.item-qty').value    : 1) || 0;
+    var qtyEl  = tr.querySelector('.item-qty');
+    var qty    = (qtyEl && qtyEl.value !== '') ? (parseFloat(qtyEl.value) || 1) : 1;
     var months = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
     var weeks  = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
     var multiplier = months + weeks || 1;
@@ -649,7 +650,8 @@ function recalc() {
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
     var id       = tr.id.replace('row-', '');
     var price    = parseFloat(tr.querySelector('.item-price')  ? tr.querySelector('.item-price').value  : 0) || 0;
-    var qty      = parseFloat(tr.querySelector('.item-qty')    ? tr.querySelector('.item-qty').value    : 1) || 0;
+    var qtyEl2   = tr.querySelector('.item-qty');
+    var qty      = (qtyEl2 && qtyEl2.value !== '') ? (parseFloat(qtyEl2.value) || 1) : 1;
     var months   = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
     var weeks    = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
     var multiplier = months + weeks || 1;
