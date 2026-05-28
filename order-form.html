@@ -304,11 +304,12 @@
   <table class="items-table" id="items-table">
     <thead>
       <tr>
-        <th style="width:44%">Description *</th>
-        <th style="width:14%" class="right">Unit Price (£) *</th>
-        <th style="width:8%" class="right">Qty *</th>
-        <th style="width:8%" class="right">Months</th>
-        <th style="width:14%" class="right">Total (£)</th>
+        <th style="width:40%">Description *</th>
+        <th style="width:13%" class="right">Unit Price (£) *</th>
+        <th style="width:7%" class="right">Qty *</th>
+        <th style="width:7%" class="right">Months</th>
+        <th style="width:7%" class="right">Weeks</th>
+        <th style="width:13%" class="right">Total (£)</th>
         <th style="width:6%"></th>
       </tr>
     </thead>
@@ -463,11 +464,12 @@
   <table class="pl-items">
     <thead>
       <tr>
-        <th style="width:45%">Description</th>
-        <th class="r" style="width:14%">Unit Price</th>
-        <th class="r" style="width:8%">Qty</th>
-        <th class="r" style="width:8%">Months</th>
-        <th class="r" style="width:14%">Total</th>
+        <th style="width:41%">Description</th>
+        <th class="r" style="width:13%">Unit Price</th>
+        <th class="r" style="width:7%">Qty</th>
+        <th class="r" style="width:7%">Months</th>
+        <th class="r" style="width:7%">Weeks</th>
+        <th class="r" style="width:13%">Total</th>
       </tr>
     </thead>
     <tbody id="pl-items-body"></tbody>
@@ -574,6 +576,9 @@ function addRow() {
     '<td class="qty-cell">' +
       '<input type="number" placeholder="1" step="1" min="1" value="1" class="item-months" oninput="recalc()">' +
     '</td>' +
+    '<td class="qty-cell">' +
+      '<input type="number" placeholder="" step="1" min="1" class="item-weeks">' +
+    '</td>' +
     '<td class="total-cell" id="row-total-' + id + '">£0.00</td>' +
     '<td style="text-align:center;vertical-align:middle">' +
       '<button class="remove-row-btn" onclick="removeRow(' + id + ')" title="Remove">×</button>' +
@@ -660,6 +665,7 @@ function populatePrintLayout() {
     var price  = parseFloat(tr.querySelector('.item-price')  ? tr.querySelector('.item-price').value  : 0) || 0;
     var qty    = parseFloat(tr.querySelector('.item-qty')    ? tr.querySelector('.item-qty').value    : 0) || 0;
     var months = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 1) || 1;
+    var weeks  = tr.querySelector('.item-weeks') ? tr.querySelector('.item-weeks').value : '';
     var total  = price * qty * months;
     if (!desc && !price) return;
     var row = document.createElement('tr');
@@ -668,6 +674,7 @@ function populatePrintLayout() {
       '<td class="r">' + (price ? '£' + price.toFixed(2) : '') + '</td>' +
       '<td class="r">' + (qty || '') + '</td>' +
       '<td class="r">' + (months !== 1 ? months : '') + '</td>' +
+      '<td class="r">' + (weeks || '') + '</td>' +
       '<td class="r bold">' + (total ? '£' + total.toFixed(2) : '') + '</td>';
     plBody.appendChild(row);
   });
@@ -939,7 +946,7 @@ document.addEventListener('click', function(e) {
 // ─── Google Drive configuration ─────────────────────────────────────────────
 // Paste your Client ID below after setting up in Google Cloud Console
 var GDRIVE_CONFIG = {
-  clientId: '978032756141-mm8qj0l7dtlrkka8l378s8nsgsfnnhhi.apps.googleusercontent.com',
+  clientId: 'PASTE_YOUR_CLIENT_ID_HERE.apps.googleusercontent.com',
   folderId: '1ZR9uhvtNc_6fMlR4SSGQv4FSPxQ8_fbe'
 };
 
