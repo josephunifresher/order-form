@@ -1185,12 +1185,15 @@ var SB_URL = 'https://jyljjlaqogqpsdtvseqf.supabase.co';
 var SB_KEY = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
 var SUPER_ADMIN = 'Joseph'; // Cannot be deleted or demoted
 
+// ─── sbFetch: uses JWT when logged in, anon key otherwise ────────────────────
 function sbFetch(path, method, body, extraHeaders) {
+  var session = currentUser();
+  var token = (session && session.access_token) ? session.access_token : SB_KEY;
   return fetch(SB_URL + '/rest/v1/' + path, {
     method: method || 'GET',
     headers: Object.assign({
       'apikey': SB_KEY,
-      'Authorization': 'Bearer ' + SB_KEY,
+      'Authorization': 'Bearer ' + token,
       'Content-Type': 'application/json',
       'Prefer': (method === 'POST' ? 'return=representation' : '')
     }, extraHeaders || {}),
@@ -1201,22 +1204,30 @@ function sbFetch(path, method, body, extraHeaders) {
   });
 }
 
+function sbAuth(path, body) {
+  return fetch(SB_URL + '/auth/v1/' + path, {
+    method: 'POST',
+    headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(r) { return r.json(); });
+}
+
 function currentUser() {
   try { return JSON.parse(sessionStorage.getItem('uf_session')); } catch(e) { return null; }
 }
 
 function isAdminUser(u) { return u && (u.role === 'admin' || u.role === 'super_admin'); }
 
-// Build user buttons on login screen — fetched from Supabase
+// Build user buttons from profiles table (names only — no passwords exposed)
 function buildLoginBtns() {
   var wrap = document.getElementById('user-btns');
   if (!wrap) return;
   wrap.innerHTML = '<span style="font-size:11px;color:#aaa;">Loading...</span>';
-  sbFetch('users?select=name,role&order=name').then(function(users) {
+  sbFetch('profiles?select=name,role&order=name').then(function(profiles) {
     wrap.innerHTML = '';
-    (users || []).forEach(function(u) {
+    (profiles || []).forEach(function(p) {
       var btn = document.createElement('button');
-      btn.className = 'user-btn'; btn.textContent = u.name; btn.dataset.name = u.name;
+      btn.className = 'user-btn'; btn.textContent = p.name; btn.dataset.name = p.name;
       btn.onclick = function() {
         wrap.querySelectorAll('.user-btn').forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
@@ -1236,18 +1247,42 @@ function doLogin() {
   var err = document.getElementById('login-err');
   if (!activeBtn) { err.textContent = 'Please select a user'; return; }
   err.textContent = 'Signing in…';
-  sbFetch('users?name=eq.' + encodeURIComponent(activeBtn.dataset.name) + '&password=eq.' + encodeURIComponent(pw))
+  // Look up their email from profiles, then authenticate via Supabase Auth
+  sbFetch('profiles?name=eq.' + encodeURIComponent(activeBtn.dataset.name) + '&select=email,name,role')
     .then(function(rows) {
-      if (!rows || !rows.length) { err.textContent = 'Incorrect password — please try again'; return; }
-      var u = rows[0];
-      sessionStorage.setItem('uf_session', JSON.stringify({ id: u.id, name: u.name, role: u.role }));
-      document.getElementById('login-overlay').style.display = 'none';
-      document.getElementById('toolbar-user').textContent = '👤 ' + u.name;
-      if (isAdminUser(u)) document.getElementById('admin-btn').style.display = '';
+      if (!rows || !rows.length) { err.textContent = 'User not found'; return; }
+      var profile = rows[0];
+      if (!profile.email) { err.textContent = 'Account not configured — contact admin'; return; }
+      // Call Supabase Auth with bcrypt-hashed password
+      return sbAuth('token?grant_type=password', { email: profile.email, password: pw })
+        .then(function(data) {
+          if (data.error || !data.access_token) {
+            err.textContent = 'Incorrect password — please try again';
+            return;
+          }
+          sessionStorage.setItem('uf_session', JSON.stringify({
+            id:            data.user.id,
+            name:          profile.name,
+            role:          profile.role,
+            access_token:  data.access_token,
+            refresh_token: data.refresh_token
+          }));
+          document.getElementById('login-overlay').style.display = 'none';
+          document.getElementById('toolbar-user').textContent = '👤 ' + profile.name;
+          if (isAdminUser(profile)) document.getElementById('admin-btn').style.display = '';
+        });
     })['catch'](function() { err.textContent = 'Connection error — please try again'; });
 }
 
 function doLogout() {
+  var session = currentUser();
+  if (session && session.access_token) {
+    // Sign out from Supabase Auth (invalidates the JWT server-side)
+    fetch(SB_URL + '/auth/v1/logout', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + session.access_token }
+    })['catch'](function() {});
+  }
   sessionStorage.removeItem('uf_session');
   document.getElementById('login-pw').value = '';
   document.getElementById('login-err').textContent = '';
@@ -1445,11 +1480,13 @@ function renderAdminBody() {
   var currentU = currentUser();
   document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Loading…</div>';
   Promise.all([
-    sbFetch('users?order=name'),
-    sbFetch('order_history?order=saved_at.desc')
+    sbFetch('profiles?order=name'),
+    sbFetch('order_history?order=saved_at.desc'),
+    sbFetch('drive_log?order=logged_at.desc&limit=100')
   ]).then(function(results) {
     var users   = results[0] || [];
     var history = results[1] || [];
+    var driveLog = results[2] || [];
     var html = '<div class="adm-section"><h3>Users</h3>';
     users.forEach(function(u) {
       var isSuperAdmin = u.name === SUPER_ADMIN;
@@ -1465,15 +1502,18 @@ function renderAdminBody() {
           'onclick="adminToggleRole(\'' + u.id + '\',\'' + u.name + '\',\'' + nextRole + '\')">' +
           (u.role === 'admin' ? 'Make User' : 'Make Admin') + '</button>';
       }
-      html += '<input class="adm-inp" id="adm-pw-' + u.id + '" placeholder="New password" type="password" style="width:130px;">' +
-        '<button class="adm-btn" onclick="adminChangePw(\'' + u.id + '\',\'' + u.name + '\')">Save PW</button>';
+      if (u.email) {
+        html += '<button class="adm-btn" style="background:#f39c12;font-size:11px;" ' +
+          'onclick="adminResetPw(\'' + u.email + '\',\'' + u.name + '\')">📧 Reset PW</button>';
+      }
       if (!isSuperAdmin && !isMe) {
         html += '<button class="adm-btn danger" onclick="adminDeleteUser(\'' + u.id + '\',\'' + u.name + '\')">Delete</button>';
       }
       html += '</div>';
     });
-    html += '<div style="display:flex;gap:8px;margin-top:10px;">' +
-      '<input class="adm-inp" id="adm-new-name" placeholder="Name" style="width:110px;">' +
+    html += '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">' +
+      '<input class="adm-inp" id="adm-new-name" placeholder="Display name" style="width:110px;">' +
+      '<input class="adm-inp" id="adm-new-email" placeholder="Email address" style="width:180px;">' +
       '<input class="adm-inp" id="adm-new-pw" placeholder="Password" type="password" style="width:130px;">' +
       '<select class="adm-inp" id="adm-new-role"><option value="user">User</option><option value="admin">Admin</option></select>' +
       '<button class="adm-btn" onclick="adminAddUser()">Add User</button>' +
@@ -1485,6 +1525,35 @@ function renderAdminBody() {
         '<button class="adm-btn danger" onclick="adminClearHistory()">Clear All History</button></div>';
       html += renderHistoryRows(history, true);
     }
+    // Transmission log
+    html += '<div class="adm-section"><h3>📡 Transmission Log — Google Drive Uploads</h3>';
+    if (!driveLog.length) {
+      html += '<div class="hist-empty">No Drive uploads recorded yet.</div>';
+    } else {
+      html += '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+        '<thead><tr style="background:var(--purple-lightest);font-weight:700;">' +
+        '<td style="padding:6px 8px;">Date &amp; Time</td>' +
+        '<td style="padding:6px 8px;">User</td>' +
+        '<td style="padding:6px 8px;">REF</td>' +
+        '<td style="padding:6px 8px;">Client</td>' +
+        '<td style="padding:6px 8px;">File</td>' +
+        '<td style="padding:6px 8px;">Type</td>' +
+        '</tr></thead><tbody>';
+      driveLog.forEach(function(entry) {
+        var dt = new Date(entry.logged_at);
+        var dateStr = dt.toLocaleDateString('en-GB') + ' ' + dt.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+        var typeColour = entry.file_type && entry.file_type.indexOf('Checklist') !== -1 ? '#27ae60' : '#702DD7';
+        html += '<tr style="border-bottom:1px solid var(--purple-lightest);">' +
+          '<td style="padding:5px 8px;color:#555;">' + dateStr + '</td>' +
+          '<td style="padding:5px 8px;font-weight:700;">' + (entry.user_name || '—') + '</td>' +
+          '<td style="padding:5px 8px;color:var(--purple);font-weight:700;">' + (entry.ref || '—') + '</td>' +
+          '<td style="padding:5px 8px;">' + (entry.company || '—') + '</td>' +
+          '<td style="padding:5px 8px;font-size:11px;color:#777;">' + (entry.filename || '—') + '</td>' +
+          '<td style="padding:5px 8px;"><span style="background:' + typeColour + '22;color:' + typeColour + ';border-radius:10px;padding:2px 8px;font-size:11px;font-weight:700;">' + (entry.file_type || '—') + '</span></td>' +
+          '</tr>';
+      });
+      html += '</tbody></table>';
+    }
     html += '</div>';
     document.getElementById('admin-body').innerHTML = html;
   })['catch'](function() {
@@ -1494,35 +1563,49 @@ function renderAdminBody() {
 
 function adminToggleRole(id, name, newRole) {
   if (!confirm('Change ' + name + ' to ' + newRole + '?')) return;
-  sbFetch('users?id=eq.' + id, 'PATCH', { role: newRole }, { 'Prefer': '' })
+  sbFetch('profiles?id=eq.' + id, 'PATCH', { role: newRole }, { 'Prefer': '' })
     .then(function() { renderAdminBody(); })['catch'](function() { alert('Update failed.'); });
 }
 
-function adminChangePw(id, name) {
-  var pw = (document.getElementById('adm-pw-' + id) || {}).value || '';
-  if (!pw) { alert('Please enter a new password'); return; }
-  sbFetch('users?id=eq.' + id, 'PATCH', { password: pw }, { 'Prefer': '' })
-    .then(function() { alert('Password updated for ' + name); renderAdminBody(); })
-    ['catch'](function() { alert('Update failed.'); });
+function adminResetPw(email, name) {
+  if (!confirm('Send a password reset email to ' + name + ' (' + email + ')?')) return;
+  fetch(SB_URL + '/auth/v1/recover', {
+    method: 'POST',
+    headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  }).then(function() {
+    alert('✅ Password reset email sent to ' + email);
+  })['catch'](function() { alert('Could not send reset email.'); });
 }
 
 function adminDeleteUser(id, name) {
-  if (!confirm('Delete user "' + name + '"? This cannot be undone.')) return;
-  sbFetch('users?id=eq.' + id, 'DELETE', null, { 'Prefer': '' })
-    .then(function() { renderAdminBody(); buildLoginBtns(); })
-    ['catch'](function() { alert('Delete failed.'); });
+  alert('To delete ' + name + ', go to:\nSupabase Dashboard → Authentication → Users\nFind ' + name + ' → click ··· → Delete user\n\nThis requires the Supabase dashboard for security reasons.');
 }
 
 function adminAddUser() {
-  var name = (document.getElementById('adm-new-name') || {}).value.trim();
-  var pw   = (document.getElementById('adm-new-pw')   || {}).value;
-  var role = (document.getElementById('adm-new-role') || {}).value;
-  if (!name || !pw) { alert('Name and password are required'); return; }
-  sbFetch('users', 'POST', { name: name, password: pw, role: role })
-    .then(function(r) {
-      if (r && r[0] && r[0].id) { renderAdminBody(); buildLoginBtns(); }
-      else alert('Could not add user — name may already exist.');
-    })['catch'](function() { alert('Add user failed.'); });
+  var name  = (document.getElementById('adm-new-name')  || {}).value.trim();
+  var email = (document.getElementById('adm-new-email') || {}).value.trim();
+  var pw    = (document.getElementById('adm-new-pw')    || {}).value;
+  var role  = (document.getElementById('adm-new-role')  || {}).value;
+  if (!name || !email || !pw) { alert('Name, email and password are all required'); return; }
+  // Create user via Supabase Auth signup (no service key needed)
+  fetch(SB_URL + '/auth/v1/signup', {
+    method: 'POST',
+    headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, password: pw, data: { name: name, role: role } })
+  }).then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.error) { alert('Could not create user: ' + data.error.message); return; }
+      if (!data.user && !data.id) { alert('Could not create user — email may already exist.'); return; }
+      // Update profile with correct name and role (trigger may have used email prefix)
+      var uid = (data.user || data).id;
+      return sbFetch('profiles?id=eq.' + uid, 'PATCH', { name: name, role: role, email: email }, { 'Prefer': '' })
+        .then(function() {
+          alert('✅ User "' + name + '" created successfully!');
+          renderAdminBody();
+          buildLoginBtns();
+        });
+    })['catch'](function() { alert('Failed to create user — please try again.'); });
 }
 
 function adminClearHistory() {
@@ -1835,7 +1918,12 @@ function doChecklistUpload(token) {
       });
     })
     .then(function(r) { return r.json(); })
-    .then(function(data) { if (data.id) _lastClState = currentState; })
+    .then(function(data) {
+      if (data.id) {
+        _lastClState = currentState;
+        logDriveUpload(refNo, company, clName, 'Checklist (auto)');
+      }
+    })
     ['catch'](function() { /* silent fail */ });
 }
 
@@ -1881,6 +1969,17 @@ function saveToDrive() {
   tokenClient.requestAccessToken();
 }
 
+function logDriveUpload(ref, company, filename, fileType) {
+  var user = currentUser();
+  sbFetch('drive_log', 'POST', {
+    user_name: user ? user.name : 'Unknown',
+    ref:       ref,
+    company:   company,
+    filename:  filename,
+    file_type: fileType
+  })['catch'](function() {}); // silent fail
+}
+
 function driveUploadBlob(blob, filename, accessToken) {
   var metadata = { name: filename, mimeType: 'application/pdf', parents: [GDRIVE_CONFIG.folderId] };
   var form = new FormData();
@@ -1919,11 +2018,13 @@ function uploadToDrive(accessToken, btn) {
     })
     .then(function(data) {
       if (!data.id) throw new Error('Order upload failed: ' + JSON.stringify(data));
+      logDriveUpload(refNo, company, orderFilename, 'Order');
       return driveUploadBlob(clBlob, checklistFilename, accessToken);
     })
     .then(function(data) {
       btn.disabled = false; btn.textContent = '☁ Save to Drive';
       if (data.id) {
+        logDriveUpload(refNo, company, checklistFilename, 'Checklist');
         alert('✅ Both files saved to Google Drive!\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename);
       } else {
         alert('Order saved but checklist upload failed: ' + JSON.stringify(data));
