@@ -240,6 +240,58 @@
   .last-updated-bar { text-align:right; font-size:10px; color:#aaa; padding:10px 0 0; border-top:1px solid var(--grey-border); margin-top:20px; }
   .last-updated-bar span { font-weight:700; color:#999; }
 
+  /* LOGIN */
+  #login-overlay { position:fixed;inset:0;background:var(--purple-darker);z-index:9999;display:flex;align-items:center;justify-content:center; }
+  #login-box { background:#fff;border-radius:18px;padding:40px 44px;width:360px;box-shadow:0 12px 48px rgba(0,0,0,.35);text-align:center; }
+  #login-box h2 { font-family:'Roboto',Arial,sans-serif;font-size:22px;color:var(--purple);margin-bottom:4px; }
+  #login-box p { font-size:12px;color:#888;margin-bottom:22px; }
+  .user-btns { display:flex;gap:10px;justify-content:center;margin-bottom:18px;flex-wrap:wrap; }
+  .user-btn { background:var(--purple-lightest);border:2px solid var(--purple-lighter);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:700;color:var(--purple-dark);cursor:pointer;transition:all .2s;font-family:'Lato',Arial,sans-serif; }
+  .user-btn:hover,.user-btn.active { background:var(--purple);color:#fff;border-color:var(--purple); }
+  #login-pw { width:100%;border:1.5px solid var(--grey-border);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Lato',Arial,sans-serif;outline:none;margin-bottom:12px;box-sizing:border-box; }
+  #login-pw:focus { border-color:var(--purple); }
+  #login-btn { width:100%;background:var(--purple);color:#fff;border:none;border-radius:30px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Lato',Arial,sans-serif;margin-bottom:10px; }
+  #login-btn:hover { background:var(--purple-dark); }
+  #login-err { color:#e74c3c;font-size:12px;min-height:18px; }
+
+  /* MODALS (history + admin) */
+  .uf-modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8000;display:flex;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto; }
+  .uf-modal { background:#fff;border-radius:14px;width:100%;max-width:860px;box-shadow:0 8px 40px rgba(0,0,0,.25);overflow:hidden; }
+  .uf-modal-head { background:var(--purple-darker);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:12px; }
+  .uf-modal-head h2 { font-family:'Roboto',Arial,sans-serif;font-size:16px;flex:1;margin:0; }
+  .uf-modal-close { background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:20px;padding:5px 14px;cursor:pointer;font-size:13px;font-family:'Lato',Arial,sans-serif; }
+  .uf-modal-body { padding:20px 24px;max-height:80vh;overflow-y:auto; }
+  .hist-month { font-family:'Roboto',Arial,sans-serif;font-weight:700;font-size:13px;color:var(--purple-dark);text-transform:uppercase;letter-spacing:.6px;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--purple-lightest); }
+  .hist-month:first-child { margin-top:0; }
+  .hist-row { display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;font-size:13px; }
+  .hist-row:hover { background:var(--purple-lightest); }
+  .hist-ref { font-weight:700;color:var(--purple);min-width:90px; }
+  .hist-co { flex:1;color:var(--black); }
+  .hist-amt { font-weight:700;color:var(--purple-dark);min-width:80px;text-align:right; }
+  .hist-user { font-size:11px;color:#aaa;min-width:60px;text-align:right; }
+  .hist-date { font-size:11px;color:#aaa;min-width:80px;text-align:right; }
+  .hist-del { background:none;border:none;color:#e74c3c;cursor:pointer;font-size:16px;opacity:.5;padding:0 4px; }
+  .hist-del:hover { opacity:1; }
+  .hist-empty { text-align:center;color:#aaa;padding:30px;font-size:13px; }
+
+  /* ADMIN */
+  .adm-section { margin-bottom:24px; }
+  .adm-section h3 { font-family:'Roboto',Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--purple-dark);margin-bottom:10px; }
+  .adm-user-row { display:flex;align-items:center;gap:8px;margin-bottom:6px;background:var(--grey-bg);border-radius:8px;padding:8px 10px; }
+  .adm-user-name { font-weight:700;font-size:13px;flex:1; }
+  .adm-role { font-size:11px;color:#aaa;margin-right:4px; }
+  .adm-inp { border:1.5px solid var(--grey-border);border-radius:6px;padding:5px 8px;font-size:12px;font-family:'Lato',Arial,sans-serif;outline:none; }
+  .adm-inp:focus { border-color:var(--purple); }
+  .adm-btn { background:var(--purple);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:'Lato',Arial,sans-serif; }
+  .adm-btn:hover { background:var(--purple-dark); }
+  .adm-btn.danger { background:#e74c3c; }
+  .adm-btn.danger:hover { background:#c0392b; }
+
+  /* TOOLBAR USER BADGE */
+  .user-badge { background:rgba(255,255,255,.15);border-radius:20px;padding:5px 14px;font-size:12px;color:#fff;font-family:'Lato',Arial,sans-serif; }
+  .btn-ghost { background:rgba(255,255,255,.12);color:#fff;padding:6px 14px;border:none;border-radius:20px;cursor:pointer;font-size:12px;font-family:'Lato',Arial,sans-serif;transition:background .2s; }
+  .btn-ghost:hover { background:rgba(255,255,255,.25); }
+
   /* CHECKLIST */
   .cl-wrap { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:10px; }
   .cl-group { background:var(--grey-bg); border:1.5px solid var(--grey-border); border-radius:8px; padding:12px 14px; }
@@ -264,13 +316,52 @@
 </head>
 <body>
 
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay">
+  <div id="login-box">
+    <div style="font-size:28px;margin-bottom:6px;">📋</div>
+    <h2>Student Media Ltd</h2>
+    <p>Order Form System — please sign in</p>
+    <div class="user-btns" id="user-btns"></div>
+    <input type="password" id="login-pw" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button id="login-btn" onclick="doLogin()">Sign In</button>
+    <div id="login-err"></div>
+  </div>
+</div>
+
+<!-- HISTORY MODAL -->
+<div id="history-modal" class="uf-modal-overlay" style="display:none;">
+  <div class="uf-modal">
+    <div class="uf-modal-head">
+      <h2>📋 Order History</h2>
+      <button class="uf-modal-close" onclick="closeHistory()">Close</button>
+    </div>
+    <div class="uf-modal-body" id="history-body"></div>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div id="admin-modal" class="uf-modal-overlay" style="display:none;">
+  <div class="uf-modal">
+    <div class="uf-modal-head">
+      <h2>⚙️ Admin Panel</h2>
+      <button class="uf-modal-close" onclick="closeAdmin()">Close</button>
+    </div>
+    <div class="uf-modal-body" id="admin-body"></div>
+  </div>
+</div>
+
 <div id="toolbar">
   <h1>Student Media Ltd — Order Form</h1>
+  <span class="user-badge" id="toolbar-user"></span>
+  <button class="btn-ghost" onclick="showHistory()">📋 History</button>
+  <button class="btn-ghost" id="admin-btn" onclick="showAdmin()" style="display:none;">⚙️ Admin</button>
   <button class="btn btn-clear" onclick="clearForm()">Clear Form</button>
-  <button class="btn btn-validate" onclick="validateForm()">Check Required Fields</button>
+  <button class="btn btn-validate" onclick="validateForm()">Check Fields</button>
   <button class="btn btn-print" onclick="printForm()">🖨 Print</button>
   <button class="btn btn-pdf" onclick="saveAsPDF()">⬇ Save PDF</button>
   <button class="btn btn-drive" id="btn-drive" onclick="saveToDrive()">☁ Save to Drive</button>
+  <button class="btn-ghost" onclick="doLogout()" style="margin-left:4px;">Sign Out</button>
 </div>
 
 <!-- T&C approval modal -->
@@ -1084,6 +1175,362 @@ function updateLastUpdated() {
 }
 updateLastUpdated();
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// USER / LOGIN / SESSION SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
+// SUPABASE CONFIG
+// ═══════════════════════════════════════════════════════════════════════════════
+var SB_URL = 'https://jyljjlaqogqpsdtvseqf.supabase.co';
+var SB_KEY = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
+var SUPER_ADMIN = 'Joseph'; // Cannot be deleted or demoted
+
+function sbFetch(path, method, body, extraHeaders) {
+  return fetch(SB_URL + '/rest/v1/' + path, {
+    method: method || 'GET',
+    headers: Object.assign({
+      'apikey': SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': (method === 'POST' ? 'return=representation' : '')
+    }, extraHeaders || {}),
+    body: body ? JSON.stringify(body) : undefined
+  }).then(function(r) {
+    if (r.status === 204) return [];
+    return r.json();
+  });
+}
+
+function currentUser() {
+  try { return JSON.parse(sessionStorage.getItem('uf_session')); } catch(e) { return null; }
+}
+
+function isAdminUser(u) { return u && (u.role === 'admin' || u.role === 'super_admin'); }
+
+// Build user buttons on login screen — fetched from Supabase
+function buildLoginBtns() {
+  var wrap = document.getElementById('user-btns');
+  if (!wrap) return;
+  wrap.innerHTML = '<span style="font-size:11px;color:#aaa;">Loading...</span>';
+  sbFetch('users?select=name,role&order=name').then(function(users) {
+    wrap.innerHTML = '';
+    (users || []).forEach(function(u) {
+      var btn = document.createElement('button');
+      btn.className = 'user-btn'; btn.textContent = u.name; btn.dataset.name = u.name;
+      btn.onclick = function() {
+        wrap.querySelectorAll('.user-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById('login-pw').focus();
+      };
+      wrap.appendChild(btn);
+    });
+  })['catch'](function() {
+    wrap.innerHTML = '<span style="color:#e74c3c;font-size:11px;">Could not load users — check connection</span>';
+  });
+}
+buildLoginBtns();
+
+function doLogin() {
+  var activeBtn = document.querySelector('#user-btns .user-btn.active');
+  var pw  = document.getElementById('login-pw').value;
+  var err = document.getElementById('login-err');
+  if (!activeBtn) { err.textContent = 'Please select a user'; return; }
+  err.textContent = 'Signing in…';
+  sbFetch('users?name=eq.' + encodeURIComponent(activeBtn.dataset.name) + '&password=eq.' + encodeURIComponent(pw))
+    .then(function(rows) {
+      if (!rows || !rows.length) { err.textContent = 'Incorrect password — please try again'; return; }
+      var u = rows[0];
+      sessionStorage.setItem('uf_session', JSON.stringify({ id: u.id, name: u.name, role: u.role }));
+      document.getElementById('login-overlay').style.display = 'none';
+      document.getElementById('toolbar-user').textContent = '👤 ' + u.name;
+      if (isAdminUser(u)) document.getElementById('admin-btn').style.display = '';
+    })['catch'](function() { err.textContent = 'Connection error — please try again'; });
+}
+
+function doLogout() {
+  sessionStorage.removeItem('uf_session');
+  document.getElementById('login-pw').value = '';
+  document.getElementById('login-err').textContent = '';
+  document.querySelectorAll('#user-btns .user-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('login-overlay').style.display = 'flex';
+  document.getElementById('admin-btn').style.display = 'none';
+  buildLoginBtns();
+}
+
+(function checkSession() {
+  var u = currentUser();
+  if (u) {
+    document.getElementById('login-overlay').style.display = 'none';
+    document.getElementById('toolbar-user').textContent = '👤 ' + u.name;
+    if (isAdminUser(u)) document.getElementById('admin-btn').style.display = '';
+  }
+})();
+
+function captureFormData() {
+  // Capture all form fields for restoration
+  var rows = [];
+  document.querySelectorAll('#items-body tr').forEach(function(tr) {
+    var descEl = tr.querySelector('.item-desc');
+    rows.push({
+      descHtml: descEl ? descEl.innerHTML : '',
+      price:    (tr.querySelector('.item-price')  || {}).value || '',
+      qty:      (tr.querySelector('.item-qty')    || {}).value || '',
+      months:   (tr.querySelector('.item-months') || {}).value || '',
+      weeks:    (tr.querySelector('.item-weeks')  || {}).value || ''
+    });
+  });
+  var campDates = [];
+  for (var i = 1; i <= 5; i++) {
+    campDates.push({
+      start: (document.getElementById('cs'+i) || {}).value || '',
+      end:   (document.getElementById('ce'+i) || {}).value || '',
+      notes: (document.getElementById('cn'+i) || {}).value || ''
+    });
+  }
+  var checks = {};
+  document.querySelectorAll('.cl-check').forEach(function(cb) { checks[cb.id] = cb.checked; });
+  return {
+    ref:          (document.getElementById('ref-no')          || {}).value || '',
+    date:         (document.getElementById('order-date')      || {}).value || '',
+    initials:     (document.getElementById('initials')        || {}).value || '',
+    company:      (document.getElementById('client-company')  || {}).value || '',
+    address:      (document.getElementById('client-address')  || {}).value || '',
+    discountPct:  (document.getElementById('discount-pct')    || {}).value || '',
+    discountAmt:  (document.getElementById('discount-amt')    || {}).value || '',
+    vatRate:      (document.getElementById('vat-rate')        || {}).value || '20',
+    notesHtml:    (document.getElementById('campaign-notes')  || {}).innerHTML || '',
+    clBy:         (document.getElementById('cl-by')           || {}).value || '',
+    items:        rows,
+    campDates:    campDates,
+    checks:       checks,
+    grandTotal:   (document.getElementById('grand-total')     || {}).textContent || ''
+  };
+}
+
+function restoreFormData(data) {
+  if (!data) return;
+  var setVal = function(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; };
+  setVal('ref-no',         data.ref);
+  setVal('order-date',     data.date);
+  setVal('initials',       data.initials);
+  setVal('client-company', data.company);
+  setVal('client-address', data.address);
+  setVal('discount-pct',   data.discountPct);
+  setVal('discount-amt',   data.discountAmt);
+  setVal('vat-rate',       data.vatRate || '20');
+  if (document.getElementById('campaign-notes') && data.notesHtml)
+    document.getElementById('campaign-notes').innerHTML = data.notesHtml;
+  if (document.getElementById('cl-by') && data.clBy)
+    document.getElementById('cl-by').value = data.clBy;
+  // Restore items
+  var tbody = document.getElementById('items-body');
+  tbody.innerHTML = ''; rowCount = 0;
+  (data.items || []).forEach(function(row) {
+    addRow();
+    var tr = document.querySelector('#items-body tr:last-child');
+    var descEl = tr.querySelector('.item-desc');
+    if (descEl) descEl.innerHTML = row.descHtml || '';
+    var setTrVal = function(cls, val) { var el = tr.querySelector(cls); if (el) el.value = val || ''; };
+    setTrVal('.item-price', row.price);
+    setTrVal('.item-qty',   row.qty);
+    setTrVal('.item-months',row.months);
+    setTrVal('.item-weeks', row.weeks);
+  });
+  // Restore campaign dates
+  (data.campDates || []).forEach(function(cd, i) {
+    setVal('cs'+(i+1), cd.start);
+    setVal('ce'+(i+1), cd.end);
+    setVal('cn'+(i+1), cd.notes);
+  });
+  // Restore checklist
+  if (data.checks) {
+    Object.keys(data.checks).forEach(function(id) {
+      var cb = document.getElementById(id);
+      if (cb) cb.checked = data.checks[id];
+    });
+    updateClProgress();
+  }
+  recalc(); calcCampaignMonths();
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ORDER HISTORY — Supabase backed
+// ═══════════════════════════════════════════════════════════════════════════════
+function addToHistory() {
+  var user = currentUser();
+  var fd = captureFormData();
+  if (!fd.ref && !fd.company) return;
+  sbFetch('order_history', 'POST', {
+    user_name:  user ? user.name : 'Unknown',
+    ref:        fd.ref,
+    company:    fd.company.split(/[\n,]/)[0].trim(),
+    total:      fd.grandTotal,
+    form_data:  fd
+  })['catch'](function() {}); // silent fail
+}
+
+function renderHistoryRows(history, inAdmin) {
+  if (!history.length) return '<div class="hist-empty">No orders found.</div>';
+  var months = {};
+  history.forEach(function(h) {
+    var d = new Date(h.saved_at);
+    var key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    var label = d.toLocaleDateString('en-GB', { month:'long', year:'numeric' });
+    if (!months[key]) months[key] = { label: label, entries: [] };
+    months[key].entries.push(h);
+  });
+  var html = '';
+  Object.keys(months).sort().reverse().forEach(function(key) {
+    var m = months[key];
+    html += '<div class="hist-month">' + m.label + '</div>';
+    m.entries.forEach(function(h) {
+      var dateStr = new Date(h.saved_at).toLocaleDateString('en-GB');
+      var loadFn = inAdmin ? 'loadFromHistory(' + h.id + ');closeAdmin();' : 'loadFromHistory(' + h.id + ')';
+      var delFn  = inAdmin ? 'deleteHistory(' + h.id + ',true)' : 'deleteHistory(' + h.id + ',false)';
+      html += '<div class="hist-row" onclick="' + loadFn + '">' +
+        '<span class="hist-ref">'  + (h.ref     || '—') + '</span>' +
+        '<span class="hist-co">'   + (h.company || '—') + '</span>' +
+        '<span class="hist-amt">'  + (h.total   || '') + '</span>' +
+        '<span class="hist-user">' + h.user_name + '</span>' +
+        '<span class="hist-date">' + dateStr + '</span>' +
+        '<button class="hist-del" onclick="event.stopPropagation();' + delFn + '" title="Delete">×</button>' +
+        '</div>';
+    });
+  });
+  return html;
+}
+
+function showHistory() {
+  var user = currentUser();
+  var body = document.getElementById('history-body');
+  body.innerHTML = '<div class="hist-empty">Loading…</div>';
+  document.getElementById('history-modal').style.display = 'flex';
+  var query = 'order_history?order=saved_at.desc';
+  if (!isAdminUser(user)) query += '&user_name=eq.' + encodeURIComponent(user ? user.name : '');
+  sbFetch(query).then(function(history) {
+    body.innerHTML = renderHistoryRows(history || [], false);
+  })['catch'](function() { body.innerHTML = '<div class="hist-empty">Could not load history.</div>'; });
+}
+
+function closeHistory() { document.getElementById('history-modal').style.display = 'none'; }
+
+function loadFromHistory(id) {
+  sbFetch('order_history?id=eq.' + id).then(function(rows) {
+    if (!rows || !rows.length || !rows[0].form_data) return;
+    var h = rows[0];
+    if (!confirm('Load "' + h.ref + ' — ' + h.company + '"?\nThis will replace your current form.')) return;
+    closeHistory(); closeAdmin();
+    restoreFormData(h.form_data);
+  });
+}
+
+function deleteHistory(id, inAdmin) {
+  if (!confirm('Delete this history entry?')) return;
+  sbFetch('order_history?id=eq.' + id, 'DELETE', null, { 'Prefer': '' })
+    .then(function() { inAdmin ? renderAdminBody() : showHistory(); })
+    ['catch'](function() { alert('Could not delete — please try again.'); });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ADMIN PANEL — Supabase backed
+// ═══════════════════════════════════════════════════════════════════════════════
+function showAdmin() {
+  renderAdminBody();
+  document.getElementById('admin-modal').style.display = 'flex';
+}
+function closeAdmin() { document.getElementById('admin-modal').style.display = 'none'; }
+
+function renderAdminBody() {
+  var currentU = currentUser();
+  document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Loading…</div>';
+  Promise.all([
+    sbFetch('users?order=name'),
+    sbFetch('order_history?order=saved_at.desc')
+  ]).then(function(results) {
+    var users   = results[0] || [];
+    var history = results[1] || [];
+    var html = '<div class="adm-section"><h3>Users</h3>';
+    users.forEach(function(u) {
+      var isSuperAdmin = u.name === SUPER_ADMIN;
+      var isMe = currentU && currentU.name === u.name;
+      var roleCol = u.role === 'super_admin' ? '#702DD7' : u.role === 'admin' ? '#27ae60' : '#aaa';
+      var roleLabel = u.role === 'super_admin' ? 'Super Admin' : u.role === 'admin' ? 'Admin' : 'User';
+      html += '<div class="adm-user-row">' +
+        '<span class="adm-user-name">' + u.name + '</span>' +
+        '<span class="adm-role" style="color:' + roleCol + ';font-weight:700;">(' + roleLabel + ')</span>';
+      if (!isSuperAdmin) {
+        var nextRole = u.role === 'admin' ? 'user' : 'admin';
+        html += '<button class="adm-btn" style="background:' + (u.role==='admin'?'#e74c3c':'#27ae60') + ';font-size:11px;" ' +
+          'onclick="adminToggleRole(\'' + u.id + '\',\'' + u.name + '\',\'' + nextRole + '\')">' +
+          (u.role === 'admin' ? 'Make User' : 'Make Admin') + '</button>';
+      }
+      html += '<input class="adm-inp" id="adm-pw-' + u.id + '" placeholder="New password" type="password" style="width:130px;">' +
+        '<button class="adm-btn" onclick="adminChangePw(\'' + u.id + '\',\'' + u.name + '\')">Save PW</button>';
+      if (!isSuperAdmin && !isMe) {
+        html += '<button class="adm-btn danger" onclick="adminDeleteUser(\'' + u.id + '\',\'' + u.name + '\')">Delete</button>';
+      }
+      html += '</div>';
+    });
+    html += '<div style="display:flex;gap:8px;margin-top:10px;">' +
+      '<input class="adm-inp" id="adm-new-name" placeholder="Name" style="width:110px;">' +
+      '<input class="adm-inp" id="adm-new-pw" placeholder="Password" type="password" style="width:130px;">' +
+      '<select class="adm-inp" id="adm-new-role"><option value="user">User</option><option value="admin">Admin</option></select>' +
+      '<button class="adm-btn" onclick="adminAddUser()">Add User</button>' +
+      '</div></div>';
+    html += '<div class="adm-section"><h3>All Order History</h3>';
+    if (!history.length) { html += '<div class="hist-empty">No history yet.</div>'; }
+    else {
+      html += '<div style="display:flex;justify-content:flex-end;margin-bottom:8px;">' +
+        '<button class="adm-btn danger" onclick="adminClearHistory()">Clear All History</button></div>';
+      html += renderHistoryRows(history, true);
+    }
+    html += '</div>';
+    document.getElementById('admin-body').innerHTML = html;
+  })['catch'](function() {
+    document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Could not load data — check connection.</div>';
+  });
+}
+
+function adminToggleRole(id, name, newRole) {
+  if (!confirm('Change ' + name + ' to ' + newRole + '?')) return;
+  sbFetch('users?id=eq.' + id, 'PATCH', { role: newRole }, { 'Prefer': '' })
+    .then(function() { renderAdminBody(); })['catch'](function() { alert('Update failed.'); });
+}
+
+function adminChangePw(id, name) {
+  var pw = (document.getElementById('adm-pw-' + id) || {}).value || '';
+  if (!pw) { alert('Please enter a new password'); return; }
+  sbFetch('users?id=eq.' + id, 'PATCH', { password: pw }, { 'Prefer': '' })
+    .then(function() { alert('Password updated for ' + name); renderAdminBody(); })
+    ['catch'](function() { alert('Update failed.'); });
+}
+
+function adminDeleteUser(id, name) {
+  if (!confirm('Delete user "' + name + '"? This cannot be undone.')) return;
+  sbFetch('users?id=eq.' + id, 'DELETE', null, { 'Prefer': '' })
+    .then(function() { renderAdminBody(); buildLoginBtns(); })
+    ['catch'](function() { alert('Delete failed.'); });
+}
+
+function adminAddUser() {
+  var name = (document.getElementById('adm-new-name') || {}).value.trim();
+  var pw   = (document.getElementById('adm-new-pw')   || {}).value;
+  var role = (document.getElementById('adm-new-role') || {}).value;
+  if (!name || !pw) { alert('Name and password are required'); return; }
+  sbFetch('users', 'POST', { name: name, password: pw, role: role })
+    .then(function(r) {
+      if (r && r[0] && r[0].id) { renderAdminBody(); buildLoginBtns(); }
+      else alert('Could not add user — name may already exist.');
+    })['catch'](function() { alert('Add user failed.'); });
+}
+
+function adminClearHistory() {
+  if (!confirm('Delete ALL order history? This cannot be undone.')) return;
+  sbFetch('order_history?id=gt.0', 'DELETE', null, { 'Prefer': '' })
+    .then(function() { renderAdminBody(); })['catch'](function() { alert('Clear failed.'); });
+}
+
 // ─── Checklist progress counter ──────────────────────────────────────────────
 function updateClProgress() {
   var total = document.querySelectorAll('.cl-check').length;
@@ -1268,24 +1715,33 @@ function toggleTcEdit() {
 function tcModalCancel() {
   document.getElementById('tc-modal-overlay').style.display = 'none';
 }
+function tcUnlock() {
+  var box     = document.getElementById('tc-box');
+  var icon    = document.getElementById('tc-lock-icon');
+  var label   = document.getElementById('tc-lock-label');
+  var toolbar = document.getElementById('tc-toolbar');
+  box.contentEditable = 'true';
+  box.style.background  = '#fffef5';
+  box.style.borderColor = 'var(--purple)';
+  toolbar.style.display = 'flex';
+  box.focus();
+  icon.textContent  = '🔓';
+  label.textContent = 'Lock T&Cs';
+  TC_UNLOCKED = true;
+}
 function tcModalConfirm() {
   document.getElementById('tc-modal-overlay').style.display = 'none';
-  var pw = prompt('Enter password to edit T&Cs:');
-  if (pw === 'Unifresher2026!') {
-    var box     = document.getElementById('tc-box');
-    var icon    = document.getElementById('tc-lock-icon');
-    var label   = document.getElementById('tc-lock-label');
-    var toolbar = document.getElementById('tc-toolbar');
-    box.contentEditable = 'true';
-    box.style.background  = '#fffef5';
-    box.style.borderColor = 'var(--purple)';
-    toolbar.style.display = 'flex';
-    box.focus();
-    icon.textContent  = '🔓';
-    label.textContent = 'Lock T&Cs';
-    TC_UNLOCKED = true;
-  } else if (pw !== null) {
-    alert('Incorrect password.');
+  var user = currentUser();
+  if (user && user.role === 'admin') {
+    // Admins skip the password — go straight in
+    tcUnlock();
+  } else {
+    var pw = prompt('Enter password to edit T&Cs:');
+    if (pw === 'Unifresher2026!') {
+      tcUnlock();
+    } else if (pw !== null) {
+      alert('Incorrect password.');
+    }
   }
 }
 function tcLock() {
@@ -1342,8 +1798,9 @@ document.addEventListener('click', function(e) {
 // ─── Google Drive configuration ─────────────────────────────────────────────
 // Paste your Client ID below after setting up in Google Cloud Console
 var GDRIVE_CONFIG = {
-  clientId: '978032756141-mm8qj0l7dtlrkka8l378s8nsgsfnnhhi.apps.googleusercontent.com',
-  folderId: '1ZR9uhvtNc_6fMlR4SSGQv4FSPxQ8_fbe'
+  clientId:          'PASTE_YOUR_CLIENT_ID_HERE.apps.googleusercontent.com',
+  folderId:          'PASTE_ORDER_FORMS_FOLDER_ID_HERE',   // Order PDFs go here
+  checklistFolderId: 'PASTE_CHECKLISTS_FOLDER_ID_HERE'    // Checklist PDFs go in sub-folder
 };
 
 // ─── Checklist auto-save to Drive ────────────────────────────────────────────
@@ -1367,7 +1824,17 @@ function doChecklistUpload(token) {
   var company = (document.getElementById('client-company').value || 'Client').split(/[,\n]/)[0].trim();
   var clName  = (refNo + ' - ' + company).replace(/[<>:"\/\\|?*]/g, '').trim() + ' - Checklist.pdf';
   html2pdf().set(pdfOpts(clName)).from(getChecklistHtml(), 'string').outputPdf('blob')
-    .then(function(blob) { return driveUploadBlob(blob, clName, token); })
+    .then(function(blob) {
+      var clFolderId = GDRIVE_CONFIG.checklistFolderId || GDRIVE_CONFIG.folderId;
+      var metadata = { name: clName, mimeType: 'application/pdf', parents: [clFolderId] };
+      var form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+      form.append('file', blob);
+      return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST', headers: { Authorization: 'Bearer ' + token }, body: form
+      });
+    })
+    .then(function(r) { return r.json(); })
     .then(function(data) { if (data.id) _lastClState = currentState; })
     ['catch'](function() { /* silent fail */ });
 }
@@ -1473,6 +1940,7 @@ function printForm() {
   if (!validateForm()) return;
   calcCampaignMonths();
   populatePrintLayout();
+  addToHistory();
   window.print();
   autoSaveChecklist();
 }
@@ -1510,6 +1978,7 @@ function saveAsPDF() {
   var companyFull2 = document.getElementById('client-company').value || 'Client';
   var company2 = companyFull2.split(/[,\n]/)[0].trim();
   var pdfFilename = (refNo + ' - ' + company2).replace(/[<>:"/\\|?*]/g, '').trim() + '.pdf';
+  addToHistory();
   html2pdf().set(pdfOpts(pdfFilename))
     .from(getPdfHtml(), 'string').save()
     ['catch'](function() {
