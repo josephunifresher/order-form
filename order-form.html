@@ -1271,12 +1271,11 @@ function doLogin() {
   if (!activeBtn) { err.textContent = 'Please select a user'; return; }
   err.textContent = 'Signing in…';
   // Look up their email from profiles, then authenticate via Supabase Auth
-  sbFetch('profiles?name=eq.' + encodeURIComponent(activeBtn.dataset.name) + '&select=email,name,role')
+  sbFetch('profiles?name=eq.' + encodeURIComponent(activeBtn.dataset.name) + '&select=email,name,role,initials')
     .then(function(rows) {
       if (!rows || !rows.length) { err.textContent = 'User not found'; return; }
       var profile = rows[0];
       if (!profile.email) { err.textContent = 'Account not configured — contact admin'; return; }
-      // Call Supabase Auth with bcrypt-hashed password
       return sbAuth('token?grant_type=password', { email: profile.email, password: pw })
         .then(function(data) {
           if (data.error || !data.access_token) {
@@ -1287,12 +1286,18 @@ function doLogin() {
             id:            data.user.id,
             name:          profile.name,
             role:          profile.role,
+            initials:      profile.initials || '',
             access_token:  data.access_token,
             refresh_token: data.refresh_token
           }));
           document.getElementById('login-overlay').style.display = 'none';
           document.getElementById('toolbar-user').textContent = '👤 ' + profile.name;
           if (isAdminUser(profile)) document.getElementById('admin-btn').style.display = '';
+          // Auto-fill initials on the order form
+          if (profile.initials) {
+            var initEl = document.getElementById('initials');
+            if (initEl && !initEl.value) initEl.value = profile.initials.toUpperCase();
+          }
         });
     })['catch'](function() { err.textContent = 'Connection error — please try again'; });
 }
@@ -1355,6 +1360,10 @@ function doLogout() {
     document.getElementById('login-overlay').style.display = 'none';
     document.getElementById('toolbar-user').textContent = '👤 ' + u.name;
     if (isAdminUser(u)) document.getElementById('admin-btn').style.display = '';
+    if (u.initials) {
+      var initEl = document.getElementById('initials');
+      if (initEl && !initEl.value) initEl.value = u.initials.toUpperCase();
+    }
   }
 })();
 
@@ -1537,7 +1546,7 @@ function renderAdminBody() {
   var currentU = currentUser();
   document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Loading…</div>';
   Promise.all([
-    sbFetch('profiles?order=name'),
+    sbFetch('profiles?order=name&select=id,name,role,email,initials'),
     sbFetch('order_history?order=saved_at.desc'),
     sbFetch('drive_log?order=logged_at.desc&limit=100')
   ]).then(function(results) {
@@ -1559,6 +1568,9 @@ function renderAdminBody() {
           'onclick="adminToggleRole(\'' + u.id + '\',\'' + u.name + '\',\'' + nextRole + '\')">' +
           (u.role === 'admin' ? 'Make User' : 'Make Admin') + '</button>';
       }
+      html += '<input class="adm-inp" id="adm-ini-' + u.id + '" placeholder="Initials" ' +
+        'value="' + (u.initials || '') + '" maxlength="5" style="width:70px;text-transform:uppercase;">' +
+        '<button class="adm-btn" style="font-size:11px;" onclick="adminSaveInitials(\'' + u.id + '\')">Save</button>';
       if (u.email && !isSuperAdmin) {
         html += '<button class="adm-btn" style="background:#f39c12;font-size:11px;" ' +
           'onclick="adminResetPw(\'' + u.email + '\',\'' + u.name + '\')">📧 Reset PW</button>';
@@ -1616,6 +1628,15 @@ function renderAdminBody() {
   })['catch'](function() {
     document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Could not load data — check connection.</div>';
   });
+}
+
+function adminSaveInitials(id) {
+  var inp = document.getElementById('adm-ini-' + id);
+  if (!inp) return;
+  var initials = inp.value.trim().toUpperCase();
+  sbFetch('profiles?id=eq.' + id, 'PATCH', { initials: initials }, { 'Prefer': '' })
+    .then(function() { alert('✅ Initials saved!'); })
+    ['catch'](function() { alert('Could not save initials.'); });
 }
 
 function adminToggleRole(id, name, newRole) {
