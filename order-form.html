@@ -340,6 +340,28 @@
   </div>
 </div>
 
+<!-- CHANGE PASSWORD MODAL -->
+<div id="changepw-modal" class="uf-modal-overlay" style="display:none;">
+  <div class="uf-modal" style="max-width:380px;">
+    <div class="uf-modal-head">
+      <h2>🔑 Change Password</h2>
+      <button class="uf-modal-close" onclick="closeChangePw()">Close</button>
+    </div>
+    <div class="uf-modal-body" style="padding:24px;">
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">New Password</label>
+        <input type="password" id="cpw-new" placeholder="Enter new password" style="width:100%;border:1.5px solid var(--grey-border);border-radius:8px;padding:10px 12px;font-size:14px;font-family:'Lato',Arial,sans-serif;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Confirm New Password</label>
+        <input type="password" id="cpw-confirm" placeholder="Confirm new password" style="width:100%;border:1.5px solid var(--grey-border);border-radius:8px;padding:10px 12px;font-size:14px;font-family:'Lato',Arial,sans-serif;outline:none;box-sizing:border-box;">
+      </div>
+      <div id="cpw-err" style="color:#e74c3c;font-size:12px;min-height:16px;margin-bottom:12px;"></div>
+      <button onclick="doChangePw()" style="width:100%;background:var(--purple);color:#fff;border:none;border-radius:30px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Lato',Arial,sans-serif;">Update Password</button>
+    </div>
+  </div>
+</div>
+
 <!-- ADMIN MODAL -->
 <div id="admin-modal" class="uf-modal-overlay" style="display:none;">
   <div class="uf-modal">
@@ -361,6 +383,7 @@
   <button class="btn btn-print" onclick="printForm()">🖨 Print</button>
   <button class="btn btn-pdf" onclick="saveAsPDF()">⬇ Save PDF</button>
   <button class="btn btn-drive" id="btn-drive" onclick="saveToDrive()">☁ Save to Drive</button>
+  <button class="btn-ghost" onclick="showChangePw()">🔑 Change Password</button>
   <button class="btn-ghost" onclick="doLogout()" style="margin-left:4px;">Sign Out</button>
 </div>
 
@@ -1271,6 +1294,40 @@ function doLogin() {
           document.getElementById('toolbar-user').textContent = '👤 ' + profile.name;
           if (isAdminUser(profile)) document.getElementById('admin-btn').style.display = '';
         });
+    })['catch'](function() { err.textContent = 'Connection error — please try again'; });
+}
+
+function showChangePw() {
+  document.getElementById('cpw-new').value = '';
+  document.getElementById('cpw-confirm').value = '';
+  document.getElementById('cpw-err').textContent = '';
+  document.getElementById('changepw-modal').style.display = 'flex';
+}
+function closeChangePw() { document.getElementById('changepw-modal').style.display = 'none'; }
+
+function doChangePw() {
+  var newPw  = document.getElementById('cpw-new').value;
+  var confirm = document.getElementById('cpw-confirm').value;
+  var err    = document.getElementById('cpw-err');
+  if (!newPw) { err.textContent = 'Please enter a new password'; return; }
+  if (newPw.length < 6) { err.textContent = 'Password must be at least 6 characters'; return; }
+  if (newPw !== confirm) { err.textContent = 'Passwords do not match'; return; }
+  var session = currentUser();
+  if (!session || !session.access_token) { err.textContent = 'Not logged in'; return; }
+  err.textContent = 'Updating…';
+  fetch(SB_URL + '/auth/v1/user', {
+    method: 'PUT',
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': 'Bearer ' + session.access_token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ password: newPw })
+  }).then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.error) { err.textContent = 'Error: ' + data.error.message; return; }
+      closeChangePw();
+      alert('✅ Password updated successfully!');
     })['catch'](function() { err.textContent = 'Connection error — please try again'; });
 }
 
