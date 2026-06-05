@@ -190,7 +190,7 @@
   .pl-to-addr { font-size:10pt; white-space:pre-line; line-height:1.65; margin-top:2pt; }
   .pl-desc { }
   .pl-desc-title { font-size:10pt; font-weight:bold; margin-bottom:6pt; }
-  .pl-notice { font-size:8.5pt; font-weight:bold; color:#cc0000; line-height:1.55; text-transform:uppercase; }
+  .pl-notice { font-size:8.5pt; font-weight:bold; color:#cc0000; line-height:1.55; text-transform:uppercase; text-align:justify; }
 
   /* Items table */
   .pl-items { width:100%; border-collapse:collapse; margin:6pt 0 2pt; }
@@ -203,12 +203,12 @@
   .pl-items td.bold { font-weight:bold; }
 
   /* Totals */
-  .pl-totals-wrap { display:flex; justify-content:flex-end; margin:2pt 0 8pt; }
-  .pl-totals { min-width:200pt; }
-  .pl-total-line { display:flex; justify-content:space-between; gap:30pt; font-size:10pt; padding:2pt 0; }
-  .pl-total-line .lbl { color:#000; text-align:left; }
-  .pl-total-line .val { font-weight:bold; text-align:right; }
-  .pl-grand { border-top:1.5pt solid #000; margin-top:3pt; padding-top:4pt; font-size:13pt; font-weight:bold; }
+  .pl-totals-wrap { margin:2pt 0 8pt; }
+  .pl-totals-table { width:100%; border-collapse:collapse; }
+  .pl-totals-table td { font-size:10pt; padding:2pt 0; }
+  .pl-totals-table td.tl { text-align:right; padding-right:6pt; color:#000; }
+  .pl-totals-table td.tv { text-align:right; font-weight:bold; width:13%; }
+  .pl-totals-table tr.pl-grand-row td { border-top:1.5pt solid #000; padding-top:4pt; font-size:13pt; font-weight:bold; }
 
   /* Notes */
   .pl-hr { border:none; border-top:1pt solid #aaa; margin:6pt 0; }
@@ -230,13 +230,27 @@
 
   /* T&Cs */
   #pl-camp-dates-wrap { page-break-inside:avoid; }
-  .pl-tc-title { font-weight:bold; font-size:9.5pt; border-top:1pt solid #000; padding-top:6pt; margin:8pt 0 4pt; }
-  .pl-tc-body { font-size:7.5pt; line-height:1.55; color:#222; }
-  .pl-tc-body p { margin-bottom:5pt; }
-  .pl-bank { font-size:7.5pt; color:#444; border-top:1pt solid #ccc; padding-top:5pt; margin-top:6pt; line-height:1.8; }
+  .pl-tc-section { }
+  .pl-tc-title { font-weight:bold; font-size:9pt; padding-bottom:3pt; margin-bottom:5pt; border-bottom:1pt solid #000; }
+  .pl-tc-cols { display:flex; gap:16pt; }
+  .pl-tc-col { flex:1; font-size:5.5pt; line-height:1.3; color:#222; }
+  .pl-tc-col p { margin-bottom:2.5pt; }
+  .pl-bank { font-size:5.5pt; color:#444; border-top:0.5pt solid #ccc; padding-top:3pt; margin-top:4pt; line-height:1.4; }
 
   .last-updated-bar { text-align:right; font-size:10px; color:#aaa; padding:10px 0 0; border-top:1px solid var(--grey-border); margin-top:20px; }
   .last-updated-bar span { font-weight:700; color:#999; }
+
+  /* CHECKLIST */
+  .cl-wrap { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:10px; }
+  .cl-group { background:var(--grey-bg); border:1.5px solid var(--grey-border); border-radius:8px; padding:12px 14px; }
+  .cl-group-title { font-family:'Roboto',Arial,sans-serif; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--purple-dark); margin-bottom:8px; }
+  .cl-item-row { display:flex; align-items:flex-start; gap:7px; margin-bottom:5px; font-size:12px; color:var(--black); line-height:1.4; cursor:pointer; }
+  .cl-item-row input[type=checkbox] { margin-top:2px; accent-color:var(--purple); width:14px; height:14px; flex-shrink:0; cursor:pointer; }
+  .cl-footer { display:flex; align-items:center; gap:12px; margin-top:10px; font-size:12px; }
+  .cl-footer label { font-weight:700; color:var(--purple-dark); white-space:nowrap; }
+  .cl-footer input { border:none; border-bottom:1.5px solid var(--purple-lighter); font-size:12px; font-family:'Lato',Arial,sans-serif; padding:2px 4px; outline:none; width:200px; }
+  .cl-note { font-size:11px; color:#e74c3c; font-weight:700; margin-bottom:10px; }
+  .cl-progress { font-size:11px; color:var(--purple-dark); margin-left:auto; }
 
   @media print {
     @page { margin:1.2cm 1.5cm; size:A4; }
@@ -323,9 +337,9 @@
       <tr>
         <th style="width:40%">Description *</th>
         <th style="width:13%" class="right">Unit Price (£) *</th>
-        <th style="width:7%" class="right">Qty *</th>
-        <th style="width:7%" class="right">Months</th>
-        <th style="width:7%" class="right">Weeks</th>
+        <th style="width:7%" class="right" title="Quantity — number of ad placements or units. Leave blank if not applicable.">Qty ℹ</th>
+        <th style="width:7%" class="right" title="Number of full months. Total = Unit Price × Qty × Months. Weeks are added on top at ÷4 rate.">Months ℹ</th>
+        <th style="width:7%" class="right" title="Number of extra weeks on top of months. Each week = Unit Price ÷ 4.">Weeks ℹ</th>
         <th style="width:13%" class="right">Total (£)</th>
         <th style="width:6%"></th>
       </tr>
@@ -374,7 +388,7 @@
           </label>
         </span>
       </div>
-      <div class="notes-area" id="campaign-notes" contenteditable="true" spellcheck="true">Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month. Content:</div>
+      <div class="notes-area" id="campaign-notes" contenteditable="true" spellcheck="true">Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month.</div>
       <span class="error-label" id="err-campaign-notes">Campaign notes are required</span>
     </div>
     <div class="dates-col">
@@ -465,6 +479,41 @@
       Bank: Barclays &nbsp;|&nbsp; 62/64 High Street, Watford, WD17 2BT &nbsp;|&nbsp; Payment Terms: 30 Days
     </div>
   </div>
+  <div class="section-title">Order Checklist *</div>
+  <p class="cl-note">All items must be ticked before saving or printing.</p>
+  <div class="cl-wrap">
+    <div class="cl-group">
+      <div class="cl-group-title">Top of Order Form</div>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl1"><span>Correct UNI number(s) added top right</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl2"><span>Partner address is correct</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl3"><span>Ltd company details checked on Companies House</span></label>
+    </div>
+    <div class="cl-group">
+      <div class="cl-group-title">Description</div>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl4"><span>Each line has a city / location</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl5"><span>Each line has correct qty of months</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl6"><span>IF AGENCY — confirmed who campaign is running for</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl7"><span>NETT matches the sales sheet</span></label>
+    </div>
+    <div class="cl-group">
+      <div class="cl-group-title">Notes</div>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl8"><span>Locations are correct</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl9"><span>Locations match the Description section</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl10"><span>Live dates feature specific dates</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl11"><span>Live dates are correct (including year)</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl12"><span>Live months tally with months in Description</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl13"><span>KPIs are correct</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl14"><span>KPIs match billing (standard or double)</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl15"><span>Multiple KPI sets have clear dates (if applicable)</span></label>
+    </div>
+  </div>
+  <div class="cl-footer">
+    <label for="cl-by">Checked by:</label>
+    <input type="text" id="cl-by" placeholder="Your name">
+    <span class="cl-progress" id="cl-progress">0 / 15 ticked</span>
+  </div>
+  <span class="error-label" id="err-checklist" style="margin-top:6px;">Please tick all checklist items and enter your name before saving</span>
+
   <div class="last-updated-bar">
     Last updated: <span id="last-updated-display"></span>
   </div>
@@ -497,8 +546,8 @@
     </div>
   </div>
 
-  <table class="pl-items">
-    <thead>
+  <table class="pl-items" id="pl-items-table">
+    <thead id="pl-items-head">
       <tr>
         <th style="width:41%">Description</th>
         <th class="r" style="width:13%">Unit Price</th>
@@ -509,16 +558,8 @@
       </tr>
     </thead>
     <tbody id="pl-items-body"></tbody>
+    <tfoot id="pl-items-foot"></tfoot>
   </table>
-
-  <div class="pl-totals-wrap">
-    <div class="pl-totals">
-      <div class="pl-total-line"><span class="lbl">NET:</span><span class="val" id="pl-net"></span></div>
-      <div class="pl-total-line" id="pl-discount-row" style="display:none"><span class="lbl" id="pl-discount-lbl">Discount:</span><span class="val" id="pl-discount"></span></div>
-      <div class="pl-total-line"><span class="lbl" id="pl-vat-label">VAT:</span><span class="val" id="pl-vat"></span></div>
-      <div class="pl-total-line pl-grand"><span class="lbl">TOTAL</span><span class="val" id="pl-grand"></span></div>
-    </div>
-  </div>
 
   <hr class="pl-hr">
   <div class="pl-notes-label">Notes:</div>
@@ -562,19 +603,59 @@
     </div>
   </div>
 
-  <div class="pl-tc-title">TERMS &amp; CONDITIONS</div>
-  <div class="pl-tc-body">
-    <p>By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.</p>
-    <p>The order value (plus VAT if applicable) is payable within 30 days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin &mdash; if your campaign is due to begin in less than 30 days from the invoice date, your payment terms will be shortened accordingly.</p>
-    <p>All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested. If you would like to separate your invoice into instalments, these must be paid by Direct Debit and will be due the month prior to each month of the campaign.</p>
-    <p>The order form together with these terms and conditions constitute all the terms of this contract, and no employee, agent or representative of this company has any right to amend these terms. You are solely responsible for submitting suitable artwork/copy by the date agreed.</p>
-    <p>Materials must be supplied as: JPG, PNG or GIF files for Online Ads; Word Document Format for content. These must be supplied to the correct specifications and submitted via email. If you fail to supply the copy by the due date you will be responsible for paying for the advertising space even if your advertisement does not appear.</p>
-    <p>The agreed total KPIs for this campaign are averaged per month. Student Media Ltd will not be considered in breach of this agreement if monthly KPIs are not met so long as the total KPIs are met by the end of the campaign. Student Media Ltd may partner with third-party companies to deliver agreed KPIs.</p>
-    <p>If you do not pay Student Media Ltd on the due date then you will pay interest at 8% above the Bank of England base rate as prescribed under the Late Payment of Commercial Debts (Interest) Act 1998. Student Media Ltd reserves the right to cancel or pause your campaign if you do not pay within agreed payment terms. This contract shall be governed in accordance with the laws of England and Wales.</p>
+  <div class="pl-tc-section">
+    <div class="pl-tc-title">TERMS &amp; CONDITIONS</div>
+    <div class="pl-tc-cols">
+      <div class="pl-tc-col">
+        <p>By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.</p>
+        <p>The order value (plus VAT if applicable) is payable within 30 days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin &mdash; if your campaign is due to begin in less than 30 days from the invoice date, your payment terms will be shortened accordingly.</p>
+        <p>All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested. If you would like to separate your invoice into instalments, these must be paid by Direct Debit and will be due the month prior to each month of the campaign.</p>
+        <p>The order form together with these terms and conditions constitute all the terms of this contract, and no employee, agent or representative of this company has any right to amend these terms. You are solely responsible for submitting suitable artwork/copy by the date agreed.</p>
+      </div>
+      <div class="pl-tc-col" style="border-left:0.5pt solid #ccc;padding-left:16pt;">
+        <p>Materials must be supplied as: JPG, PNG or GIF files for Online Ads; Word Document Format for content. These must be supplied to the correct specifications and submitted via email. If you fail to supply the copy by the due date you will be responsible for paying for the advertising space even if your advertisement does not appear.</p>
+        <p>The agreed total KPIs for this campaign are averaged per month. Student Media Ltd will not be considered in breach of this agreement if monthly KPIs are not met so long as the total KPIs are met by the end of the campaign. Student Media Ltd may partner with third-party companies to deliver agreed KPIs.</p>
+        <p>If you do not pay Student Media Ltd on the due date then you will pay interest at 8% above the Bank of England base rate as prescribed under the Late Payment of Commercial Debts (Interest) Act 1998. Student Media Ltd reserves the right to cancel or pause your campaign if you do not pay within agreed payment terms. This contract shall be governed in accordance with the laws of England and Wales.</p>
+      </div>
+    </div>
+    <div class="pl-bank">
+      VAT No: 303 1339 53 &nbsp;|&nbsp; Account Name: Student Media Ltd &nbsp;|&nbsp; Acc No: 23261409 &nbsp;|&nbsp; Sort Code: 20-03-84<br>
+      Bank: Barclays &nbsp;|&nbsp; Address: 62/64 High Street, Watford, Hertfordshire, WD17 2BT &nbsp;|&nbsp; Payment Terms: 30 Days
+    </div>
   </div>
-  <div class="pl-bank">
-    VAT No: 303 1339 53 &nbsp;|&nbsp; Account Name: Student Media Ltd &nbsp;|&nbsp; Acc No: 23261409 &nbsp;|&nbsp; Sort Code: 20-03-84<br>
-    Bank: Barclays &nbsp;|&nbsp; Address: 62/64 High Street, Watford, Hertfordshire, WD17 2BT &nbsp;|&nbsp; Payment Terms: 30 Days
+
+</div>
+
+<!-- CHECKLIST — separate hidden div, generates its own PDF -->
+<div id="pl-checklist" style="display:none;font-family:Arial,sans-serif;font-size:10pt;color:#000;">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2pt solid #702DD7;padding-bottom:8pt;margin-bottom:14pt;">
+    <div>
+      <div style="font-size:18pt;font-weight:bold;color:#702DD7;letter-spacing:1pt;">ORDER CHECKLIST</div>
+      <div style="font-size:9pt;margin-top:3pt;color:#555;">Internal quality check — to be completed with every order form</div>
+    </div>
+    <div style="text-align:right;font-size:9pt;color:#333;">
+      <div><strong>REF:</strong> <span id="pl-cl-ref"></span></div>
+      <div><strong>Client:</strong> <span id="pl-cl-company"></span></div>
+      <div><strong>Date:</strong> <span id="pl-cl-date"></span></div>
+      <div><strong>Checked by:</strong> <span id="pl-cl-by"></span></div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14pt;">
+    <div>
+      <div style="font-weight:bold;font-size:9pt;text-transform:uppercase;letter-spacing:.5pt;color:#702DD7;margin-bottom:8pt;padding-bottom:3pt;border-bottom:1pt solid #C6ABEF;">Top of Order Form</div>
+      <div id="pl-cl-group1"></div>
+    </div>
+    <div>
+      <div style="font-weight:bold;font-size:9pt;text-transform:uppercase;letter-spacing:.5pt;color:#702DD7;margin-bottom:8pt;padding-bottom:3pt;border-bottom:1pt solid #C6ABEF;">Description</div>
+      <div id="pl-cl-group2"></div>
+    </div>
+    <div>
+      <div style="font-weight:bold;font-size:9pt;text-transform:uppercase;letter-spacing:.5pt;color:#702DD7;margin-bottom:8pt;padding-bottom:3pt;border-bottom:1pt solid #C6ABEF;">Notes</div>
+      <div id="pl-cl-group3"></div>
+    </div>
+  </div>
+  <div style="margin-top:20pt;border-top:1pt solid #ccc;padding-top:10pt;font-size:8pt;color:#777;text-align:center;">
+    This checklist was completed as part of the order process for Student Media Ltd / Unifresher
   </div>
 </div>
 
@@ -698,36 +779,95 @@ function populatePrintLayout() {
   document.getElementById('pl-client-company').textContent = document.getElementById('client-company').value || '';
   document.getElementById('pl-client-address').textContent = document.getElementById('client-address').value || '';
 
-  // Line items
+  // Line items — scan rows first to see which columns are needed
+  var anyMonths = false; var anyWeeks = false; var anyQty = false;
+  document.querySelectorAll('#items-body tr').forEach(function(tr) {
+    var m = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
+    var w = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
+    var q = tr.querySelector('.item-qty');
+    if (m > 0) anyMonths = true;
+    if (w > 0) anyWeeks  = true;
+    if (q && q.value !== '') anyQty = true;
+  });
+
+  // Update print layout table header to match
+  var plHead = document.querySelector('#pl-items-body').closest('table').querySelector('thead tr');
+  if (plHead) {
+    plHead.innerHTML =
+      '<th style="width:' + (anyMonths||anyWeeks ? '41%' : '55%') + '">Description</th>' +
+      '<th class="r" style="width:13%">Unit Price</th>' +
+      (anyQty    ? '<th class="r" style="width:7%">Qty</th>'    : '') +
+      (anyMonths ? '<th class="r" style="width:7%">Months</th>' : '') +
+      (anyWeeks  ? '<th class="r" style="width:7%">Weeks</th>'  : '') +
+      '<th class="r" style="width:13%">Total</th>';
+  }
+
   var plBody = document.getElementById('pl-items-body');
   plBody.innerHTML = '';
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
     var descEl2 = tr.querySelector('.item-desc');
     var desc   = descEl2 ? (descEl2.innerText || descEl2.value || '') : '';
     var price  = parseFloat(tr.querySelector('.item-price')  ? tr.querySelector('.item-price').value  : 0) || 0;
-    var qty    = parseFloat(tr.querySelector('.item-qty')    ? tr.querySelector('.item-qty').value    : 0) || 0;
-    var months = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 1) || 1;
-    var weeks  = tr.querySelector('.item-weeks') ? tr.querySelector('.item-weeks').value : '';
-    var total  = price * qty * months;
+    var qtyEl3 = tr.querySelector('.item-qty');
+    var qty    = (qtyEl3 && qtyEl3.value !== '') ? (parseFloat(qtyEl3.value) || 0) : 0;
+    var months = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
+    var weeks  = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
+    var effectiveQty = qty || 1;
+    var total  = price * effectiveQty * months + (price / 4) * effectiveQty * weeks;
     if (!desc && !price) return;
     var row = document.createElement('tr');
     row.innerHTML =
       '<td>' + desc + '</td>' +
       '<td class="r">' + (price ? '£' + price.toFixed(2) : '') + '</td>' +
-      '<td class="r">' + (qty || '') + '</td>' +
-      '<td class="r">' + (months !== 1 ? months : '') + '</td>' +
-      '<td class="r">' + (weeks || '') + '</td>' +
+      (anyQty    ? '<td class="r">' + (qty || '') + '</td>' : '') +
+      (anyMonths ? '<td class="r">' + (months || '') + '</td>' : '') +
+      (anyWeeks  ? '<td class="r">' + (weeks  || '') + '</td>' : '') +
       '<td class="r bold">' + (total ? '£' + total.toFixed(2) : '') + '</td>';
     plBody.appendChild(row);
   });
 
-  document.getElementById('pl-net').textContent   = document.getElementById('net-total').textContent;
-  document.getElementById('pl-vat').textContent   = document.getElementById('vat-total').textContent;
-  document.getElementById('pl-grand').textContent = document.getElementById('grand-total').textContent;
+  // Build tfoot dynamically so colspan exactly matches the visible columns
+  var labelCols = 2 + (anyQty ? 1 : 0) + (anyMonths ? 1 : 0) + (anyWeeks ? 1 : 0); // all cols except Total
+  var tfoot = document.getElementById('pl-items-foot');
+  tfoot.innerHTML = '';
+
+  function makeTotRow(label, value, bold, topBorder) {
+    var tr = document.createElement('tr');
+    var lTd = document.createElement('td');
+    lTd.colSpan = labelCols;
+    lTd.style.cssText = 'text-align:right;padding-right:6pt;font-size:' + (bold ? '13' : '10') + 'pt;font-weight:' + (bold ? 'bold' : 'normal') + ';padding-top:' + (topBorder ? '4' : '2') + 'pt;padding-bottom:1pt;' + (topBorder ? 'border-top:1.5pt solid #000;' : '');
+    lTd.textContent = label;
+    var vTd = document.createElement('td');
+    vTd.style.cssText = 'text-align:right;font-weight:bold;font-size:' + (bold ? '13' : '10') + 'pt;padding-top:' + (topBorder ? '4' : '2') + 'pt;padding-bottom:1pt;' + (topBorder ? 'border-top:1.5pt solid #000;' : '');
+    vTd.textContent = value;
+    tr.appendChild(lTd); tr.appendChild(vTd);
+    return tr;
+  }
+
+  // Separator line above totals
+  var sepRow = document.createElement('tr');
+  var sepTd = document.createElement('td');
+  sepTd.colSpan = labelCols + 1;
+  sepTd.style.cssText = 'border-top:1pt solid #ccc;padding:0;height:0;';
+  sepRow.appendChild(sepTd);
+  tfoot.appendChild(sepRow);
+
+  tfoot.appendChild(makeTotRow('NET:', document.getElementById('net-total').textContent, false, false));
+
+  var discAmt2 = parseFloat(document.getElementById('discount-amt').value) || 0;
+  var discPct2 = parseFloat(document.getElementById('discount-pct').value) || 0;
+  if (discAmt2 > 0 || discPct2 > 0) {
+    var discLabel = document.getElementById('discount-label-cell').textContent;
+    var discVal   = document.getElementById('discount-display').textContent;
+    tfoot.appendChild(makeTotRow(discLabel, discVal, false, false));
+  }
+
   var vatRate = parseFloat(document.getElementById('vat-rate').value) || 20;
-  document.getElementById('pl-vat-label').textContent = 'VAT (' + vatRate + '%):';
+  tfoot.appendChild(makeTotRow('VAT (' + vatRate + '%):', document.getElementById('vat-total').textContent, false, false));
+  tfoot.appendChild(makeTotRow('TOTAL:', document.getElementById('grand-total').textContent, true, true));
 
   document.getElementById('pl-notes').innerHTML = document.getElementById('campaign-notes').innerHTML || '';
+  populateChecklistPrint();
 
   // Campaign dates
   var campBody = document.getElementById('pl-camp-dates-body');
@@ -739,8 +879,8 @@ function populatePrintLayout() {
     var mv = document.getElementById('cm' + i).textContent;
     var nv = document.getElementById('cn' + i).value || '';
     if (sv && ev && mv !== '—') {
-      var sDate = new Date(sv + 'T00:00:00').toLocaleDateString('en-GB');
-      var eDate = new Date(ev + 'T00:00:00').toLocaleDateString('en-GB');
+      var sDate = fmtDateShort(sv);
+      var eDate = fmtDateShort(ev);
       var tr = document.createElement('tr');
       tr.innerHTML = '<td style="padding:2pt 6pt 2pt 0;">' + i + '</td>' +
         '<td style="padding:2pt 6pt 2pt 0;">' + sDate + '</td>' +
@@ -818,6 +958,42 @@ function validateForm() {
     if (badDesc || badPrice) valid = false;
   });
 
+  // City match check — extract city from notes and each description row and warn if they differ
+  if (valid) {
+    var notesFirstLine = document.getElementById('campaign-notes').innerText.split('\n')[0] || '';
+    var notesCity = extractCityFromText(notesFirstLine);
+    if (notesCity) {
+      var cityMismatch = false;
+      document.querySelectorAll('#items-body tr').forEach(function(tr) {
+        var descEl = tr.querySelector('.item-desc');
+        if (!descEl) return;
+        var descFirstLine = (descEl.innerText || '').split('\n')[0] || '';
+        var descCity = extractCityFromText(descFirstLine);
+        if (descCity && descCity.toLowerCase() !== notesCity.toLowerCase()) {
+          cityMismatch = true;
+        }
+      });
+      if (cityMismatch) {
+        var proceed = confirm(
+          '⚠️ City Mismatch Detected\n\n' +
+          'The city in the Campaign Notes ("' + notesCity + '") does not match the city in the Description.\n\n' +
+          'Please check both fields are using the same city before saving.\n\n' +
+          'Click OK to save anyway, or Cancel to go back and fix it.'
+        );
+        if (!proceed) valid = false;
+      }
+    }
+  }
+
+  // Checklist validation
+  var totalChecks = document.querySelectorAll('.cl-check').length;
+  var tickedChecks = document.querySelectorAll('.cl-check:checked').length;
+  var clBy = (document.getElementById('cl-by') || {}).value || '';
+  var clBad = tickedChecks < totalChecks || !clBy.trim();
+  var clErr = document.getElementById('err-checklist');
+  if (clErr) clErr.classList.toggle('show', clBad);
+  if (clBad) valid = false;
+
   var banner = document.getElementById('validation-banner');
   if (valid) {
     banner.style.cssText = 'background:#d4edda;color:#155724;border:1.5px solid #c3e6cb;font-weight:normal';
@@ -871,7 +1047,7 @@ function clearForm() {
   recalc();
   document.getElementById('order-date').value = new Date().toISOString().split('T')[0];
   // Reset contenteditable campaign notes to default text
-  document.getElementById('campaign-notes').innerHTML = 'Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month. Content:';
+  document.getElementById('campaign-notes').innerHTML = 'Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month.';
   document.getElementById('campaign-notes').classList.remove('error');
 
 function updateLastUpdated() {
@@ -908,6 +1084,76 @@ function updateLastUpdated() {
 }
 updateLastUpdated();
 
+// ─── Checklist progress counter ──────────────────────────────────────────────
+function updateClProgress() {
+  var total = document.querySelectorAll('.cl-check').length;
+  var ticked = document.querySelectorAll('.cl-check:checked').length;
+  var el = document.getElementById('cl-progress');
+  if (el) {
+    el.textContent = ticked + ' / ' + total + ' ticked';
+    el.style.color = ticked === total ? '#27ae60' : 'var(--purple-dark)';
+  }
+}
+document.querySelectorAll('.cl-check').forEach(function(cb) {
+  cb.addEventListener('change', updateClProgress);
+});
+updateClProgress();
+
+// ─── Populate checklist print page ───────────────────────────────────────────
+var CL_ITEMS = {
+  group1: [
+    { id:'cl1', label:'Correct UNI number(s) added top right' },
+    { id:'cl2', label:'Partner address is correct' },
+    { id:'cl3', label:'Ltd company details checked on Companies House' }
+  ],
+  group2: [
+    { id:'cl4', label:'Each line has a city / location' },
+    { id:'cl5', label:'Each line has correct qty of months' },
+    { id:'cl6', label:'IF AGENCY — confirmed who campaign is running for' },
+    { id:'cl7', label:'NETT matches the sales sheet' }
+  ],
+  group3: [
+    { id:'cl8',  label:'Locations are correct' },
+    { id:'cl9',  label:'Locations match the Description section' },
+    { id:'cl10', label:'Live dates feature specific dates' },
+    { id:'cl11', label:'Live dates are correct (including year)' },
+    { id:'cl12', label:'Live months tally with months in Description' },
+    { id:'cl13', label:'KPIs are correct' },
+    { id:'cl14', label:'KPIs match billing (standard or double)' },
+    { id:'cl15', label:'Multiple KPI sets have clear dates (if applicable)' }
+  ]
+};
+
+function populateChecklistPrint() {
+  ['group1','group2','group3'].forEach(function(grp) {
+    var container = document.getElementById('pl-cl-' + grp);
+    if (!container) return;
+    container.innerHTML = '';
+    CL_ITEMS[grp].forEach(function(item) {
+      var cb = document.getElementById(item.id);
+      var checked = cb && cb.checked;
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:flex-start;gap:6pt;margin-bottom:6pt;font-size:9pt;';
+      var tick = document.createElement('span');
+      tick.style.cssText = 'font-size:12pt;line-height:1;flex-shrink:0;color:' + (checked ? '#27ae60' : '#e74c3c') + ';';
+      tick.textContent = checked ? '✓' : '✗';
+      var lbl = document.createElement('span');
+      lbl.style.cssText = 'line-height:1.4;color:#222;';
+      lbl.textContent = item.label;
+      row.appendChild(tick); row.appendChild(lbl);
+      container.appendChild(row);
+    });
+  });
+  var refEl = document.getElementById('ref-no');
+  var compEl = document.getElementById('client-company');
+  var dateEl = document.getElementById('order-date');
+  var byEl   = document.getElementById('cl-by');
+  if (document.getElementById('pl-cl-ref'))     document.getElementById('pl-cl-ref').textContent     = refEl  ? refEl.value  : '';
+  if (document.getElementById('pl-cl-company')) document.getElementById('pl-cl-company').textContent = compEl ? compEl.value.split(/[\n,]/)[0].trim() : '';
+  if (document.getElementById('pl-cl-date'))    document.getElementById('pl-cl-date').textContent    = dateEl && dateEl.value ? fmtDateShort(dateEl.value) : '';
+  if (document.getElementById('pl-cl-by'))      document.getElementById('pl-cl-by').textContent      = byEl   ? byEl.value   : '';
+}
+
 // ─── Campaign date months ────────────────────────────────────────────────────
 function calcCampaignMonths() {
   var total = 0; var hasAny = false;
@@ -931,12 +1177,29 @@ function calcCampaignMonths() {
 
 document.querySelectorAll('.camp-start, .camp-end').forEach(function(inp) {
   inp.addEventListener('change', function() {
+    // Check end date is not before start date for this row
+    var rowNum = this.id.replace('cs','').replace('ce','');
+    var startEl = document.getElementById('cs' + rowNum);
+    var endEl   = document.getElementById('ce' + rowNum);
+    if (startEl && endEl && startEl.value && endEl.value) {
+      var sd = new Date(startEl.value + 'T00:00:00');
+      var ed = new Date(endEl.value   + 'T00:00:00');
+      if (ed < sd) {
+        alert(
+          '⚠️ Date Error\n\n' +
+          'The end date (' + ed.toLocaleDateString('en-GB') + ') is before the start date (' + sd.toLocaleDateString('en-GB') + ').\n\n' +
+          'Please correct the dates — a campaign cannot end before it starts.'
+        );
+        endEl.value = '';
+        calcCampaignMonths();
+        return;
+      }
+    }
     calcCampaignMonths();
     if (!this.value) return;
     var entered = new Date(this.value + 'T00:00:00');
     var today = new Date();
     today.setHours(0, 0, 0, 0);
-    // Allow up to 1 month back, warn for anything older
     var oneMonthAgo = new Date(today);
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
     if (entered < oneMonthAgo) {
@@ -949,6 +1212,26 @@ document.querySelectorAll('.camp-start, .camp-end').forEach(function(inp) {
     }
   });
 });
+
+// ─── Date formatter: "1-Jun-2026" ────────────────────────────────────────────
+var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtDateShort(dateStr) {
+  var d = new Date(dateStr + 'T00:00:00');
+  if (isNaN(d)) return dateStr;
+  return d.getDate() + '-' + MONTH_NAMES[d.getMonth()] + '-' + d.getFullYear();
+}
+
+// ─── City extraction helper ───────────────────────────────────────────────────
+// Extracts the city name from text like "Full Site Takeover – Manchester"
+function extractCityFromText(text) {
+  var match = text.match(/[–—-]\s*(.+)$/);
+  if (!match) return '';
+  var city = match[1].trim();
+  // Ignore if it's still a placeholder
+  if (!city || city.toUpperCase() === 'CITY NAME' || city.toUpperCase() === 'CITY') return '';
+  // Take just the first word or short phrase (up to 30 chars)
+  return city.substring(0, 30).trim();
+}
 
 // ─── Rich text formatting ────────────────────────────────────────────────────
 function fmt(cmd, val) {
@@ -1063,6 +1346,50 @@ var GDRIVE_CONFIG = {
   folderId: '1ZR9uhvtNc_6fMlR4SSGQv4FSPxQ8_fbe'
 };
 
+// ─── Checklist auto-save to Drive ────────────────────────────────────────────
+var _driveToken   = null;  // cached token for the session
+var _lastClState  = null;  // snapshot of checklist when last saved
+
+function getClState() {
+  // Serialise the current checklist so we can detect changes
+  var checks = [];
+  document.querySelectorAll('.cl-check').forEach(function(cb) { checks.push(cb.checked ? '1' : '0'); });
+  checks.push((document.getElementById('cl-by') || {}).value || '');
+  return checks.join('|');
+}
+
+function doChecklistUpload(token) {
+  _driveToken = token;
+  var currentState = getClState();
+  if (currentState === _lastClState) return; // Nothing changed — skip
+  populateChecklistPrint();
+  var refNo   = document.getElementById('ref-no').value || 'REF';
+  var company = (document.getElementById('client-company').value || 'Client').split(/[,\n]/)[0].trim();
+  var clName  = (refNo + ' - ' + company).replace(/[<>:"\/\\|?*]/g, '').trim() + ' - Checklist.pdf';
+  html2pdf().set(pdfOpts(clName)).from(getChecklistHtml(), 'string').outputPdf('blob')
+    .then(function(blob) { return driveUploadBlob(blob, clName, token); })
+    .then(function(data) { if (data.id) _lastClState = currentState; })
+    ['catch'](function() { /* silent fail */ });
+}
+
+function autoSaveChecklist() {
+  if (!GDRIVE_CONFIG.clientId || GDRIVE_CONFIG.clientId.indexOf('PASTE_') === 0) return;
+  if (_driveToken) {
+    // Already authenticated this session — upload silently
+    doChecklistUpload(_driveToken);
+  } else {
+    // Need to authenticate — this requires a user gesture so it's safe here
+    try {
+      var tc = google.accounts.oauth2.initTokenClient({
+        client_id: GDRIVE_CONFIG.clientId,
+        scope: 'https://www.googleapis.com/auth/drive.file',
+        callback: function(r) { if (!r.error) doChecklistUpload(r.access_token); }
+      });
+      tc.requestAccessToken();
+    } catch(e) { /* Google not loaded yet — skip */ }
+  }
+}
+
 function saveToDrive() {
   if (!validateForm()) return;
   if (!GDRIVE_CONFIG.clientId || GDRIVE_CONFIG.clientId.indexOf('PASTE_') === 0) {
@@ -1080,10 +1407,23 @@ function saveToDrive() {
         alert('Google sign-in failed: ' + response.error);
         return;
       }
+      _driveToken = response.access_token; // cache for auto-saves
       uploadToDrive(response.access_token, btn);
     }
   });
   tokenClient.requestAccessToken();
+}
+
+function driveUploadBlob(blob, filename, accessToken) {
+  var metadata = { name: filename, mimeType: 'application/pdf', parents: [GDRIVE_CONFIG.folderId] };
+  var form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+  form.append('file', blob);
+  return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + accessToken },
+    body: form
+  }).then(function(r) { return r.json(); });
 }
 
 function uploadToDrive(accessToken, btn) {
@@ -1093,24 +1433,34 @@ function uploadToDrive(accessToken, btn) {
   var refNo = document.getElementById('ref-no').value || 'REF';
   var companyFull = document.getElementById('client-company').value || 'Client';
   var company = companyFull.split(/[,\n]/)[0].trim();
-  var filename = (refNo + ' - ' + company).replace(/[<>:"\/\\|?*]/g, '').trim() + '.pdf';
-  html2pdf().set(pdfOpts(filename)).from(getPdfHtml(), 'string').outputPdf('blob')
+  var baseName = (refNo + ' - ' + company).replace(/[<>:"\/\\|?*]/g, '').trim();
+  var orderFilename     = baseName + '.pdf';
+  var checklistFilename = baseName + ' - Checklist.pdf';
+
+  btn.textContent = '☁ Uploading…';
+
+  // Generate both PDFs then upload them
+  var orderBlob, clBlob;
+  html2pdf().set(pdfOpts(orderFilename)).from(getPdfHtml(), 'string').outputPdf('blob')
     .then(function(blob) {
-      var metadata = { name: filename, mimeType: 'application/pdf', parents: [GDRIVE_CONFIG.folderId] };
-      var form = new FormData();
-      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-      form.append('file', blob);
-      return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-        method: 'POST',
-        headers: { Authorization: 'Bearer ' + accessToken },
-        body: form
-      });
+      orderBlob = blob;
+      return html2pdf().set(pdfOpts(checklistFilename)).from(getChecklistHtml(), 'string').outputPdf('blob');
     })
-    .then(function(r) { return r.json(); })
+    .then(function(blob) {
+      clBlob = blob;
+      return driveUploadBlob(orderBlob, orderFilename, accessToken);
+    })
+    .then(function(data) {
+      if (!data.id) throw new Error('Order upload failed: ' + JSON.stringify(data));
+      return driveUploadBlob(clBlob, checklistFilename, accessToken);
+    })
     .then(function(data) {
       btn.disabled = false; btn.textContent = '☁ Save to Drive';
-      if (data.id) { alert('✅ Saved to Google Drive!\nFilename: ' + filename); }
-      else { alert('Upload error: ' + JSON.stringify(data)); }
+      if (data.id) {
+        alert('✅ Both files saved to Google Drive!\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename);
+      } else {
+        alert('Order saved but checklist upload failed: ' + JSON.stringify(data));
+      }
     })
     ['catch'](function(err) {
       btn.disabled = false; btn.textContent = '☁ Save to Drive';
@@ -1124,12 +1474,20 @@ function printForm() {
   calcCampaignMonths();
   populatePrintLayout();
   window.print();
+  autoSaveChecklist();
 }
 
 function getPdfHtml() {
   return '<div style="font-family:Arial,sans-serif;font-size:10pt;color:#000;' +
-    'width:210mm;padding:12mm 15mm;box-sizing:border-box;background:#fff;">' +
+    'width:210mm;padding:8mm 12mm;box-sizing:border-box;background:#fff;">' +
     document.getElementById('print-layout').innerHTML +
+    '</div>';
+}
+
+function getChecklistHtml() {
+  return '<div style="font-family:Arial,sans-serif;font-size:10pt;color:#000;' +
+    'width:210mm;padding:12mm 15mm;box-sizing:border-box;background:#fff;">' +
+    document.getElementById('pl-checklist').innerHTML +
     '</div>';
 }
 
@@ -1157,6 +1515,7 @@ function saveAsPDF() {
     ['catch'](function() {
       alert('PDF save failed. Use the Print button and choose Save as PDF from your print dialog.');
     });
+  autoSaveChecklist();
 }
 </script>
 </body>
