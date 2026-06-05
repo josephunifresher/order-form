@@ -1559,7 +1559,7 @@ function renderAdminBody() {
           'onclick="adminToggleRole(\'' + u.id + '\',\'' + u.name + '\',\'' + nextRole + '\')">' +
           (u.role === 'admin' ? 'Make User' : 'Make Admin') + '</button>';
       }
-      if (u.email) {
+      if (u.email && !isSuperAdmin) {
         html += '<button class="adm-btn" style="background:#f39c12;font-size:11px;" ' +
           'onclick="adminResetPw(\'' + u.email + '\',\'' + u.name + '\')">📧 Reset PW</button>';
       }
