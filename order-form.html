@@ -101,6 +101,8 @@
   .add-row-btn:hover { border-color:var(--purple); color:var(--purple); background:var(--purple-lightest); }
   .remove-row-btn { background:none; border:none; color:#e74c3c; cursor:pointer; font-size:18px; padding:0 4px; opacity:.6; }
   .remove-row-btn:hover { opacity:1; }
+  .dup-row-btn { background:none; border:none; color:var(--purple-light); cursor:pointer; font-size:14px; padding:0 4px; opacity:.6; display:block; }
+  .dup-row-btn:hover { opacity:1; color:var(--purple); }
 
   /* TOTALS */
   .totals-wrap { display:flex; justify-content:flex-end; margin:10px 0 20px; }
@@ -846,7 +848,8 @@ function addRow() {
       '<input type="number" placeholder="" step="1" min="0" class="item-weeks" oninput="recalc()">' +
     '</td>' +
     '<td class="total-cell" id="row-total-' + id + '">£0.00</td>' +
-    '<td style="text-align:center;vertical-align:middle">' +
+    '<td style="text-align:center;vertical-align:middle;white-space:nowrap;">' +
+      '<button class="dup-row-btn" onclick="duplicateRow(' + id + ')" title="Duplicate row">⧉</button>' +
       '<button class="remove-row-btn" onclick="removeRow(' + id + ')" title="Remove">×</button>' +
     '</td>';
   tbody.appendChild(tr);
@@ -857,6 +860,35 @@ function removeRow(id) {
   var row = document.getElementById('row-' + id);
   if (row) row.remove();
   if (document.querySelectorAll('#items-body tr').length === 0) addRow();
+  recalc();
+}
+
+function duplicateRow(id) {
+  var srcRow = document.getElementById('row-' + id);
+  if (!srcRow) return;
+  // Read values from source row
+  var descEl   = srcRow.querySelector('.item-desc');
+  var priceEl  = srcRow.querySelector('.item-price');
+  var qtyEl    = srcRow.querySelector('.item-qty');
+  var monthsEl = srcRow.querySelector('.item-months');
+  var weeksEl  = srcRow.querySelector('.item-weeks');
+  var descHtml = descEl  ? descEl.innerHTML  : '';
+  var price    = priceEl  ? priceEl.value   : '';
+  var qty      = qtyEl    ? qtyEl.value     : '';
+  var months   = monthsEl ? monthsEl.value  : '';
+  var weeks    = weeksEl  ? weeksEl.value   : '';
+  // Create a new row then populate it with the copied values
+  addRow();
+  var newRow = document.querySelector('#items-body tr:last-child');
+  var newDesc = newRow.querySelector('.item-desc');
+  if (newDesc) newDesc.innerHTML = descHtml;
+  var setVal = function(cls, val) { var el = newRow.querySelector(cls); if (el) el.value = val; };
+  setVal('.item-price',  price);
+  setVal('.item-qty',    qty);
+  setVal('.item-months', months);
+  setVal('.item-weeks',  weeks);
+  // Move the new row to immediately after the source row
+  srcRow.parentNode.insertBefore(newRow, srcRow.nextSibling);
   recalc();
 }
 
@@ -2198,8 +2230,16 @@ function printForm() {
 }
 
 function getPdfHtml() {
+  // Count rows and scale down so everything fits on one A4 page
+  var rowCount = document.querySelectorAll('#items-body tr').length;
+  var zoom = 1;
+  if (rowCount > 6) {
+    // Each extra row past 6 needs ~2.8% scale reduction; floor at 0.68
+    zoom = Math.max(0.68, 1 - (rowCount - 6) * 0.028);
+  }
+  var zoomStyle = zoom < 1 ? 'zoom:' + zoom.toFixed(3) + ';' : '';
   return '<div style="font-family:Arial,sans-serif;font-size:10pt;color:#000;' +
-    'width:210mm;padding:8mm 12mm;box-sizing:border-box;background:#fff;">' +
+    'width:210mm;padding:8mm 12mm;box-sizing:border-box;background:#fff;' + zoomStyle + '">' +
     document.getElementById('print-layout').innerHTML +
     '</div>';
 }
