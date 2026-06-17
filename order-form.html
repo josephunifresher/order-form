@@ -299,6 +299,31 @@
   .cl-item-row { display:flex; align-items:flex-start; gap:7px; margin-bottom:5px; font-size:12px; color:var(--black); line-height:1.4; cursor:pointer; }
   .cl-item-row input[type=checkbox] { margin-top:2px; accent-color:var(--purple); width:14px; height:14px; flex-shrink:0; cursor:pointer; }
   .cl-footer { display:flex; align-items:center; gap:12px; margin-top:10px; font-size:12px; }
+
+  /* INFO TOOLTIPS */
+  .info-tip { display:inline-flex; align-items:center; justify-content:center; position:relative;
+    cursor:pointer; font-size:9px; background:var(--purple-lighter); color:var(--purple-darker);
+    border:none; border-radius:50%; width:14px; height:14px; text-align:center; line-height:14px;
+    vertical-align:middle; margin-left:2px; font-weight:900; font-family:'Lato',Arial,sans-serif;
+    flex-shrink:0; }
+  .info-tip:focus { outline:2px solid var(--purple); }
+  .info-tip-popup { position:absolute; bottom:calc(100% + 7px); left:50%; transform:translateX(-50%);
+    background:#222; color:#fff; font-size:11px; white-space:normal; width:210px;
+    padding:8px 10px; border-radius:7px; line-height:1.45; font-family:'Lato',Arial,sans-serif;
+    pointer-events:none; opacity:0; transition:opacity .15s; z-index:9999; text-align:left;
+    font-weight:400; box-shadow:0 3px 12px rgba(0,0,0,.35); }
+  .info-tip-popup::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:5px solid transparent; border-top-color:#222; }
+  .info-tip:hover .info-tip-popup, .info-tip:focus .info-tip-popup { opacity:1; }
+
+  /* STC checkbox in dates table */
+  .stc-cell { text-align:center; }
+  .stc-cell input[type=checkbox] { accent-color:#e67e22; width:14px; height:14px; cursor:pointer; }
+
+  /* VAT EXEMPT WARNING */
+  #vat-warning { display:none; background:#fff0f0; border:2px solid #e74c3c; border-radius:8px;
+    padding:9px 14px; margin-bottom:6px; text-align:center; }
+  #vat-warning span { color:#e74c3c; font-weight:700; font-size:12px; }
   .cl-footer label { font-weight:700; color:var(--purple-dark); white-space:nowrap; }
   .cl-footer input { border:none; border-bottom:1.5px solid var(--purple-lighter); font-size:12px; font-family:'Lato',Arial,sans-serif; padding:2px 4px; outline:none; width:200px; }
   .cl-note { font-size:11px; color:#e74c3c; font-weight:700; margin-bottom:10px; }
@@ -451,9 +476,9 @@
       <tr>
         <th style="width:40%">Description *</th>
         <th style="width:13%" class="right">Unit Price (£) *</th>
-        <th style="width:7%" class="right" title="Quantity — number of ad placements or units. Leave blank if not applicable.">Qty ℹ</th>
-        <th style="width:7%" class="right" title="Number of full months. Total = Unit Price × Qty × Months. Weeks are added on top at ÷4 rate.">Months ℹ</th>
-        <th style="width:7%" class="right" title="Number of extra weeks on top of months. Each week = Unit Price ÷ 4.">Weeks ℹ</th>
+        <th style="width:7%" class="right">Qty <button type="button" class="info-tip" tabindex="0"><span class="info-tip-popup">Number of ad units or placements. Leave blank if not applicable — the Months and Weeks boxes will still calculate a total.</span>i</button></th>
+        <th style="width:7%" class="right">Months <button type="button" class="info-tip" tabindex="0"><span class="info-tip-popup">Number of full calendar months. Row total = Unit Price × Qty × Months (plus any Weeks on top). Leave at 0 if using Weeks only.</span>i</button></th>
+        <th style="width:7%" class="right">Weeks <button type="button" class="info-tip" tabindex="0"><span class="info-tip-popup">Extra weeks on top of the Months total. Each week counts as Unit Price ÷ 4. e.g. 2 extra weeks = half a month's price added on.</span>i</button></th>
         <th style="width:13%" class="right">Total (£)</th>
         <th style="width:6%"></th>
       </tr>
@@ -470,8 +495,15 @@
     <span>£</span>
     <input type="number" id="discount-amt" min="0" step="0.01" placeholder="0.00">
   </div>
-  <div class="vat-rate-wrap">
-    <span>VAT Rate:</span>
+  <div id="vat-warning">
+    <span>⚠️ VAT REMOVED — Only do this if the partner is VAT exempt. Confirm with Fizz or Chris before saving.</span>
+  </div>
+  <div class="vat-rate-wrap" id="vat-rate-wrap">
+    <label style="display:flex;align-items:center;gap:5px;cursor:pointer;color:#666;font-size:12px;">
+      <input type="checkbox" id="vat-exempt" onchange="toggleVat()" style="accent-color:#e74c3c;width:13px;height:13px;">
+      No VAT
+    </label>
+    <span style="margin-left:8px;">VAT Rate:</span>
     <input type="number" id="vat-rate" value="20" min="0" max="100" step="0.1" onchange="recalc()" style="width:55px;text-align:right">
     <span>%</span>
   </div>
@@ -515,14 +547,15 @@
             <th>End</th>
             <th style="text-align:center">Mo.</th>
             <th>Notes</th>
+            <th style="text-align:center" title="Subject to change — tick if these dates are estimated and may change">STC <button type="button" class="info-tip" tabindex="0" style="font-size:8px;width:12px;height:12px;"><span class="info-tip-popup">Subject to Change — tick this if the dates for this phase are estimated and may change. A note will appear on the printed form.</span>i</button></th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>1</td><td><input type="date" id="cs1" class="camp-start"></td><td><input type="date" id="ce1" class="camp-end"></td><td class="months-cell" id="cm1">—</td><td><input type="text" id="cn1" class="notes-input" placeholder="Optional notes"></td></tr>
-          <tr><td>2</td><td><input type="date" id="cs2" class="camp-start"></td><td><input type="date" id="ce2" class="camp-end"></td><td class="months-cell" id="cm2">—</td><td><input type="text" id="cn2" class="notes-input" placeholder="Optional notes"></td></tr>
-          <tr><td>3</td><td><input type="date" id="cs3" class="camp-start"></td><td><input type="date" id="ce3" class="camp-end"></td><td class="months-cell" id="cm3">—</td><td><input type="text" id="cn3" class="notes-input" placeholder="Optional notes"></td></tr>
-          <tr><td>4</td><td><input type="date" id="cs4" class="camp-start"></td><td><input type="date" id="ce4" class="camp-end"></td><td class="months-cell" id="cm4">—</td><td><input type="text" id="cn4" class="notes-input" placeholder="Optional notes"></td></tr>
-          <tr><td>5</td><td><input type="date" id="cs5" class="camp-start"></td><td><input type="date" id="ce5" class="camp-end"></td><td class="months-cell" id="cm5">—</td><td><input type="text" id="cn5" class="notes-input" placeholder="Optional notes"></td></tr>
+          <tr><td>1</td><td><input type="date" id="cs1" class="camp-start"></td><td><input type="date" id="ce1" class="camp-end"></td><td class="months-cell" id="cm1">—</td><td><input type="text" id="cn1" class="notes-input" placeholder="Optional notes"></td><td class="stc-cell"><input type="checkbox" id="stc1" class="stc-check" title="Subject to change"></td></tr>
+          <tr><td>2</td><td><input type="date" id="cs2" class="camp-start"></td><td><input type="date" id="ce2" class="camp-end"></td><td class="months-cell" id="cm2">—</td><td><input type="text" id="cn2" class="notes-input" placeholder="Optional notes"></td><td class="stc-cell"><input type="checkbox" id="stc2" class="stc-check" title="Subject to change"></td></tr>
+          <tr><td>3</td><td><input type="date" id="cs3" class="camp-start"></td><td><input type="date" id="ce3" class="camp-end"></td><td class="months-cell" id="cm3">—</td><td><input type="text" id="cn3" class="notes-input" placeholder="Optional notes"></td><td class="stc-cell"><input type="checkbox" id="stc3" class="stc-check" title="Subject to change"></td></tr>
+          <tr><td>4</td><td><input type="date" id="cs4" class="camp-start"></td><td><input type="date" id="ce4" class="camp-end"></td><td class="months-cell" id="cm4">—</td><td><input type="text" id="cn4" class="notes-input" placeholder="Optional notes"></td><td class="stc-cell"><input type="checkbox" id="stc4" class="stc-check" title="Subject to change"></td></tr>
+          <tr><td>5</td><td><input type="date" id="cs5" class="camp-start"></td><td><input type="date" id="ce5" class="camp-end"></td><td class="months-cell" id="cm5">—</td><td><input type="text" id="cn5" class="notes-input" placeholder="Optional notes"></td><td class="stc-cell"><input type="checkbox" id="stc5" class="stc-check" title="Subject to change"></td></tr>
         </tbody>
         <tfoot>
           <tr>
@@ -613,7 +646,6 @@
       <div class="cl-group-title">Notes</div>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl8"><span>Locations are correct</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl9"><span>Locations match the Description section</span></label>
-      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl10"><span>Live dates feature specific dates</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl11"><span>Live dates are correct (including year)</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl12"><span>Live months tally with months in Description</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl13"><span>KPIs are correct</span></label>
@@ -695,6 +727,9 @@
         <td id="pl-total-months" style="text-align:center;font-weight:bold;padding:3pt 0 0;"></td>
       </tr></tfoot>
     </table>
+    <div id="pl-stc-note" style="display:none;margin-top:5pt;padding:5pt 8pt;background:#fff8ee;border-left:3pt solid #e67e22;font-size:8pt;color:#7d4e00;line-height:1.5;">
+      <strong>* Dates Subject to Change:</strong> These dates are an estimate based on previous conversations; exact dates will be locked in following a strategy call.
+    </div>
   </div>
   <hr class="pl-hr">
 
@@ -837,6 +872,24 @@ function getNetTotal() {
     n += price * qty * months + (price / 4) * qty * weeks;
   });
   return n;
+}
+
+function toggleVat() {
+  var exempt = document.getElementById('vat-exempt').checked;
+  var rateInp = document.getElementById('vat-rate');
+  var rateWrap = document.getElementById('vat-rate-wrap');
+  var warn = document.getElementById('vat-warning');
+  if (exempt) {
+    rateInp.value = 0;
+    // Hide just the rate label+input, keep the checkbox visible
+    rateWrap.querySelectorAll('span, input[type=number]').forEach(function(el){ el.style.display='none'; });
+    warn.style.display = 'block';
+  } else {
+    rateInp.value = 20;
+    rateWrap.querySelectorAll('span, input[type=number]').forEach(function(el){ el.style.display=''; });
+    warn.style.display = 'none';
+  }
+  recalc();
 }
 
 function recalc() {
@@ -986,19 +1039,22 @@ function populatePrintLayout() {
   // Campaign dates
   var campBody = document.getElementById('pl-camp-dates-body');
   campBody.innerHTML = '';
-  var campTotal = 0; var campHas = false;
+  var campTotal = 0; var campHas = false; var anyStc = false;
   for (var i = 1; i <= 5; i++) {
     var sv = document.getElementById('cs' + i).value;
     var ev = document.getElementById('ce' + i).value;
     var mv = document.getElementById('cm' + i).textContent;
     var nv = document.getElementById('cn' + i).value || '';
+    var stcEl = document.getElementById('stc' + i);
+    var stcChecked = stcEl && stcEl.checked;
     if (sv && ev && mv !== '—') {
       var sDate = fmtDateShort(sv);
       var eDate = fmtDateShort(ev);
+      if (stcChecked) anyStc = true;
       var tr = document.createElement('tr');
       tr.innerHTML = '<td style="padding:2pt 6pt 2pt 0;">' + i + '</td>' +
-        '<td style="padding:2pt 6pt 2pt 0;">' + sDate + '</td>' +
-        '<td style="padding:2pt 6pt 2pt 0;">' + eDate + '</td>' +
+        '<td style="padding:2pt 6pt 2pt 0;">' + sDate + (stcChecked ? ' <span style="color:#e67e22;font-size:7.5pt;font-weight:bold;">*</span>' : '') + '</td>' +
+        '<td style="padding:2pt 6pt 2pt 0;">' + eDate + (stcChecked ? ' <span style="color:#e67e22;font-size:7.5pt;font-weight:bold;">*</span>' : '') + '</td>' +
         '<td style="text-align:center;padding:2pt 6pt 2pt 0;">' + mv + '</td>' +
         '<td style="padding:2pt 0;">' + (nv ? nv.replace(/</g,'&lt;').replace(/>/g,'&gt;') : '') + '</td>';
       campBody.appendChild(tr);
@@ -1006,6 +1062,9 @@ function populatePrintLayout() {
       campTotal += parseInt(mv) || 0;
     }
   }
+  // STC footnote
+  var stcNote = document.getElementById('pl-stc-note');
+  if (stcNote) stcNote.style.display = anyStc ? 'block' : 'none';
   document.getElementById('pl-camp-dates-wrap').style.display = campHas ? 'block' : 'none';
   document.getElementById('pl-total-months').textContent = campHas ? campTotal : '';
 }
@@ -1153,6 +1212,8 @@ function clearForm() {
   document.querySelectorAll('.error-label').forEach(function(el) { el.classList.remove('show'); });
   document.getElementById('validation-banner').classList.remove('show');
   document.getElementById('vat-rate').value = 20;
+  var vatExemptCb = document.getElementById('vat-exempt');
+  if (vatExemptCb) { vatExemptCb.checked = false; toggleVat(); }
   document.getElementById('discount-pct').value = '';
   document.getElementById('discount-amt').value = '';
   document.getElementById('items-body').innerHTML = '';
@@ -1177,6 +1238,8 @@ updateLastUpdated();
     document.getElementById('ce' + i).value = '';
     document.getElementById('cm' + i).textContent = '—';
     document.getElementById('cn' + i).value = '';
+    var stcEl = document.getElementById('stc' + i);
+    if (stcEl) stcEl.checked = false;
   }
   document.getElementById('total-camp-months').textContent = '—';
   document.getElementById('initials').value = '';
@@ -1385,7 +1448,8 @@ function captureFormData() {
     campDates.push({
       start: (document.getElementById('cs'+i) || {}).value || '',
       end:   (document.getElementById('ce'+i) || {}).value || '',
-      notes: (document.getElementById('cn'+i) || {}).value || ''
+      notes: (document.getElementById('cn'+i) || {}).value || '',
+      stc:   (document.getElementById('stc'+i) || {}).checked || false
     });
   }
   var checks = {};
@@ -1442,6 +1506,8 @@ function restoreFormData(data) {
     setVal('cs'+(i+1), cd.start);
     setVal('ce'+(i+1), cd.end);
     setVal('cn'+(i+1), cd.notes);
+    var stcEl = document.getElementById('stc'+(i+1));
+    if (stcEl && cd.stc) stcEl.checked = true;
   });
   // Restore checklist
   if (data.checks) {
@@ -1723,7 +1789,6 @@ var CL_ITEMS = {
   group3: [
     { id:'cl8',  label:'Locations are correct' },
     { id:'cl9',  label:'Locations match the Description section' },
-    { id:'cl10', label:'Live dates feature specific dates' },
     { id:'cl11', label:'Live dates are correct (including year)' },
     { id:'cl12', label:'Live months tally with months in Description' },
     { id:'cl13', label:'KPIs are correct' },
@@ -1816,6 +1881,14 @@ document.querySelectorAll('.camp-start, .camp-end').forEach(function(inp) {
         'The date you entered (' + entered.toLocaleDateString('en-GB') + ') is more than one month in the past.\n\n' +
         'Today\'s date is ' + today.toLocaleDateString('en-GB') + '.\n\n' +
         'Campaign dates should not be in the past — please check this is correct before continuing.'
+      );
+    } else if (this.classList.contains('camp-start') && entered < today) {
+      // Start date is in the past (but within the 1-month window)
+      alert(
+        '⚠️ Start Date Has Already Passed\n\n' +
+        'The start date you entered (' + entered.toLocaleDateString('en-GB') + ') is in the past.\n\n' +
+        'Today is ' + today.toLocaleDateString('en-GB') + '.\n\n' +
+        'If this campaign has already started, that\'s fine — just double-check the dates are correct.'
       );
     }
   });
@@ -1959,7 +2032,7 @@ document.addEventListener('click', function(e) {
 // ─── Google Drive configuration ─────────────────────────────────────────────
 // Paste your Client ID below after setting up in Google Cloud Console
 var GDRIVE_CONFIG = {
-  clientId:          '978032756141-mm8qj0l7dtlrkka8l378s8nsgsfnnhhi.apps.googleusercontent.com',
+  clientId:          'PASTE_YOUR_CLIENT_ID_HERE.apps.googleusercontent.com',
   folderId:          'PASTE_ORDER_FORMS_FOLDER_ID_HERE',   // Order PDFs go here
   checklistFolderId: 'PASTE_CHECKLISTS_FOLDER_ID_HERE'    // Checklist PDFs go in sub-folder
 };
