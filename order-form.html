@@ -239,8 +239,10 @@
   .pl-tc-col p { margin-bottom:2.5pt; }
   .pl-bank { font-size:5.5pt; color:#444; border-top:0.5pt solid #ccc; padding-top:3pt; margin-top:4pt; line-height:1.4; }
 
-  .last-updated-bar { text-align:right; font-size:10px; color:#aaa; padding:10px 0 0; border-top:1px solid var(--grey-border); margin-top:20px; }
+  .last-updated-bar { display:flex; align-items:center; justify-content:flex-end; gap:14px; font-size:10px; color:#aaa; padding:10px 0 0; border-top:1px solid var(--grey-border); margin-top:20px; }
   .last-updated-bar span { font-weight:700; color:#999; }
+  .last-editor-badge { display:inline-flex; align-items:center; gap:5px; background:var(--purple-lightest); border:1px solid var(--purple-lighter); border-radius:20px; padding:3px 10px; font-size:10px; color:var(--purple-dark); }
+  .last-editor-badge b { font-weight:700; }
 
   /* LOGIN */
   #login-overlay { position:fixed;inset:0;background:var(--purple-darker);z-index:9999;display:flex;align-items:center;justify-content:center; }
@@ -332,9 +334,10 @@
   .cl-progress { font-size:11px; color:var(--purple-dark); margin-left:auto; }
 
   @media print {
-    @page { margin:1.2cm 1.5cm; size:A4; }
+    @page { margin:0; size:A4; }
+    body { margin:0; padding:0; }
     .page-wrap, #toolbar, #validation-banner { display:none!important; }
-    #print-layout { display:block!important; }
+    #print-layout { display:block!important; padding:1.2cm 1.5cm; box-sizing:border-box; }
     .partner-badge { display:none!important; }
   }
 </style>
@@ -663,6 +666,7 @@
   <span class="error-label" id="err-checklist" style="margin-top:6px;">Please tick all checklist items and enter your name before saving</span>
 
   <div class="last-updated-bar">
+    <span id="last-editor-badge" class="last-editor-badge" style="display:none;">✏️ Last edited by <b id="last-editor-name"></b></span>
     Last updated: <span id="last-updated-display"></span>
   </div>
 </div>
@@ -974,6 +978,7 @@ function populatePrintLayout() {
   var initialsVal = document.getElementById('initials').value || '';
   if (document.getElementById('pl-initials')) document.getElementById('pl-initials').textContent = initialsVal ? ' (' + initialsVal + ')' : '';
   document.getElementById('pl-date').textContent = dateStr;
+
 
   document.getElementById('pl-client-company').textContent = document.getElementById('client-company').value || '';
   document.getElementById('pl-client-address').textContent = document.getElementById('client-address').value || '';
@@ -1290,6 +1295,18 @@ function updateLastUpdated() {
   var el = document.getElementById('last-updated-display');
   if (el) el.textContent = str;
   localStorage.setItem('orderFormLastUpdated', str);
+  // Show who edited it
+  var user = currentUser ? currentUser() : null;
+  if (user && user.name) {
+    localStorage.setItem('orderFormLastEditor', user.name);
+  }
+  var editorName = localStorage.getItem('orderFormLastEditor');
+  var badge = document.getElementById('last-editor-badge');
+  var nameEl = document.getElementById('last-editor-name');
+  if (badge && nameEl && editorName) {
+    nameEl.textContent = editorName + ' — ' + str;
+    badge.style.display = 'inline-flex';
+  }
 }
 updateLastUpdated();
 
@@ -2230,35 +2247,47 @@ function printForm() {
 }
 
 function getPdfHtml() {
-  // Dynamically tighten spacing for large forms — NO CSS zoom (breaks word spacing in html2canvas)
   var rowCount = document.querySelectorAll('#items-body tr').length;
+  var largeForm = rowCount > 6;  // threshold: 7+ rows = large form
   var styleOverride = '';
-  if (rowCount > 5) {
-    var extra = rowCount - 5;
-    var rowPad   = Math.max(1.0, 4 - extra * 0.30).toFixed(1);
-    var hrMarg   = Math.max(2.0, 6 - extra * 0.40).toFixed(1);
-    var secMarg  = Math.max(3.0, 8 - extra * 0.40).toFixed(1);
-    var tcFont   = Math.max(4.5, 5.5 - extra * 0.10).toFixed(1);
-    var bankFont = Math.max(4.0, 5.0 - extra * 0.10).toFixed(1);
-    var fieldMb  = Math.max(3.0, 7 - extra * 0.40).toFixed(1);
-    var pleaseMg = Math.max(2.0, 6 - extra * 0.40).toFixed(1);
+
+  if (largeForm) {
+    // Large form: T&Cs move to their own page 2, so only lightly tighten page 1
+    var extra = rowCount - 6;
+    var rowPad  = Math.max(2.0, 4 - extra * 0.25).toFixed(1);
+    var hrMarg  = Math.max(3.0, 6 - extra * 0.30).toFixed(1);
+    var secMarg = Math.max(4.0, 8 - extra * 0.30).toFixed(1);
     styleOverride = '<style>' +
+      // Page 1: moderate tightening so main content fits without T&Cs
       '.pl-items td{padding:' + rowPad + 'pt 8pt ' + rowPad + 'pt 0!important;font-size:9pt!important;}' +
       '.pl-items th{padding:1pt 8pt ' + rowPad + 'pt 0!important;font-size:9pt!important;}' +
       '.pl-hr{margin:' + hrMarg + 'pt 0!important;}' +
       '.pl-to-row{margin:' + secMarg + 'pt 0 4pt!important;}' +
       '.pl-totals-wrap{margin:2pt 0 ' + secMarg + 'pt!important;}' +
       '.pl-notes-label{margin-bottom:1pt!important;}' +
-      '.pl-notes-body{line-height:1.3!important;}' +
-      '.pl-please{margin:' + pleaseMg + 'pt 0 2pt!important;}' +
-      '.pl-field-row{margin-bottom:' + fieldMb + 'pt!important;}' +
-      '.pl-signoff-box{padding:5pt 8pt!important;}' +
-      '.pl-tc-col{font-size:' + tcFont + 'pt!important;line-height:1.25!important;}' +
-      '.pl-tc-col p{margin-bottom:2pt!important;}' +
-      '.pl-bank{font-size:' + bankFont + 'pt!important;}' +
-      '#pl-camp-dates-wrap{margin-top:4pt!important;}' +
+      '.pl-please{margin:4pt 0 2pt!important;}' +
+      '.pl-field-row{margin-bottom:5pt!important;}' +
+      '.pl-signoff-box{padding:6pt 8pt!important;}' +
+      // Page 2: T&Cs get a clean page break and more space — bigger font now they have room
+      '.pl-tc-section{page-break-before:always!important;padding-top:12pt!important;}' +
+      '.pl-tc-title{font-size:11pt!important;margin-bottom:8pt!important;padding-bottom:5pt!important;}' +
+      '.pl-tc-cols{gap:20pt!important;}' +
+      '.pl-tc-col{font-size:7.5pt!important;line-height:1.5!important;}' +
+      '.pl-tc-col p{margin-bottom:4pt!important;}' +
+      '.pl-bank{font-size:7pt!important;margin-top:10pt!important;padding-top:6pt!important;line-height:1.6!important;}' +
     '</style>';
+  } else {
+    // Small form: everything on one page, gentle tightening only if needed
+    var extra2 = Math.max(0, rowCount - 4);
+    if (extra2 > 0) {
+      var rowPad2 = Math.max(2.5, 4 - extra2 * 0.20).toFixed(1);
+      styleOverride = '<style>' +
+        '.pl-items td{padding:' + rowPad2 + 'pt 8pt ' + rowPad2 + 'pt 0!important;font-size:9.5pt!important;}' +
+        '.pl-items th{padding:2pt 8pt ' + rowPad2 + 'pt 0!important;}' +
+      '</style>';
+    }
   }
+
   return '<div style="font-family:Arial,sans-serif;font-size:10pt;color:#000;' +
     'width:210mm;padding:8mm 12mm;box-sizing:border-box;background:#fff;">' +
     styleOverride + document.getElementById('print-layout').innerHTML +
