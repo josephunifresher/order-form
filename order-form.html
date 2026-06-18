@@ -1775,16 +1775,27 @@ function renderAdminBody() {
   });
 }
 
+// Extract a bare Drive folder ID from either a raw ID or a full Drive URL.
+// e.g. "https://drive.google.com/drive/u/0/folders/1ABC..." → "1ABC..."
+function parseDriveFolderId(val) {
+  if (!val) return '';
+  val = val.trim();
+  var m = val.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+  return m ? m[1] : val;
+}
+
 function adminSaveInitials(id) {
   var inp = document.getElementById('adm-ini-' + id);
   var fidInp = document.getElementById('adm-fid-' + id);
   if (!inp) return;
   var initials = inp.value.trim().toUpperCase();
-  var drive_folder_id = fidInp ? fidInp.value.trim() : '';
-  var patch = { initials: initials };
-  if (drive_folder_id !== undefined) patch.drive_folder_id = drive_folder_id;
+  var raw = fidInp ? fidInp.value.trim() : '';
+  var drive_folder_id = parseDriveFolderId(raw);
+  // Write the parsed ID back into the input so the user can see what was saved
+  if (fidInp && drive_folder_id !== raw) fidInp.value = drive_folder_id;
+  var patch = { initials: initials, drive_folder_id: drive_folder_id };
   sbFetch('profiles?id=eq.' + id, 'PATCH', patch, { 'Prefer': '' })
-    .then(function() { alert('✅ Saved!'); })
+    .then(function() { alert('✅ Saved! Folder ID: ' + (drive_folder_id || '(none)')); })
     ['catch'](function() { alert('Could not save.'); });
 }
 
@@ -2275,7 +2286,7 @@ function uploadToDrive(accessToken, btn) {
   var user = currentUser();
   var initials = (user && user.initials) ? user.initials.toUpperCase()
                : (document.getElementById('initials').value || '').toUpperCase().trim();
-  var storedFolderId = user && user.drive_folder_id ? user.drive_folder_id : '';
+  var storedFolderId = user && user.drive_folder_id ? parseDriveFolderId(user.drive_folder_id) : '';
 
   btn.textContent = '☁ Uploading…';
 
