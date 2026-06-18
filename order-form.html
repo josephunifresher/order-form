@@ -482,12 +482,12 @@
       <div class="box-title">TO *</div>
       <div class="field-row">
         <label>Company / Trading Name *</label>
-        <input type="text" id="client-company" placeholder="e.g. McCann Manchester Limited t/a McCann" autocomplete="off" required>
+        <input type="text" id="client-company" placeholder="e.g. McCann Manchester Limited t/a McCann" autocomplete="nope" required>
         <span class="error-label" id="err-client-company">Company name is required</span>
       </div>
       <div class="field-row" style="margin-top:8px">
         <label>Address *</label>
-        <textarea id="client-address" rows="4" placeholder="Street&#10;Town&#10;County&#10;Postcode" autocomplete="off" required style="width:100%;border:none;border-bottom:1.5px solid var(--purple-lighter);resize:vertical;font-size:13px;padding:4px;font-family:'Lato',Arial,sans-serif"></textarea>
+        <textarea id="client-address" rows="4" placeholder="Street&#10;Town&#10;County&#10;Postcode" autocomplete="nope" required style="width:100%;border:none;border-bottom:1.5px solid var(--purple-lighter);resize:vertical;font-size:13px;padding:4px;font-family:'Lato',Arial,sans-serif"></textarea>
         <span class="error-label" id="err-client-address">Client address is required</span>
       </div>
     </div>
@@ -1102,6 +1102,20 @@ function populatePrintLayout() {
 }
 
 function validateForm() {
+  // Commit any pending browser autofill (e.g. Chrome ghost-text) by blurring
+  if (document.activeElement && document.activeElement !== document.body) {
+    document.activeElement.blur();
+  }
+  // Pre-clear stale error states for fields that now have a value
+  // (covers programmatic fills from history restore that don't fire 'input' events)
+  document.querySelectorAll('input.error, textarea.error').forEach(function(el) {
+    if (el.value.trim()) {
+      el.classList.remove('error');
+      var staleErr = document.getElementById('err-' + el.id);
+      if (staleErr) staleErr.classList.remove('show');
+    }
+  });
+
   var valid = true;
   function check(id, errId, extraCheck) {
     var el = document.getElementById(id);
@@ -1483,9 +1497,7 @@ function captureFormData() {
     rows.push({
       descHtml: descEl ? descEl.innerHTML : '',
       price:    (tr.querySelector('.item-price')  || {}).value || '',
-      qty:      (tr.querySelector('.item-qty')    || {}).value || '',
-      months:   (tr.querySelector('.item-months') || {}).value || '',
-      weeks:    (tr.querySelector('.item-weeks')  || {}).value || ''
+      qty:      (tr.querySelector('.item-qty')    || {}).value || ''
     });
   });
   var campDates = [];
@@ -1543,8 +1555,6 @@ function restoreFormData(data) {
     var setTrVal = function(cls, val) { var el = tr.querySelector(cls); if (el) el.value = val || ''; };
     setTrVal('.item-price', row.price);
     setTrVal('.item-qty',   row.qty);
-    setTrVal('.item-months',row.months);
-    setTrVal('.item-weeks', row.weeks);
   });
   // Restore campaign dates
   (data.campDates || []).forEach(function(cd, i) {
