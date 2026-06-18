@@ -471,7 +471,7 @@
       <div class="order-tag">ORDER</div>
       <div class="meta-row"><span><label>REF NO:</label><input type="text" id="ref-no" placeholder="e.g. UNI03001" style="width:120px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required></span></div>
       <div class="meta-row"><span><label>Date:</label><input type="date" id="order-date" required></span></div>
-      <div class="meta-row"><span><label>Initials *</label><input type="text" id="initials" placeholder="e.g. JB" maxlength="5" style="width:60px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required><span class="error-label" id="err-initials" style="display:inline;margin-left:6px;font-size:10px;">Required</span></span></div>
+      <div class="meta-row"><span><label>Initials *</label><input type="text" id="initials" placeholder="e.g. JB" maxlength="5" style="width:60px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required><span class="error-label" id="err-initials" style="margin-left:6px;font-size:10px;">Required</span></span></div>
     </div>
   </div>
 
@@ -482,12 +482,12 @@
       <div class="box-title">TO *</div>
       <div class="field-row">
         <label>Company / Trading Name *</label>
-        <input type="text" id="client-company" placeholder="e.g. McCann Manchester Limited t/a McCann" required>
+        <input type="text" id="client-company" placeholder="e.g. McCann Manchester Limited t/a McCann" autocomplete="off" required>
         <span class="error-label" id="err-client-company">Company name is required</span>
       </div>
       <div class="field-row" style="margin-top:8px">
         <label>Address *</label>
-        <textarea id="client-address" rows="4" placeholder="Street&#10;Town&#10;County&#10;Postcode" required style="width:100%;border:none;border-bottom:1.5px solid var(--purple-lighter);resize:vertical;font-size:13px;padding:4px;font-family:'Lato',Arial,sans-serif"></textarea>
+        <textarea id="client-address" rows="4" placeholder="Street&#10;Town&#10;County&#10;Postcode" autocomplete="off" required style="width:100%;border:none;border-bottom:1.5px solid var(--purple-lighter);resize:vertical;font-size:13px;padding:4px;font-family:'Lato',Arial,sans-serif"></textarea>
         <span class="error-label" id="err-client-address">Client address is required</span>
       </div>
     </div>
