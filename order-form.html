@@ -504,12 +504,10 @@
   <table class="items-table" id="items-table">
     <thead>
       <tr>
-        <th style="width:40%">Description *</th>
-        <th style="width:13%" class="right">Unit Price (£) *</th>
-        <th style="width:7%" class="right">Qty <button type="button" class="info-tip" tabindex="0"><span class="info-tip-popup">Number of ad units or placements. Leave blank if not applicable — the Months and Weeks boxes will still calculate a total.</span>i</button></th>
-        <th style="width:7%" class="right">Months <button type="button" class="info-tip" tabindex="0"><span class="info-tip-popup">Number of full calendar months. Row total = Unit Price × Qty × Months (plus any Weeks on top). Leave at 0 if using Weeks only.</span>i</button></th>
-        <th style="width:7%" class="right">Weeks <button type="button" class="info-tip" tabindex="0"><span class="info-tip-popup">Extra weeks on top of the Months total. Each week counts as Unit Price ÷ 4. e.g. 2 extra weeks = half a month's price added on.</span>i</button></th>
-        <th style="width:13%" class="right">Total (£)</th>
+        <th style="width:47%">Description *</th>
+        <th style="width:16%" class="right">Unit Price (£) *</th>
+        <th style="width:8%" class="right">Qty <button type="button" class="info-tip" tabindex="0"><span class="info-tip-popup">Number of units, weeks, months, or placements. Total = Unit Price × Qty. Leave blank to count as 1.</span>i</button></th>
+        <th style="width:16%" class="right">Total (£)</th>
         <th style="width:6%"></th>
       </tr>
     </thead>
@@ -668,7 +666,7 @@
     <div class="cl-group">
       <div class="cl-group-title">Description</div>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl4"><span>Each line has a city / location</span></label>
-      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl5"><span>Each line has correct qty of months</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl5"><span>Each line has correct qty / unit count</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl6"><span>IF AGENCY — confirmed who campaign is running for</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl7"><span>NETT matches the sales sheet</span></label>
     </div>
@@ -677,7 +675,7 @@
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl8"><span>Locations are correct</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl9"><span>Locations match the Description section</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl11"><span>Live dates are correct (including year)</span></label>
-      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl12"><span>Live months tally with months in Description</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl12"><span>Live dates tally with duration in Description</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl13"><span>KPIs are correct</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl14"><span>KPIs match billing (standard or double)</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl15"><span>Multiple KPI sets have clear dates (if applicable)</span></label>
@@ -727,11 +725,9 @@
     <thead id="pl-items-head">
       <tr>
         <th style="width:41%">Description</th>
-        <th class="r" style="width:13%">Unit Price</th>
-        <th class="r" style="width:7%">Qty</th>
-        <th class="r" style="width:7%">Months</th>
-        <th class="r" style="width:7%">Weeks</th>
-        <th class="r" style="width:13%">Total</th>
+        <th class="r" style="width:16%">Unit Price</th>
+        <th class="r" style="width:8%">Qty</th>
+        <th class="r" style="width:16%">Total</th>
       </tr>
     </thead>
     <tbody id="pl-items-body"></tbody>
@@ -872,12 +868,6 @@ function addRow() {
     '<td class="qty-cell">' +
       '<input type="number" placeholder="" step="1" min="1" class="item-qty" oninput="recalc()">' +
     '</td>' +
-    '<td class="qty-cell">' +
-      '<input type="number" placeholder="0" step="1" min="0" class="item-months" oninput="recalc()">' +
-    '</td>' +
-    '<td class="qty-cell">' +
-      '<input type="number" placeholder="" step="1" min="0" class="item-weeks" oninput="recalc()">' +
-    '</td>' +
     '<td class="total-cell" id="row-total-' + id + '">£0.00</td>' +
     '<td style="text-align:center;vertical-align:middle;white-space:nowrap;">' +
       '<button class="dup-row-btn" onclick="duplicateRow(' + id + ')" title="Duplicate row">⧉</button>' +
@@ -901,23 +891,17 @@ function duplicateRow(id) {
   var descEl   = srcRow.querySelector('.item-desc');
   var priceEl  = srcRow.querySelector('.item-price');
   var qtyEl    = srcRow.querySelector('.item-qty');
-  var monthsEl = srcRow.querySelector('.item-months');
-  var weeksEl  = srcRow.querySelector('.item-weeks');
   var descHtml = descEl  ? descEl.innerHTML  : '';
   var price    = priceEl  ? priceEl.value   : '';
   var qty      = qtyEl    ? qtyEl.value     : '';
-  var months   = monthsEl ? monthsEl.value  : '';
-  var weeks    = weeksEl  ? weeksEl.value   : '';
   // Create a new row then populate it with the copied values
   addRow();
   var newRow = document.querySelector('#items-body tr:last-child');
   var newDesc = newRow.querySelector('.item-desc');
   if (newDesc) newDesc.innerHTML = descHtml;
   var setVal = function(cls, val) { var el = newRow.querySelector(cls); if (el) el.value = val; };
-  setVal('.item-price',  price);
-  setVal('.item-qty',    qty);
-  setVal('.item-months', months);
-  setVal('.item-weeks',  weeks);
+  setVal('.item-price', price);
+  setVal('.item-qty',   qty);
   // Move the new row to immediately after the source row
   srcRow.parentNode.insertBefore(newRow, srcRow.nextSibling);
   recalc();
@@ -926,13 +910,10 @@ function duplicateRow(id) {
 function getNetTotal() {
   var n = 0;
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
-    var price  = parseFloat(tr.querySelector('.item-price')  ? tr.querySelector('.item-price').value  : 0) || 0;
-    var qtyEl  = tr.querySelector('.item-qty');
-    var qty    = (qtyEl && qtyEl.value !== '') ? (parseFloat(qtyEl.value) || 1) : 1;
-    var months = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
-    var weeks  = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
-    // Weeks are billed at price/4 (weekly rate = monthly rate ÷ 4)
-    n += price * qty * months + (price / 4) * qty * weeks;
+    var price = parseFloat(tr.querySelector('.item-price') ? tr.querySelector('.item-price').value : 0) || 0;
+    var qtyEl = tr.querySelector('.item-qty');
+    var qty   = (qtyEl && qtyEl.value !== '') ? (parseFloat(qtyEl.value) || 1) : 1;
+    n += price * qty;
   });
   return n;
 }
@@ -956,17 +937,14 @@ function toggleVat() {
 }
 
 function recalc() {
-  var vatRate  = parseFloat(document.getElementById('vat-rate').value) || 0;
+  var vatRate = parseFloat(document.getElementById('vat-rate').value) || 0;
   var net = 0;
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
-    var id       = tr.id.replace('row-', '');
-    var price    = parseFloat(tr.querySelector('.item-price')  ? tr.querySelector('.item-price').value  : 0) || 0;
-    var qtyEl2   = tr.querySelector('.item-qty');
-    var qty      = (qtyEl2 && qtyEl2.value !== '') ? (parseFloat(qtyEl2.value) || 1) : 1;
-    var months   = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
-    var weeks    = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
-    // Weeks are billed at price/4 (weekly rate = monthly rate ÷ 4)
-    var rowTotal = price * qty * months + (price / 4) * qty * weeks;
+    var id    = tr.id.replace('row-', '');
+    var price = parseFloat(tr.querySelector('.item-price') ? tr.querySelector('.item-price').value : 0) || 0;
+    var qtyEl = tr.querySelector('.item-qty');
+    var qty   = (qtyEl && qtyEl.value !== '') ? (parseFloat(qtyEl.value) || 1) : 1;
+    var rowTotal = price * qty;
     net += rowTotal;
     var cell = document.getElementById('row-total-' + id);
     if (cell) cell.textContent = '£' + rowTotal.toFixed(2);
@@ -1010,55 +988,45 @@ function populatePrintLayout() {
   document.getElementById('pl-client-company').textContent = document.getElementById('client-company').value || '';
   document.getElementById('pl-client-address').textContent = document.getElementById('client-address').value || '';
 
-  // Line items — scan rows first to see which columns are needed
-  var anyMonths = false; var anyWeeks = false; var anyQty = false;
+  // Line items — scan rows to see if any have a qty set
+  var anyQty = false;
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
-    var m = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
-    var w = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
     var q = tr.querySelector('.item-qty');
-    if (m > 0) anyMonths = true;
-    if (w > 0) anyWeeks  = true;
     if (q && q.value !== '') anyQty = true;
   });
 
-  // Update print layout table header to match
+  // Update print layout table header
   var plHead = document.querySelector('#pl-items-body').closest('table').querySelector('thead tr');
   if (plHead) {
     plHead.innerHTML =
-      '<th style="width:' + (anyMonths||anyWeeks ? '41%' : '55%') + '">Description</th>' +
-      '<th class="r" style="width:13%">Unit Price</th>' +
-      (anyQty    ? '<th class="r" style="width:7%">Qty</th>'    : '') +
-      (anyMonths ? '<th class="r" style="width:7%">Months</th>' : '') +
-      (anyWeeks  ? '<th class="r" style="width:7%">Weeks</th>'  : '') +
-      '<th class="r" style="width:13%">Total</th>';
+      '<th style="width:' + (anyQty ? '48%' : '62%') + '">Description</th>' +
+      '<th class="r" style="width:16%">Unit Price</th>' +
+      (anyQty ? '<th class="r" style="width:8%">Qty</th>' : '') +
+      '<th class="r" style="width:16%">Total</th>';
   }
 
   var plBody = document.getElementById('pl-items-body');
   plBody.innerHTML = '';
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
     var descEl2 = tr.querySelector('.item-desc');
-    var desc   = descEl2 ? (descEl2.innerText || descEl2.value || '') : '';
-    var price  = parseFloat(tr.querySelector('.item-price')  ? tr.querySelector('.item-price').value  : 0) || 0;
-    var qtyEl3 = tr.querySelector('.item-qty');
-    var qty    = (qtyEl3 && qtyEl3.value !== '') ? (parseFloat(qtyEl3.value) || 0) : 0;
-    var months = parseFloat(tr.querySelector('.item-months') ? tr.querySelector('.item-months').value : 0) || 0;
-    var weeks  = parseFloat(tr.querySelector('.item-weeks')  ? tr.querySelector('.item-weeks').value  : 0) || 0;
+    var desc    = descEl2 ? (descEl2.innerText || descEl2.value || '') : '';
+    var price   = parseFloat(tr.querySelector('.item-price') ? tr.querySelector('.item-price').value : 0) || 0;
+    var qtyEl3  = tr.querySelector('.item-qty');
+    var qty     = (qtyEl3 && qtyEl3.value !== '') ? (parseFloat(qtyEl3.value) || 0) : 0;
     var effectiveQty = qty || 1;
-    var total  = price * effectiveQty * months + (price / 4) * effectiveQty * weeks;
+    var total   = price * effectiveQty;
     if (!desc && !price) return;
     var row = document.createElement('tr');
     row.innerHTML =
       '<td>' + desc + '</td>' +
       '<td class="r">' + (price ? '£' + price.toFixed(2) : '') + '</td>' +
-      (anyQty    ? '<td class="r">' + (qty || '') + '</td>' : '') +
-      (anyMonths ? '<td class="r">' + (months || '') + '</td>' : '') +
-      (anyWeeks  ? '<td class="r">' + (weeks  || '') + '</td>' : '') +
+      (anyQty ? '<td class="r">' + (qty || '') + '</td>' : '') +
       '<td class="r bold">' + (total ? '£' + total.toFixed(2) : '') + '</td>';
     plBody.appendChild(row);
   });
 
   // Build tfoot dynamically so colspan exactly matches the visible columns
-  var labelCols = 2 + (anyQty ? 1 : 0) + (anyMonths ? 1 : 0) + (anyWeeks ? 1 : 0); // all cols except Total
+  var labelCols = 2 + (anyQty ? 1 : 0); // all cols except Total
   var tfoot = document.getElementById('pl-items-foot');
   tfoot.innerHTML = '';
 
@@ -1876,7 +1844,7 @@ var CL_ITEMS = {
   ],
   group2: [
     { id:'cl4', label:'Each line has a city / location' },
-    { id:'cl5', label:'Each line has correct qty of months' },
+    { id:'cl5', label:'Each line has correct qty / unit count' },
     { id:'cl6', label:'IF AGENCY — confirmed who campaign is running for' },
     { id:'cl7', label:'NETT matches the sales sheet' }
   ],
@@ -1884,7 +1852,7 @@ var CL_ITEMS = {
     { id:'cl8',  label:'Locations are correct' },
     { id:'cl9',  label:'Locations match the Description section' },
     { id:'cl11', label:'Live dates are correct (including year)' },
-    { id:'cl12', label:'Live months tally with months in Description' },
+    { id:'cl12', label:'Live dates tally with duration in Description' },
     { id:'cl13', label:'KPIs are correct' },
     { id:'cl14', label:'KPIs match billing (standard or double)' },
     { id:'cl15', label:'Multiple KPI sets have clear dates (if applicable)' }
