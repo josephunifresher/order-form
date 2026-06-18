@@ -2164,7 +2164,7 @@ function autoSaveChecklist() {
     try {
       var tc = google.accounts.oauth2.initTokenClient({
         client_id: GDRIVE_CONFIG.clientId,
-        scope: 'https://www.googleapis.com/auth/drive.file',
+        scope: 'https://www.googleapis.com/auth/drive',
         callback: function(r) { if (!r.error) doChecklistUpload(r.access_token); }
       });
       tc.requestAccessToken();
@@ -2182,7 +2182,7 @@ function saveToDrive() {
   btn.disabled = true; btn.textContent = 'Uploading…';
   var tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: GDRIVE_CONFIG.clientId,
-    scope: 'https://www.googleapis.com/auth/drive.file',
+    scope: 'https://www.googleapis.com/auth/drive',
     callback: function(response) {
       if (response.error) {
         btn.disabled = false; btn.textContent = '☁ Save to Drive';
