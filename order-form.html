@@ -1410,7 +1410,7 @@ function doLogin() {
   if (!activeBtn) { err.textContent = 'Please select a user'; return; }
   err.textContent = 'Signing in…';
   // Look up their email from profiles, then authenticate via Supabase Auth
-  sbFetch('profiles?name=eq.' + encodeURIComponent(activeBtn.dataset.name) + '&select=email,name,role,initials')
+  sbFetch('profiles?name=eq.' + encodeURIComponent(activeBtn.dataset.name) + '&select=email,name,role,initials,drive_folder_id')
     .then(function(rows) {
       if (!rows || !rows.length) { err.textContent = 'User not found'; return; }
       var profile = rows[0];
@@ -1422,12 +1422,13 @@ function doLogin() {
             return;
           }
           sessionStorage.setItem('uf_session', JSON.stringify({
-            id:            data.user.id,
-            name:          profile.name,
-            role:          profile.role,
-            initials:      profile.initials || '',
-            access_token:  data.access_token,
-            refresh_token: data.refresh_token
+            id:              data.user.id,
+            name:            profile.name,
+            role:            profile.role,
+            initials:        profile.initials || '',
+            drive_folder_id: profile.drive_folder_id || '',
+            access_token:    data.access_token,
+            refresh_token:   data.refresh_token
           }));
           document.getElementById('login-overlay').style.display = 'none';
           document.getElementById('toolbar-user').textContent = '👤 ' + profile.name;
@@ -1688,7 +1689,7 @@ function renderAdminBody() {
   var currentU = currentUser();
   document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Loading…</div>';
   Promise.all([
-    sbFetch('profiles?order=name&select=id,name,role,email,initials'),
+    sbFetch('profiles?order=name&select=id,name,role,email,initials,drive_folder_id'),
     sbFetch('order_history?order=saved_at.desc'),
     sbFetch('drive_log?order=logged_at.desc&limit=100')
   ]).then(function(results) {
@@ -1711,7 +1712,9 @@ function renderAdminBody() {
           (u.role === 'admin' ? 'Make User' : 'Make Admin') + '</button>';
       }
       html += '<input class="adm-inp" id="adm-ini-' + u.id + '" placeholder="Initials" ' +
-        'value="' + (u.initials || '') + '" maxlength="5" style="width:70px;text-transform:uppercase;">' +
+        'value="' + (u.initials || '') + '" maxlength="5" style="width:60px;text-transform:uppercase;">' +
+        '<input class="adm-inp" id="adm-fid-' + u.id + '" placeholder="Drive Folder ID" ' +
+        'value="' + (u.drive_folder_id || '') + '" style="width:200px;font-size:11px;" title="Google Drive folder ID for this user\'s uploads">' +
         '<button class="adm-btn" style="font-size:11px;" onclick="adminSaveInitials(\'' + u.id + '\')">Save</button>';
       if (u.email && !isSuperAdmin) {
         html += '<button class="adm-btn" style="background:#f39c12;font-size:11px;" ' +
@@ -1774,11 +1777,15 @@ function renderAdminBody() {
 
 function adminSaveInitials(id) {
   var inp = document.getElementById('adm-ini-' + id);
+  var fidInp = document.getElementById('adm-fid-' + id);
   if (!inp) return;
   var initials = inp.value.trim().toUpperCase();
-  sbFetch('profiles?id=eq.' + id, 'PATCH', { initials: initials }, { 'Prefer': '' })
-    .then(function() { alert('✅ Initials saved!'); })
-    ['catch'](function() { alert('Could not save initials.'); });
+  var drive_folder_id = fidInp ? fidInp.value.trim() : '';
+  var patch = { initials: initials };
+  if (drive_folder_id !== undefined) patch.drive_folder_id = drive_folder_id;
+  sbFetch('profiles?id=eq.' + id, 'PATCH', patch, { 'Prefer': '' })
+    .then(function() { alert('✅ Saved!'); })
+    ['catch'](function() { alert('Could not save.'); });
 }
 
 function adminToggleRole(id, name, newRole) {
@@ -2264,22 +2271,32 @@ function uploadToDrive(accessToken, btn) {
   var orderFilename     = baseName + '.pdf';
   var checklistFilename = baseName + ' - Checklist.pdf';
 
-  // Get initials: prefer logged-in user's profile initials, fall back to form field
+  // Get user info: prefer drive_folder_id stored in session (most reliable)
   var user = currentUser();
   var initials = (user && user.initials) ? user.initials.toUpperCase()
                : (document.getElementById('initials').value || '').toUpperCase().trim();
+  var storedFolderId = user && user.drive_folder_id ? user.drive_folder_id : '';
 
   btn.textContent = '☁ Uploading…';
 
   var orderBlob, clBlob, orderFolderId, clFolderId;
 
-  // Step 1: resolve the initials subfolders (find existing — create if somehow missing)
-  Promise.all([
-    initials ? getOrCreateDriveFolder(initials, GDRIVE_CONFIG.folderId, accessToken)
-             : Promise.resolve(GDRIVE_CONFIG.folderId),
-    initials ? getOrCreateDriveFolder(initials, GDRIVE_CONFIG.checklistFolderId || GDRIVE_CONFIG.folderId, accessToken)
-             : Promise.resolve(GDRIVE_CONFIG.checklistFolderId || GDRIVE_CONFIG.folderId)
-  ])
+  // Step 1: resolve the target folder.
+  // If the user has a drive_folder_id saved in their profile, use it directly for both
+  // files (avoids Drive API search, which can fail for dot-format names like F.P, C.M).
+  // Otherwise fall back to searching/creating a subfolder by initials.
+  var folderPromise;
+  if (storedFolderId) {
+    folderPromise = Promise.resolve([storedFolderId, storedFolderId]);
+  } else {
+    folderPromise = Promise.all([
+      initials ? getOrCreateDriveFolder(initials, GDRIVE_CONFIG.folderId, accessToken)
+               : Promise.resolve(GDRIVE_CONFIG.folderId),
+      initials ? getOrCreateDriveFolder(initials, GDRIVE_CONFIG.checklistFolderId || GDRIVE_CONFIG.folderId, accessToken)
+               : Promise.resolve(GDRIVE_CONFIG.checklistFolderId || GDRIVE_CONFIG.folderId)
+    ]);
+  }
+  folderPromise
   .then(function(ids) {
     orderFolderId = ids[0];
     clFolderId    = ids[1];
@@ -2304,6 +2321,7 @@ function uploadToDrive(accessToken, btn) {
   .then(function(data) {
     btn.disabled = false; btn.textContent = '☁ Save to Drive';
     var folder = initials ? ' → ' + initials + '/' : '';
+    if (storedFolderId && initials) folder = ' → ' + initials + '/ (direct)';
     if (data.id) {
       logDriveUpload(refNo, company, checklistFilename, 'Checklist');
       alert('✅ Both files saved to Google Drive!' + folder + '\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename);
