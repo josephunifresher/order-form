@@ -2451,36 +2451,34 @@ function generateOrderPdfBlob(filename) {
     })
     .then(function(c2) {
       c2ref = c2;
-      // Get the jsPDF constructor by generating a throwaway 1px PDF —
-      // this works regardless of how jsPDF is bundled inside html2pdf
-      return html2pdf().set(hOpts)
-        .from('<div style="width:1px;height:1px;"></div>', 'string')
-        .toPdf().get('pdf');
-    })
-    .then(function(dummyPdf) {
-      // Grab the constructor from the live instance — always works
-      var JsPDF = dummyPdf.constructor;
-      var pdf = new JsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
 
-      // ── Page 1: always exactly one A4 page ─────────────────────────────
-      // Scale down proportionally if the canvas is taller than A4 so
-      // the sign-off box is never cut off or pushed to a second page.
-      var img1 = c1ref.toDataURL('image/jpeg', 0.98);
-      var h1 = (c1ref.height / c1ref.width) * A4_W;
-      if (h1 <= A4_H) {
-        pdf.addImage(img1, 'JPEG', 0, 0, A4_W, h1);
+      // Scale page 1 canvas down to fit A4 height so html2pdf creates exactly 1 page.
+      // 295mm leaves a small safety margin below 297mm.
+      var a4HPx = Math.floor(c1ref.width * 295 / 210);
+      var p1Canvas;
+      if (c1ref.height <= a4HPx) {
+        p1Canvas = c1ref;
       } else {
-        var s1 = A4_H / h1;
-        var w1 = A4_W * s1;
-        pdf.addImage(img1, 'JPEG', (A4_W - w1) / 2, 0, w1, A4_H);
+        p1Canvas = document.createElement('canvas');
+        p1Canvas.width  = c1ref.width;
+        p1Canvas.height = a4HPx;
+        p1Canvas.getContext('2d').drawImage(
+          c1ref, 0, 0, c1ref.width, c1ref.height,
+          0, 0, c1ref.width, a4HPx
+        );
       }
 
-      // ── Page 2: T&Cs ───────────────────────────────────────────────────
+      // Feed the (possibly scaled) canvas back into html2pdf so we get a
+      // proper jsPDF instance with all plugins (including addImage) loaded.
+      return html2pdf().set(hOpts).from(p1Canvas).toPdf().get('pdf');
+    })
+    .then(function(pdf) {
+      // pdf is a real jsPDF instance — page 1 already contains the form content.
+      // Now append page 2 with the T&Cs canvas.
       pdf.addPage();
       var img2 = c2ref.toDataURL('image/jpeg', 0.98);
-      var h2 = (c2ref.height / c2ref.width) * A4_W;
+      var h2   = (c2ref.height / c2ref.width) * A4_W;
       pdf.addImage(img2, 'JPEG', 0, 0, A4_W, h2 > A4_H ? A4_H : h2);
-
       return pdf.output('blob');
     });
 }
