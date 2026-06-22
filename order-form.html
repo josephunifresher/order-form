@@ -2176,13 +2176,33 @@ function saveToDrive() {
   }
   var btn = document.getElementById('btn-drive');
   btn.disabled = true; btn.textContent = 'Uploading…';
+
+  // Safety timeout — if nothing happens in 60s, reset the button
+  var resetTimer = setTimeout(function() {
+    btn.disabled = false; btn.textContent = '☁ Save to Drive';
+  }, 60000);
+
+  function resetBtn(errMsg) {
+    clearTimeout(resetTimer);
+    btn.disabled = false; btn.textContent = '☁ Save to Drive';
+    if (errMsg) alert(errMsg);
+  }
+
   var tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: GDRIVE_CONFIG.clientId,
     scope: 'https://www.googleapis.com/auth/drive',
+    error_callback: function(err) {
+      // Fired when the popup is closed/dismissed or blocked
+      if (err && err.type === 'popup_closed') {
+        resetBtn(null); // silent reset — user just closed the popup
+      } else {
+        resetBtn('Google sign-in was cancelled or blocked.\nPlease allow the pop-up and try again.');
+      }
+    },
     callback: function(response) {
+      clearTimeout(resetTimer);
       if (response.error) {
-        btn.disabled = false; btn.textContent = '☁ Save to Drive';
-        alert('Google sign-in failed: ' + response.error);
+        resetBtn('Google sign-in failed: ' + response.error);
         return;
       }
       _driveToken = response.access_token; // cache for auto-saves
