@@ -2504,11 +2504,19 @@ function generateOrderPdfBlob(filename) {
   tcEl.parentNode.removeChild(tcEl);
   var page1Html = wrapEl.outerHTML;
 
-  // Page 2 gets the same outer wrapper + style override so fonts are correct
+  // Page 2: T&Cs only. Use clean styling — crucially we override page-break-before to
+  // 'auto' so html2canvas doesn't insert a blank A4 page before the T&C content.
   var outerStyle = wrapEl.getAttribute('style') || '';
-  var styleEl = wrapEl.querySelector('style');
-  var styleHtml = styleEl ? styleEl.outerHTML : '';
-  var page2Html = '<div style="' + outerStyle + '">' + styleHtml + tcEl.outerHTML + '</div>';
+  var page2Html = '<div style="' + outerStyle + '">' +
+    '<style>' +
+    '.pl-tc-section{page-break-before:auto!important;margin-top:0!important;padding-top:10pt!important;}' +
+    '.pl-tc-title{font-size:11pt!important;margin-bottom:8pt!important;padding-bottom:5pt!important;}' +
+    '.pl-tc-cols{display:flex;gap:20pt!important;}' +
+    '.pl-tc-col{font-size:7.5pt!important;line-height:1.5!important;}' +
+    '.pl-tc-col p{margin-bottom:4pt!important;}' +
+    '.pl-bank{font-size:7pt!important;margin-top:10pt!important;padding-top:6pt!important;border-top:0.5pt solid #ccc!important;line-height:1.6!important;}' +
+    '</style>' +
+    tcEl.outerHTML + '</div>';
 
   var hOpts = {
     margin: 0,
