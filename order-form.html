@@ -2504,19 +2504,21 @@ function generateOrderPdfBlob(filename) {
   tcEl.parentNode.removeChild(tcEl);
   var page1Html = wrapEl.outerHTML;
 
-  // Page 2: T&Cs only. Use clean styling — crucially we override page-break-before to
-  // 'auto' so html2canvas doesn't insert a blank A4 page before the T&C content.
+  // Page 2: T&Cs only.
+  // We use tcEl.innerHTML (NOT outerHTML) so the .pl-tc-section wrapper class — which
+  // carries page-break-before:always — is never in the page2 DOM.  That class is what
+  // causes html2canvas to insert a full blank A4 page of space before the content.
   var outerStyle = wrapEl.getAttribute('style') || '';
   var page2Html = '<div style="' + outerStyle + '">' +
     '<style>' +
-    '.pl-tc-section{page-break-before:auto!important;margin-top:0!important;padding-top:10pt!important;}' +
-    '.pl-tc-title{font-size:11pt!important;margin-bottom:8pt!important;padding-bottom:5pt!important;}' +
-    '.pl-tc-cols{display:flex;gap:20pt!important;}' +
-    '.pl-tc-col{font-size:7.5pt!important;line-height:1.5!important;}' +
-    '.pl-tc-col p{margin-bottom:4pt!important;}' +
-    '.pl-bank{font-size:7pt!important;margin-top:10pt!important;padding-top:6pt!important;border-top:0.5pt solid #ccc!important;line-height:1.6!important;}' +
+    '.pl-tc-title{font-weight:bold;font-size:11pt;padding-bottom:5pt;margin-bottom:8pt;border-bottom:1pt solid #000;}' +
+    '.pl-tc-cols{display:flex;gap:20pt;}' +
+    '.pl-tc-col{flex:1;font-size:7.5pt;line-height:1.5;}' +
+    '.pl-tc-col p{margin-bottom:4pt;}' +
+    '.pl-bank{font-size:7pt;color:#444;border-top:0.5pt solid #ccc;padding-top:3pt;margin-top:8pt;line-height:1.6;}' +
     '</style>' +
-    tcEl.outerHTML + '</div>';
+    tcEl.innerHTML +
+    '</div>';
 
   var hOpts = {
     margin: 0,
