@@ -576,19 +576,18 @@
             <th style="text-align:center">Mo.</th>
             <th>Notes</th>
             <th style="text-align:center" title="Subject to change — tick if these dates are estimated and may change">STC <button type="button" class="info-tip" tabindex="0" style="font-size:8px;width:12px;height:12px;"><span class="info-tip-popup">Subject to Change — tick this if the dates for this phase are estimated and may change. A note will appear on the printed form.</span>i</button></th>
+            <th style="width:18px;"></th>
           </tr>
         </thead>
-        <tbody>
-          <tr><td>1</td><td><input type="date" id="cs1" class="camp-start"></td><td><input type="date" id="ce1" class="camp-end"></td><td class="months-cell" id="cm1">—</td><td><input type="text" id="cn1" class="notes-input" placeholder="Optional notes"></td><td class="stc-cell"><input type="checkbox" id="stc1" class="stc-check" title="Subject to change"></td></tr>
-          <tr><td>2</td><td><input type="date" id="cs2" class="camp-start"></td><td><input type="date" id="ce2" class="camp-end"></td><td class="months-cell" id="cm2">—</td><td><input type="text" id="cn2" class="notes-input" placeholder="Optional notes"></td><td class="stc-cell"><input type="checkbox" id="stc2" class="stc-check" title="Subject to change"></td></tr>
-          <tr><td>3</td><td><input type="date" id="cs3" class="camp-start"></td><td><input type="date" id="ce3" class="camp-end"></td><td class="months-cell" id="cm3">—</td><td><input type="text" id="cn3" class="notes-input" placeholder="Optional notes"></td><td class="stc-cell"><input type="checkbox" id="stc3" class="stc-check" title="Subject to change"></td></tr>
-          <tr><td>4</td><td><input type="date" id="cs4" class="camp-start"></td><td><input type="date" id="ce4" class="camp-end"></td><td class="months-cell" id="cm4">—</td><td><input type="text" id="cn4" class="notes-input" placeholder="Optional notes"></td><td class="stc-cell"><input type="checkbox" id="stc4" class="stc-check" title="Subject to change"></td></tr>
-          <tr><td>5</td><td><input type="date" id="cs5" class="camp-start"></td><td><input type="date" id="ce5" class="camp-end"></td><td class="months-cell" id="cm5">—</td><td><input type="text" id="cn5" class="notes-input" placeholder="Optional notes"></td><td class="stc-cell"><input type="checkbox" id="stc5" class="stc-check" title="Subject to change"></td></tr>
-        </tbody>
+        <tbody id="camp-dates-tbody"></tbody>
         <tfoot>
           <tr>
             <td colspan="4" style="text-align:right;padding-right:8px;font-size:12px;">Total Months:</td>
             <td class="camp-total-val" id="total-camp-months" style="text-align:center;">—</td>
+            <td style="padding-left:6px;">
+              <button type="button" onclick="addCampDateRow()" title="Add another campaign phase"
+                style="background:var(--purple-lighter);border:none;border-radius:10px;cursor:pointer;font-size:11px;padding:2px 8px;color:var(--purple-dark);font-weight:700;white-space:nowrap;">+ Add Phase</button>
+            </td>
           </tr>
         </tfoot>
       </table>
@@ -839,6 +838,7 @@
 
 <script>
 var rowCount = 0;
+var campDatesCount = 0;
 
 function addRow() {
   rowCount++;
@@ -1072,28 +1072,31 @@ function populatePrintLayout() {
   var campBody = document.getElementById('pl-camp-dates-body');
   campBody.innerHTML = '';
   var campTotal = 0; var campHas = false; var anyStc = false;
-  for (var i = 1; i <= 5; i++) {
-    var sv = document.getElementById('cs' + i).value;
-    var ev = document.getElementById('ce' + i).value;
-    var mv = document.getElementById('cm' + i).textContent;
-    var nv = document.getElementById('cn' + i).value || '';
-    var stcEl = document.getElementById('stc' + i);
+  var campRowNum = 0;
+  document.querySelectorAll('#camp-dates-tbody tr').forEach(function(tr) {
+    var idx = tr.dataset.cdIdx;
+    var sv = (document.getElementById('cs' + idx) || {}).value || '';
+    var ev = (document.getElementById('ce' + idx) || {}).value || '';
+    var mv = (document.getElementById('cm' + idx) || {}).textContent || '—';
+    var nv = (document.getElementById('cn' + idx) || {}).value || '';
+    var stcEl = document.getElementById('stc' + idx);
     var stcChecked = stcEl && stcEl.checked;
     if (sv && ev && mv !== '—') {
+      campRowNum++;
       var sDate = fmtDateShort(sv);
       var eDate = fmtDateShort(ev);
       if (stcChecked) anyStc = true;
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td style="padding:2pt 6pt 2pt 0;">' + i + '</td>' +
+      var plTr = document.createElement('tr');
+      plTr.innerHTML = '<td style="padding:2pt 6pt 2pt 0;">' + campRowNum + '</td>' +
         '<td style="padding:2pt 6pt 2pt 0;">' + sDate + (stcChecked ? ' <span style="color:#e67e22;font-size:7.5pt;font-weight:bold;">*</span>' : '') + '</td>' +
         '<td style="padding:2pt 6pt 2pt 0;">' + eDate + (stcChecked ? ' <span style="color:#e67e22;font-size:7.5pt;font-weight:bold;">*</span>' : '') + '</td>' +
         '<td style="text-align:center;padding:2pt 6pt 2pt 0;">' + mv + '</td>' +
         '<td style="padding:2pt 0;">' + (nv ? nv.replace(/</g,'&lt;').replace(/>/g,'&gt;') : '') + '</td>';
-      campBody.appendChild(tr);
+      campBody.appendChild(plTr);
       campHas = true;
       campTotal += parseInt(mv) || 0;
     }
-  }
+  });
   // STC footnote
   var stcNote = document.getElementById('pl-stc-note');
   if (stcNote) stcNote.style.display = anyStc ? 'block' : 'none';
@@ -1279,14 +1282,9 @@ function updateLastUpdated() {
 
 // Set last updated — today's date on load, updates on every edit
 updateLastUpdated();
-  for (var i = 1; i <= 5; i++) {
-    document.getElementById('cs' + i).value = '';
-    document.getElementById('ce' + i).value = '';
-    document.getElementById('cm' + i).textContent = '—';
-    document.getElementById('cn' + i).value = '';
-    var stcEl = document.getElementById('stc' + i);
-    if (stcEl) stcEl.checked = false;
-  }
+  document.getElementById('camp-dates-tbody').innerHTML = '';
+  campDatesCount = 0;
+  addCampDateRow(); addCampDateRow(); addCampDateRow(); addCampDateRow(); addCampDateRow();
   document.getElementById('total-camp-months').textContent = '—';
   document.getElementById('initials').value = '';
   document.getElementById('initials').classList.remove('error');
@@ -1295,6 +1293,7 @@ updateLastUpdated();
 
 // ─── Page load setup ────────────────────────────────────────────────────────
 addRow();
+addCampDateRow(); addCampDateRow(); addCampDateRow(); addCampDateRow(); addCampDateRow();
 document.getElementById('order-date').value = new Date().toISOString().split('T')[0];
 
 function updateLastUpdated() {
@@ -1501,14 +1500,15 @@ function captureFormData() {
     });
   });
   var campDates = [];
-  for (var i = 1; i <= 5; i++) {
+  document.querySelectorAll('#camp-dates-tbody tr').forEach(function(tr) {
+    var idx = tr.dataset.cdIdx;
     campDates.push({
-      start: (document.getElementById('cs'+i) || {}).value || '',
-      end:   (document.getElementById('ce'+i) || {}).value || '',
-      notes: (document.getElementById('cn'+i) || {}).value || '',
-      stc:   (document.getElementById('stc'+i) || {}).checked || false
+      start: (document.getElementById('cs'+idx) || {}).value || '',
+      end:   (document.getElementById('ce'+idx) || {}).value || '',
+      notes: (document.getElementById('cn'+idx) || {}).value || '',
+      stc:   (document.getElementById('stc'+idx) || {}).checked || false
     });
-  }
+  });
   var checks = {};
   document.querySelectorAll('.cl-check').forEach(function(cb) { checks[cb.id] = cb.checked; });
   return {
@@ -1556,14 +1556,19 @@ function restoreFormData(data) {
     setTrVal('.item-price', row.price);
     setTrVal('.item-qty',   row.qty);
   });
-  // Restore campaign dates
-  (data.campDates || []).forEach(function(cd, i) {
-    setVal('cs'+(i+1), cd.start);
-    setVal('ce'+(i+1), cd.end);
-    setVal('cn'+(i+1), cd.notes);
-    var stcEl = document.getElementById('stc'+(i+1));
-    if (stcEl && cd.stc) stcEl.checked = true;
-  });
+  // Restore campaign dates (rebuild rows dynamically)
+  document.getElementById('camp-dates-tbody').innerHTML = '';
+  campDatesCount = 0;
+  var savedDates = data.campDates || [];
+  if (savedDates.length === 0) {
+    addCampDateRow(); addCampDateRow(); addCampDateRow(); addCampDateRow(); addCampDateRow();
+  } else {
+    savedDates.forEach(function(cd) {
+      addCampDateRow(cd.start, cd.end, cd.notes, cd.stc);
+    });
+    // Pad to at least 5 rows if fewer were saved
+    while (document.getElementById('camp-dates-tbody').rows.length < 5) addCampDateRow();
+  }
   // Restore checklist
   if (data.checks) {
     Object.keys(data.checks).forEach(function(id) {
@@ -1902,69 +1907,98 @@ function populateChecklistPrint() {
 // ─── Campaign date months ────────────────────────────────────────────────────
 function calcCampaignMonths() {
   var total = 0; var hasAny = false;
-  for (var i = 1; i <= 5; i++) {
-    var s = document.getElementById('cs' + i).value;
-    var e = document.getElementById('ce' + i).value;
-    var cell = document.getElementById('cm' + i);
+  document.querySelectorAll('#camp-dates-tbody tr').forEach(function(tr) {
+    var idx = tr.dataset.cdIdx;
+    var sEl = document.getElementById('cs' + idx);
+    var eEl = document.getElementById('ce' + idx);
+    var cell = document.getElementById('cm' + idx);
+    if (!sEl || !eEl || !cell) return;
+    var s = sEl.value, e = eEl.value;
     if (s && e) {
       var sd = new Date(s + 'T00:00:00');
       var ed = new Date(e + 'T00:00:00');
       if (!isNaN(sd) && !isNaN(ed) && ed >= sd) {
         var m = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth());
-        if (ed.getDate() > sd.getDate()) m++; // end day is later in month, add the partial month
-        m = Math.max(1, m);                   // minimum 1 month for any valid date range
+        if (ed.getDate() > sd.getDate()) m++;
+        m = Math.max(1, m);
         if (m > 0) { cell.textContent = m; total += m; hasAny = true; } else { cell.textContent = '—'; }
       } else { cell.textContent = '—'; }
     } else { cell.textContent = '—'; }
-  }
+  });
   document.getElementById('total-camp-months').textContent = hasAny ? total : '—';
 }
 
-document.querySelectorAll('.camp-start, .camp-end').forEach(function(inp) {
-  inp.addEventListener('change', function() {
-    // Check end date is not before start date for this row
-    var rowNum = this.id.replace('cs','').replace('ce','');
-    var startEl = document.getElementById('cs' + rowNum);
-    var endEl   = document.getElementById('ce' + rowNum);
-    if (startEl && endEl && startEl.value && endEl.value) {
-      var sd = new Date(startEl.value + 'T00:00:00');
-      var ed = new Date(endEl.value   + 'T00:00:00');
-      if (ed < sd) {
-        alert(
-          '⚠️ Date Error\n\n' +
-          'The end date (' + ed.toLocaleDateString('en-GB') + ') is before the start date (' + sd.toLocaleDateString('en-GB') + ').\n\n' +
-          'Please correct the dates — a campaign cannot end before it starts.'
-        );
-        endEl.value = '';
-        calcCampaignMonths();
-        return;
+function addCampDateRow(startVal, endVal, notesVal, stcVal) {
+  campDatesCount++;
+  var idx = campDatesCount;
+  var tbody = document.getElementById('camp-dates-tbody');
+  var rowNum = tbody.rows.length + 1;
+  var tr = document.createElement('tr');
+  tr.dataset.cdIdx = idx;
+  tr.innerHTML =
+    '<td class="cd-num" style="font-size:11px;padding:3px 4px;">' + rowNum + '</td>' +
+    '<td><input type="date" id="cs' + idx + '" class="camp-start" style="width:100%;font-size:11px;padding:2px 3px;"></td>' +
+    '<td><input type="date" id="ce' + idx + '" class="camp-end" style="width:100%;font-size:11px;padding:2px 3px;"></td>' +
+    '<td class="months-cell" id="cm' + idx + '" style="text-align:center;font-weight:700;color:var(--purple);min-width:40px;">—</td>' +
+    '<td><input type="text" id="cn' + idx + '" class="notes-input" placeholder="Optional notes" style="width:100%;font-size:11px;padding:2px 4px;border:none;border-bottom:1px solid var(--purple-lighter);background:transparent;font-family:\'Lato\',Arial,sans-serif;outline:none;min-width:70px;"></td>' +
+    '<td class="stc-cell" style="text-align:center;"><input type="checkbox" id="stc' + idx + '" class="stc-check" title="Subject to change"></td>' +
+    '<td style="padding:0 2px;"><button type="button" onclick="removeCampDateRow(this)" title="Remove this phase" ' +
+      'style="background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:0 3px;" ' +
+      'onmouseover="this.style.color=\'#e74c3c\'" onmouseout="this.style.color=\'#bbb\'">×</button></td>';
+
+  if (startVal) document.createElement('input'); // placeholder so next lines work
+  tbody.appendChild(tr);
+
+  // Set values after appending (avoids innerHTML encoding issues)
+  if (startVal) document.getElementById('cs' + idx).value = startVal;
+  if (endVal)   document.getElementById('ce' + idx).value = endVal;
+  if (notesVal) document.getElementById('cn' + idx).value = notesVal;
+  if (stcVal)   document.getElementById('stc' + idx).checked = true;
+
+  // Date change event handler
+  [document.getElementById('cs' + idx), document.getElementById('ce' + idx)].forEach(function(inp) {
+    inp.addEventListener('change', function() {
+      var startEl = document.getElementById('cs' + idx);
+      var endEl   = document.getElementById('ce' + idx);
+      if (startEl && endEl && startEl.value && endEl.value) {
+        var sd = new Date(startEl.value + 'T00:00:00');
+        var ed = new Date(endEl.value   + 'T00:00:00');
+        if (ed < sd) {
+          alert('⚠️ Date Error\n\nThe end date (' + ed.toLocaleDateString('en-GB') + ') is before the start date (' + sd.toLocaleDateString('en-GB') + ').\n\nPlease correct the dates — a campaign cannot end before it starts.');
+          endEl.value = '';
+          calcCampaignMonths();
+          return;
+        }
       }
-    }
-    calcCampaignMonths();
-    if (!this.value) return;
-    var entered = new Date(this.value + 'T00:00:00');
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    var oneMonthAgo = new Date(today);
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-    if (entered < oneMonthAgo) {
-      alert(
-        '⚠️ Date Check Required\n\n' +
-        'The date you entered (' + entered.toLocaleDateString('en-GB') + ') is more than one month in the past.\n\n' +
-        'Today\'s date is ' + today.toLocaleDateString('en-GB') + '.\n\n' +
-        'Campaign dates should not be in the past — please check this is correct before continuing.'
-      );
-    } else if (this.classList.contains('camp-start') && entered < today) {
-      // Start date is in the past (but within the 1-month window)
-      alert(
-        '⚠️ Start Date Has Already Passed\n\n' +
-        'The start date you entered (' + entered.toLocaleDateString('en-GB') + ') is in the past.\n\n' +
-        'Today is ' + today.toLocaleDateString('en-GB') + '.\n\n' +
-        'If this campaign has already started, that\'s fine — just double-check the dates are correct.'
-      );
-    }
+      calcCampaignMonths();
+      if (!this.value) return;
+      var entered = new Date(this.value + 'T00:00:00');
+      var today = new Date(); today.setHours(0,0,0,0);
+      var oneMonthAgo = new Date(today); oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      if (entered < oneMonthAgo) {
+        alert('⚠️ Date Check Required\n\nThe date you entered (' + entered.toLocaleDateString('en-GB') + ') is more than one month in the past.\n\nCampaign dates should not be in the past — please check this is correct.');
+      } else if (inp.classList.contains('camp-start') && entered < today) {
+        alert('⚠️ Start Date Has Already Passed\n\nThe start date (' + entered.toLocaleDateString('en-GB') + ') is in the past.\n\nIf this campaign has already started, that\'s fine — just double-check the dates are correct.');
+      }
+    });
   });
-});
+
+  calcCampaignMonths();
+}
+
+function removeCampDateRow(btn) {
+  var tr = btn.closest('tr');
+  if (!tr) return;
+  var tbody = document.getElementById('camp-dates-tbody');
+  if (tbody.rows.length <= 1) return; // always keep at least 1 row
+  tr.parentNode.removeChild(tr);
+  // Renumber the # column
+  Array.from(tbody.rows).forEach(function(row, i) {
+    var numCell = row.querySelector('.cd-num');
+    if (numCell) numCell.textContent = i + 1;
+  });
+  calcCampaignMonths();
+}
 
 // ─── Date formatter: "1-Jun-2026" ────────────────────────────────────────────
 var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -2344,6 +2378,23 @@ function uploadToDrive(accessToken, btn) {
   });
 }
 
+// ─── Large form detection ─────────────────────────────────────────────────────
+// Called AFTER populatePrintLayout() so the print layout elements are populated.
+// Returns true if form content is too long to fit everything on one A4 page —
+// in which case T&Cs move to page 2.
+function isLargeForm() {
+  var itemRows = document.querySelectorAll('#items-body tr').length;
+  if (itemRows > 6) return true;
+  // Campaign dates table visible in print layout = significant extra content
+  var campWrap = document.getElementById('pl-camp-dates-wrap');
+  if (campWrap && campWrap.style.display === 'block') return true;
+  // Substantial notes content
+  var notesEl = document.getElementById('pl-notes');
+  var notesLen = notesEl ? (notesEl.textContent || '').trim().length : 0;
+  if (notesLen > 200) return true;
+  return false;
+}
+
 // ─── Print / PDF ─────────────────────────────────────────────────────────────
 function printForm() {
   if (!validateForm()) return;
@@ -2352,11 +2403,11 @@ function printForm() {
 
   // Tag the print layout with a size class so @media print can apply the
   // right compression and force T&Cs to page 2 on large forms
-  var rowCount = document.querySelectorAll('#items-body tr').length;
+  var itemRowCount = document.querySelectorAll('#items-body tr').length;
   var pl = document.getElementById('print-layout');
   pl.classList.remove('pl-print-lg', 'pl-print-xl');
-  if (rowCount > 12) { pl.classList.add('pl-print-lg'); pl.classList.add('pl-print-xl'); }
-  else if (rowCount > 6) { pl.classList.add('pl-print-lg'); }
+  if (itemRowCount > 12) { pl.classList.add('pl-print-lg'); pl.classList.add('pl-print-xl'); }
+  else if (isLargeForm()) { pl.classList.add('pl-print-lg'); }
 
   addToHistory();
   window.print();
@@ -2365,12 +2416,12 @@ function printForm() {
 
 function getPdfHtml() {
   var rowCount = document.querySelectorAll('#items-body tr').length;
-  var largeForm = rowCount > 6;  // threshold: 7+ rows = large form
+  var largeForm = isLargeForm(); // true when content is too long for one page
   var styleOverride = '';
 
   if (largeForm) {
     // Large form: T&Cs move to their own page 2, so only lightly tighten page 1
-    var extra = rowCount - 6;
+    var extra = Math.max(0, rowCount - 6);
     var rowPad  = Math.max(2.0, 4 - extra * 0.25).toFixed(1);
     var hrMarg  = Math.max(3.0, 6 - extra * 0.30).toFixed(1);
     var secMarg = Math.max(4.0, 8 - extra * 0.30).toFixed(1);
@@ -2433,8 +2484,7 @@ function pdfOpts(filename) {
 // Page 1 is ALWAYS exactly one A4 page — if the canvas is taller it is scaled
 // down so the sign-off box is always on page 1.
 function generateOrderPdfBlob(filename) {
-  var rowCount = document.querySelectorAll('#items-body tr').length;
-  var largeForm = rowCount > 6;
+  var largeForm = isLargeForm();
 
   if (!largeForm) {
     return html2pdf().set(pdfOpts(filename)).from(getPdfHtml(), 'string').outputPdf('blob');
