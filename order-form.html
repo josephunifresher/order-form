@@ -127,7 +127,7 @@
   .camp-dates-table th { font-weight:700; padding:5px 4px 4px; border-bottom:2px solid var(--purple-lighter); color:var(--purple-dark); font-size:11px; text-align:left; }
   .camp-dates-table td { padding:3px 4px; vertical-align:middle; }
   .camp-dates-table input[type=date] { width:100%; font-size:11px; padding:2px 3px; }
-  .camp-dates-table .months-cell { text-align:center; font-weight:700; color:var(--purple); min-width:40px; }
+  .camp-dates-table .months-cell { text-align:center; font-weight:700; color:var(--purple); min-width:60px; font-size:11px; }
   .camp-dates-table .notes-input { width:100%; font-size:11px; padding:2px 4px; border:none; border-bottom:1px solid var(--purple-lighter); background:transparent; font-family:'Lato',Arial,sans-serif; outline:none; min-width:70px; }
   .camp-dates-table .notes-input:focus { border-bottom-color:var(--purple); }
   .camp-dates-table tfoot tr { border-top:2px solid var(--purple-lighter); }
@@ -573,7 +573,7 @@
             <th>#</th>
             <th>Start</th>
             <th>End</th>
-            <th style="text-align:center">Mo.</th>
+            <th style="text-align:center">Duration</th>
             <th>Notes</th>
             <th style="text-align:center" title="Subject to change — tick if these dates are estimated and may change">STC <button type="button" class="info-tip" tabindex="0" style="font-size:8px;width:12px;height:12px;"><span class="info-tip-popup">Subject to Change — tick this if the dates for this phase are estimated and may change. A note will appear on the printed form.</span>i</button></th>
             <th style="width:18px;"></th>
@@ -582,7 +582,7 @@
         <tbody id="camp-dates-tbody"></tbody>
         <tfoot>
           <tr>
-            <td colspan="4" style="text-align:right;padding-right:8px;font-size:12px;">Total Months:</td>
+            <td colspan="4" style="text-align:right;padding-right:8px;font-size:12px;">Total Duration:</td>
             <td class="camp-total-val" id="total-camp-months" style="text-align:center;">—</td>
             <td style="padding-left:6px;">
               <button type="button" onclick="addCampDateRow()" title="Add another campaign phase"
@@ -591,7 +591,7 @@
           </tr>
         </tfoot>
       </table>
-      <span class="error-label" id="err-camp-months" style="display:block;margin-top:5px;">At least 1 month of campaign dates is required</span>
+      <span class="error-label" id="err-camp-months" style="display:block;margin-top:5px;">Please enter at least one campaign date range</span>
     </div>
   </div>
 
@@ -744,13 +744,13 @@
         <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">#</th>
         <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">Start</th>
         <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">End</th>
-        <th style="text-align:center;padding:2pt 6pt 2pt 0;font-weight:bold;">Mo.</th>
+        <th style="text-align:center;padding:2pt 6pt 2pt 0;font-weight:bold;">Duration</th>
         <th style="text-align:left;padding:2pt 0;font-weight:bold;">Notes</th>
       </tr></thead>
       <tbody id="pl-camp-dates-body"></tbody>
       <tfoot><tr style="border-top:1pt solid #000;">
-        <td colspan="4" style="text-align:right;padding:3pt 6pt 0 0;font-weight:bold;">Total Months:</td>
-        <td id="pl-total-months" style="text-align:center;font-weight:bold;padding:3pt 0 0;"></td>
+        <td colspan="4" style="text-align:right;padding:3pt 6pt 0 0;font-weight:bold;">Total Duration:</td>
+        <td id="pl-total-months" style="text-align:center;font-weight:bold;padding:3pt 0 0;white-space:nowrap;"></td>
       </tr></tfoot>
     </table>
     <div id="pl-stc-note" style="display:none;margin-top:5pt;padding:5pt 8pt;background:#fff8ee;border-left:3pt solid #e67e22;font-size:8pt;color:#7d4e00;line-height:1.5;">
@@ -1094,14 +1094,17 @@ function populatePrintLayout() {
         '<td style="padding:2pt 0;">' + (nv ? nv.replace(/</g,'&lt;').replace(/>/g,'&gt;') : '') + '</td>';
       campBody.appendChild(plTr);
       campHas = true;
-      campTotal += parseInt(mv) || 0;
+      var cmEl = document.getElementById('cm' + idx);
+      campTotal += parseInt((cmEl && cmEl.dataset.durMonths) || 0);
     }
   });
   // STC footnote
   var stcNote = document.getElementById('pl-stc-note');
   if (stcNote) stcNote.style.display = anyStc ? 'block' : 'none';
   document.getElementById('pl-camp-dates-wrap').style.display = campHas ? 'block' : 'none';
-  document.getElementById('pl-total-months').textContent = campHas ? campTotal : '';
+  // Use the formatted duration already computed by calcCampaignMonths()
+  var formTotal = document.getElementById('total-camp-months');
+  document.getElementById('pl-total-months').textContent = campHas ? (formTotal ? formTotal.textContent : campTotal) : '';
 }
 
 function validateForm() {
@@ -1151,13 +1154,12 @@ function validateForm() {
   dateEl.classList.toggle('error', !dateEl.value.trim());
   if (!refEl.value.trim() || !dateEl.value.trim()) valid = false;
 
-  // Campaign months — must have at least 1
+  // Campaign dates — must have at least one valid date range
   calcCampaignMonths();
-  var campMonthsVal = document.getElementById('total-camp-months').textContent;
-  var campMonthsNum = parseInt(campMonthsVal) || 0;
-  var campMonthsBad = campMonthsNum < 1;
+  var campTotalEl = document.getElementById('total-camp-months');
+  var campMonthsBad = !campTotalEl.dataset.durMonths && campTotalEl.textContent === '—';
   var campMonthsErrEl = document.getElementById('err-camp-months');
-  document.getElementById('total-camp-months').style.color = campMonthsBad ? '#e74c3c' : '';
+  campTotalEl.style.color = campMonthsBad ? '#e74c3c' : '';
   if (campMonthsErrEl) campMonthsErrEl.classList.toggle('show', campMonthsBad);
   if (campMonthsBad) valid = false;
 
@@ -1904,9 +1906,45 @@ function populateChecklistPrint() {
   if (document.getElementById('pl-cl-by'))      document.getElementById('pl-cl-by').textContent      = byEl   ? byEl.value   : '';
 }
 
+// ─── Campaign duration helpers ────────────────────────────────────────────────
+// Returns exact { months, weeks, days } between two date strings, or null if invalid.
+function calcDuration(startVal, endVal) {
+  var sd = new Date(startVal + 'T00:00:00');
+  var ed = new Date(endVal   + 'T00:00:00');
+  if (isNaN(sd) || isNaN(ed) || ed < sd) return null;
+  // Full calendar months
+  var months = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth());
+  // Date that is exactly 'months' calendar months after start
+  var pivot = new Date(sd.getFullYear(), sd.getMonth() + months, sd.getDate());
+  if (pivot > ed) { months--; pivot = new Date(sd.getFullYear(), sd.getMonth() + months, sd.getDate()); }
+  var remainingDays = Math.round((ed - pivot) / 86400000);
+  var weeks = Math.floor(remainingDays / 7);
+  var days  = remainingDays % 7;
+  return { months: months, weeks: weeks, days: days };
+}
+
+// Formats a duration object as a compact string e.g. "2m 1w 3d"
+function durationLabel(d) {
+  if (!d) return '—';
+  var parts = [];
+  if (d.months > 0) parts.push(d.months + 'm');
+  if (d.weeks  > 0) parts.push(d.weeks  + 'w');
+  if (d.days   > 0) parts.push(d.days   + 'd');
+  return parts.length ? parts.join(' ') : (d.months === 0 && d.weeks === 0 && d.days === 0 ? '< 1d' : '—');
+}
+
+// Sums an array of duration objects, normalising days→weeks but NOT weeks→months
+// (months stay as exact calendar months, sub-month remainder shown as w/d)
+function sumDurations(durs) {
+  var tm = 0, tw = 0, td = 0;
+  durs.forEach(function(d) { if (d) { tm += d.months; tw += d.weeks; td += d.days; } });
+  tw += Math.floor(td / 7); td = td % 7;
+  return { months: tm, weeks: tw, days: td };
+}
+
 // ─── Campaign date months ────────────────────────────────────────────────────
 function calcCampaignMonths() {
-  var total = 0; var hasAny = false;
+  var durs = []; var hasAny = false;
   document.querySelectorAll('#camp-dates-tbody tr').forEach(function(tr) {
     var idx = tr.dataset.cdIdx;
     var sEl = document.getElementById('cs' + idx);
@@ -1915,17 +1953,29 @@ function calcCampaignMonths() {
     if (!sEl || !eEl || !cell) return;
     var s = sEl.value, e = eEl.value;
     if (s && e) {
-      var sd = new Date(s + 'T00:00:00');
-      var ed = new Date(e + 'T00:00:00');
-      if (!isNaN(sd) && !isNaN(ed) && ed >= sd) {
-        var m = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth());
-        if (ed.getDate() > sd.getDate()) m++;
-        m = Math.max(1, m);
-        if (m > 0) { cell.textContent = m; total += m; hasAny = true; } else { cell.textContent = '—'; }
-      } else { cell.textContent = '—'; }
-    } else { cell.textContent = '—'; }
+      var dur = calcDuration(s, e);
+      if (dur) {
+        cell.textContent = durationLabel(dur);
+        // Store raw values so the print layout can total them correctly
+        cell.dataset.durMonths = dur.months;
+        cell.dataset.durWeeks  = dur.weeks;
+        cell.dataset.durDays   = dur.days;
+        durs.push(dur);
+        hasAny = true;
+      } else { cell.textContent = '—'; delete cell.dataset.durMonths; }
+    } else { cell.textContent = '—'; delete cell.dataset.durMonths; }
   });
-  document.getElementById('total-camp-months').textContent = hasAny ? total : '—';
+  var totalEl = document.getElementById('total-camp-months');
+  if (hasAny) {
+    var total = sumDurations(durs);
+    totalEl.textContent = durationLabel(total);
+    totalEl.dataset.durMonths = total.months;
+    totalEl.dataset.durWeeks  = total.weeks;
+    totalEl.dataset.durDays   = total.days;
+  } else {
+    totalEl.textContent = '—';
+    delete totalEl.dataset.durMonths;
+  }
 }
 
 function addCampDateRow(startVal, endVal, notesVal, stcVal) {
@@ -2367,6 +2417,7 @@ function uploadToDrive(accessToken, btn) {
     if (storedFolderId && initials) folder = ' → ' + initials + '/ (direct)';
     if (data.id) {
       logDriveUpload(refNo, company, checklistFilename, 'Checklist');
+      addToHistory(); // auto-save to history list on successful Drive upload
       alert('✅ Both files saved to Google Drive!' + folder + '\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename);
     } else {
       alert('Order saved but checklist upload failed: ' + JSON.stringify(data));
