@@ -586,7 +586,7 @@
             <th>#</th>
             <th>Start</th>
             <th>End</th>
-            <th style="text-align:center">Duration</th>
+            <th style="text-align:center">Duration <button type="button" id="dur-mode-btn" onclick="toggleDurMode()" title="Switch to weeks view" style="background:var(--purple-lighter);border:none;border-radius:8px;cursor:pointer;font-size:9px;padding:1px 5px;color:var(--purple-dark);font-weight:700;vertical-align:middle;margin-left:2px;">Wks</button></th>
             <th>Notes</th>
             <th style="text-align:center" title="Subject to change — tick if these dates are estimated and may change">STC <button type="button" class="info-tip" tabindex="0" style="font-size:8px;width:12px;height:12px;"><span class="info-tip-popup">Subject to Change — tick this if the dates for this phase are estimated and may change. A note will appear on the printed form.</span>i</button></th>
             <th style="width:18px;"></th>
@@ -616,6 +616,7 @@
       <div class="field-row"><label>Contact Name</label><input type="text" id="accounts-contact" placeholder="Left blank for partner"></div>
       <div class="field-row"><label>Email</label><input type="email" id="accounts-email" placeholder="Left blank for partner"></div>
       <div class="field-row"><label>Telephone Number</label><input type="tel" id="accounts-tel" placeholder="Left blank for partner"></div>
+      <div class="field-row"><label>Invoicing Address if Different from Above</label><input type="text" id="accounts-inv-address" placeholder="Left blank for partner"></div>
     </div>
     <div class="bottom-box partner-box">
       <div class="box-title">Campaign Contact Information</div>
@@ -781,6 +782,7 @@
         <div class="pl-field-row"><span class="pl-field-label">CONTACT:</span><span class="pl-field-line"></span></div>
         <div class="pl-field-row"><span class="pl-field-label">EMAIL:</span><span class="pl-field-line"></span></div>
         <div class="pl-field-row"><span class="pl-field-label">TELEPHONE NUMBER:</span><span class="pl-field-line short"></span></div>
+        <div class="pl-field-row"><span class="pl-field-label">INVOICING ADDRESS IF DIFFERENT FROM ABOVE:</span><span class="pl-field-line"></span></div>
       </div>
       <div class="pl-signoff-box">
         <div class="pl-signoff-title">CAMPAIGN CONTACT INFORMATION:</div>
@@ -1952,11 +1954,12 @@ function populateChecklistPrint() {
 }
 
 // ─── Campaign duration helpers ────────────────────────────────────────────────
-// Returns exact { months, weeks, days } between two date strings, or null if invalid.
+// Returns exact { months, weeks, days, totalDays } between two date strings, or null if invalid.
 function calcDuration(startVal, endVal) {
   var sd = new Date(startVal + 'T00:00:00');
   var ed = new Date(endVal   + 'T00:00:00');
   if (isNaN(sd) || isNaN(ed) || ed < sd) return null;
+  var totalDays = Math.round((ed - sd) / 86400000);
   // Full calendar months
   var months = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth());
   // Date that is exactly 'months' calendar months after start
@@ -1965,7 +1968,7 @@ function calcDuration(startVal, endVal) {
   var remainingDays = Math.round((ed - pivot) / 86400000);
   var weeks = Math.floor(remainingDays / 7);
   var days  = remainingDays % 7;
-  return { months: months, weeks: weeks, days: days };
+  return { months: months, weeks: weeks, days: days, totalDays: totalDays };
 }
 
 // Formats a duration object as a compact string e.g. "2m 1w 3d"
@@ -1976,6 +1979,30 @@ function durationLabel(d) {
   if (d.weeks  > 0) parts.push(d.weeks  + 'w');
   if (d.days   > 0) parts.push(d.days   + 'd');
   return parts.length ? parts.join(' ') : (d.months === 0 && d.weeks === 0 && d.days === 0 ? '< 1d' : '—');
+}
+
+// Formats a total-days count as pure weeks e.g. "9w 3d"
+function durationLabelWeeks(totalDays) {
+  if (totalDays === null || totalDays === undefined) return '—';
+  if (totalDays === 0) return '< 1d';
+  var w = Math.floor(totalDays / 7);
+  var d = totalDays % 7;
+  var parts = [];
+  if (w > 0) parts.push(w + 'w');
+  if (d > 0) parts.push(d + 'd');
+  return parts.join(' ') || '< 1d';
+}
+
+// Duration display mode: 'months' (default) or 'weeks'
+var campDurMode = 'months';
+function toggleDurMode() {
+  campDurMode = campDurMode === 'months' ? 'weeks' : 'months';
+  var btn = document.getElementById('dur-mode-btn');
+  if (btn) {
+    btn.textContent = campDurMode === 'months' ? 'Wks' : 'Mo';
+    btn.title = campDurMode === 'months' ? 'Switch to weeks view' : 'Switch to months view';
+  }
+  calcCampaignMonths();
 }
 
 // Sums an array of duration objects, normalising days→weeks but NOT weeks→months
@@ -1989,7 +2016,7 @@ function sumDurations(durs) {
 
 // ─── Campaign date months ────────────────────────────────────────────────────
 function calcCampaignMonths() {
-  var durs = []; var hasAny = false;
+  var durs = []; var hasAny = false; var totalDaysAll = 0;
   document.querySelectorAll('#camp-dates-tbody tr').forEach(function(tr) {
     var idx = tr.dataset.cdIdx;
     var sEl = document.getElementById('cs' + idx);
@@ -2000,12 +2027,14 @@ function calcCampaignMonths() {
     if (s && e) {
       var dur = calcDuration(s, e);
       if (dur) {
-        cell.textContent = durationLabel(dur);
+        cell.textContent = campDurMode === 'weeks' ? durationLabelWeeks(dur.totalDays) : durationLabel(dur);
         // Store raw values so the print layout can total them correctly
         cell.dataset.durMonths = dur.months;
         cell.dataset.durWeeks  = dur.weeks;
         cell.dataset.durDays   = dur.days;
+        cell.dataset.totalDays = dur.totalDays;
         durs.push(dur);
+        totalDaysAll += dur.totalDays;
         hasAny = true;
       } else { cell.textContent = '—'; delete cell.dataset.durMonths; }
     } else { cell.textContent = '—'; delete cell.dataset.durMonths; }
@@ -2013,10 +2042,11 @@ function calcCampaignMonths() {
   var totalEl = document.getElementById('total-camp-months');
   if (hasAny) {
     var total = sumDurations(durs);
-    totalEl.textContent = durationLabel(total);
+    totalEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(totalDaysAll) : durationLabel(total);
     totalEl.dataset.durMonths = total.months;
     totalEl.dataset.durWeeks  = total.weeks;
     totalEl.dataset.durDays   = total.days;
+    totalEl.dataset.totalDays = totalDaysAll;
   } else {
     totalEl.textContent = '—';
     delete totalEl.dataset.durMonths;
@@ -2569,8 +2599,8 @@ function pdfOpts(filename) {
   return {
     margin: 0,
     filename: filename,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0, scrollX: 0 },
+    image: { type: 'jpeg', quality: 1.0 },
+    html2canvas: { scale: 3, useCORS: true, logging: false, scrollY: 0, scrollX: 0 },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 }
@@ -2618,8 +2648,8 @@ function generateOrderPdfBlob(filename) {
 
   var hOpts = {
     margin: 0,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0, scrollX: 0 },
+    image: { type: 'jpeg', quality: 1.0 },
+    html2canvas: { scale: 3, useCORS: true, logging: false, scrollY: 0, scrollX: 0 },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
@@ -2659,7 +2689,7 @@ function generateOrderPdfBlob(filename) {
       // pdf is a real jsPDF instance — page 1 already contains the form content.
       // Now append page 2 with the T&Cs canvas.
       pdf.addPage();
-      var img2 = c2ref.toDataURL('image/jpeg', 0.98);
+      var img2 = c2ref.toDataURL('image/jpeg', 1.0);
       var h2   = (c2ref.height / c2ref.width) * A4_W;
       pdf.addImage(img2, 'JPEG', 0, 0, A4_W, h2 > A4_H ? A4_H : h2);
       return pdf.output('blob');
