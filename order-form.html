@@ -2685,17 +2685,20 @@ function generateTextBasedPdfBlob(filename) {
 
       // ── Header ────────────────────────────────────────────────────────────
       var logoImg = document.querySelector('#print-layout .pl-header-left img');
+      var headerH = 28; // minimum header height in mm
       if (logoImg && logoImg.src) {
-        var lW = logoImg.naturalWidth  || 774;
-        var lH = logoImg.naturalHeight || 70;
+        var lNW = logoImg.naturalWidth  || 782;
+        var lNH = logoImg.naturalHeight || 262;
         var lMM  = 65;
-        var lHMM = lMM * lH / lW;
+        var lHMM = lMM * lNH / lNW;
         try { doc.addImage(logoImg.src, 'PNG', margin, y, lMM, lHMM); } catch(e) {}
         doc.setFontSize(8);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(80, 80, 80);
         doc.text('STUDENT MEDIA LTD, 86-90 Paul Street, London, EC2A 4NE', margin, y + lHMM + 3);
         doc.text('020 7157 9960', margin, y + lHMM + 7);
+        // Header height = logo + 2 text lines (each ~4mm) + gap
+        headerH = Math.max(lHMM + 12, 28);
       }
 
       // ORDER / REF / Date (top-right)
@@ -2715,7 +2718,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.text('REF NO: ' + refNo + (inits ? ' (' + inits + ')' : ''), pageW - margin, y + 16, { align: 'right' });
       doc.text('Date: ' + dateStr, pageW - margin, y + 21, { align: 'right' });
 
-      y += 28;
+      y += headerH;
 
       // ── TO section ────────────────────────────────────────────────────────
       doc.setDrawColor(0, 0, 0);
