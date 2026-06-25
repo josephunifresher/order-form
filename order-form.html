@@ -2791,13 +2791,20 @@ function generateTextBasedPdfBlob(filename) {
         margin: { left: margin, right: margin },
         theme: 'plain',
         styles: { fontSize: 9, cellPadding: { top: 2, right: 3, bottom: 2, left: 3 } },
-        headStyles: { fillColor: false, textColor: [0,0,0], fontStyle: 'bold',
-                      lineWidth: { bottom: 0.5 }, lineColor: [0,0,0] },
-        bodyStyles: { fillColor: false, textColor: [0,0,0], lineWidth: 0 },
+        headStyles: { fillColor: [255,255,255], textColor: [0,0,0], fontStyle: 'bold', lineWidth: 0 },
+        bodyStyles: { fillColor: [255,255,255], textColor: [0,0,0], lineWidth: 0 },
         columnStyles: {
           price: { halign: 'right', cellWidth: 30 },
           qty:   { halign: 'right', cellWidth: 15 },
           total: { halign: 'right', cellWidth: 28 }
+        },
+        didDrawCell: function(data) {
+          // Draw bottom border on header row only
+          if (data.section === 'head' && data.row.index === 0) {
+            doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+            doc.line(data.cell.x, data.cell.y + data.cell.height,
+                     data.cell.x + data.cell.width, data.cell.y + data.cell.height);
+          }
         }
       });
 
@@ -2885,9 +2892,15 @@ function generateTextBasedPdfBlob(filename) {
           margin: { left: margin, right: margin },
           theme: 'plain',
           styles: { fontSize: 8.5, cellPadding: 1.5 },
-          headStyles: { fillColor: false, textColor: [0,0,0], fontStyle: 'bold',
-                        lineWidth: { bottom: 0.5 }, lineColor: [0,0,0] },
-          bodyStyles: { fillColor: false, textColor: [0,0,0], lineWidth: 0 }
+          headStyles: { fillColor: [255,255,255], textColor: [0,0,0], fontStyle: 'bold', lineWidth: 0 },
+          bodyStyles: { fillColor: [255,255,255], textColor: [0,0,0], lineWidth: 0 },
+          didDrawCell: function(data) {
+            if (data.section === 'head' && data.row.index === 0) {
+              doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+              doc.line(data.cell.x, data.cell.y + data.cell.height,
+                       data.cell.x + data.cell.width, data.cell.y + data.cell.height);
+            }
+          }
         });
         y = doc.lastAutoTable.finalY + 2;
 
