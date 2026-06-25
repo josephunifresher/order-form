@@ -367,6 +367,8 @@
   }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -2530,8 +2532,8 @@ function uploadToDrive(accessToken, btn) {
   .then(function(ids) {
     orderFolderId = ids[0];
     clFolderId    = ids[1];
-    // Step 2: generate both PDFs
-    return generateOrderPdfBlob(orderFilename);
+    // Step 2: generate both PDFs (text-based so Drive/Acrobat text is selectable)
+    return generateTextBasedPdfBlob(orderFilename);
   })
   .then(function(blob) {
     orderBlob = blob;
@@ -2665,6 +2667,346 @@ function pdfOpts(filename) {
     html2canvas: { scale: 3, useCORS: true, logging: false, scrollY: 0, scrollX: 0 },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
+}
+
+// ─── Text-based PDF generator (selectable text, Google Drive compatible) ──────
+// Generates the order form as a real-text PDF using jsPDF + autotable.
+// All text is selectable and copy-pasteable in Drive, Acrobat, etc.
+function generateTextBasedPdfBlob(filename) {
+  return new Promise(function(resolve, reject) {
+    try {
+      var jsPDF = window.jspdf.jsPDF;
+      var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+      var pageW  = 210;
+      var margin = 15;
+      var cW     = pageW - 2 * margin; // content width = 180mm
+      var y      = margin;
+
+      // ── Header ────────────────────────────────────────────────────────────
+      var logoImg = document.querySelector('#print-layout .pl-header-left img');
+      if (logoImg && logoImg.src) {
+        var lW = logoImg.naturalWidth  || 774;
+        var lH = logoImg.naturalHeight || 70;
+        var lMM  = 65;
+        var lHMM = lMM * lH / lW;
+        try { doc.addImage(logoImg.src, 'PNG', margin, y, lMM, lHMM); } catch(e) {}
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(80, 80, 80);
+        doc.text('STUDENT MEDIA LTD, 86-90 Paul Street, London, EC2A 4NE', margin, y + lHMM + 3);
+        doc.text('020 7157 9960', margin, y + lHMM + 7);
+      }
+
+      // ORDER / REF / Date (top-right)
+      var refNo   = (document.getElementById('ref-no') || {}).value || '';
+      var dateVal = (document.getElementById('order-date') || {}).value || '';
+      var dateStr = dateVal ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB') : '';
+      var inits   = (document.getElementById('initials') || {}).value || '';
+
+      doc.setFontSize(26);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(112, 45, 215);
+      doc.text('ORDER', pageW - margin, y + 8, { align: 'right' });
+
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(0, 0, 0);
+      doc.text('REF NO: ' + refNo + (inits ? ' (' + inits + ')' : ''), pageW - margin, y + 16, { align: 'right' });
+      doc.text('Date: ' + dateStr, pageW - margin, y + 21, { align: 'right' });
+
+      y += 28;
+
+      // ── TO section ────────────────────────────────────────────────────────
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.5);
+      doc.line(margin, y, pageW - margin, y);
+      y += 5;
+
+      var co   = (document.getElementById('client-company') || {}).value || '';
+      var addr = (document.getElementById('client-address')  || {}).value || '';
+
+      // "TO" label
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.text('TO', margin, y + 4);
+
+      // Client company (bold, larger)
+      doc.setFontSize(11);
+      doc.text(doc.splitTextToSize(co, 82)[0], margin + 7, y + 4);
+
+      // Address lines
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      var addrRaw = addr.split('\n').map(function(l) { return l.trim(); }).filter(Boolean);
+      var addrY = y + 9;
+      addrRaw.forEach(function(line) { doc.text(line, margin + 7, addrY); addrY += 4; });
+
+      // Description notice (right half)
+      var rX = margin + cW / 2 + 2;
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'bold');
+      doc.text('DESCRIPTION: Full details below', rX, y + 4);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      var notice = 'PLEASE NOTE: THIS IS AN ORDER AND IS FOR INFORMATION ONLY. IF YOU WISH TO PROCEED WITH THIS ORDER, PLEASE CONFIRM THAT THE INFORMATION IS CORRECT AND THAT YOU WISH TO PROCEED.';
+      var nLines = doc.splitTextToSize(notice, cW / 2 - 4);
+      doc.text(nLines, rX, y + 9);
+
+      y += Math.max(addrRaw.length * 4 + 10, nLines.length * 3.5 + 10) + 3;
+
+      // ── Items table ───────────────────────────────────────────────────────
+      var items = [];
+      var anyQty = false;
+      document.querySelectorAll('#items-body tr').forEach(function(tr) {
+        var dEl  = tr.querySelector('.item-desc');
+        var desc = dEl ? (dEl.innerText || dEl.value || '').trim() : '';
+        var pEl  = tr.querySelector('.item-price');
+        var price = parseFloat(pEl ? pEl.value : 0) || 0;
+        var qEl  = tr.querySelector('.item-qty');
+        var qty  = (qEl && qEl.value !== '') ? (parseFloat(qEl.value) || 0) : 0;
+        var total = price * (qty || 1);
+        if (!desc && !price) return;
+        if (qty) anyQty = true;
+        items.push({ desc: desc, price: price, qty: qty, total: total });
+      });
+
+      var cols = anyQty
+        ? [{ header: 'Description', dataKey: 'desc' }, { header: 'Unit Price', dataKey: 'price' },
+           { header: 'Qty', dataKey: 'qty' }, { header: 'Total', dataKey: 'total' }]
+        : [{ header: 'Description', dataKey: 'desc' }, { header: 'Unit Price', dataKey: 'price' },
+           { header: 'Total', dataKey: 'total' }];
+
+      var rows = items.map(function(it) {
+        var r = { desc: it.desc, price: it.price ? '£' + it.price.toFixed(2) : '',
+                  total: it.total ? '£' + it.total.toFixed(2) : '' };
+        if (anyQty) r.qty = it.qty || '';
+        return r;
+      });
+
+      doc.autoTable({
+        startY: y,
+        columns: cols,
+        body: rows,
+        margin: { left: margin, right: margin },
+        theme: 'plain',
+        styles: { fontSize: 9, cellPadding: { top: 2, right: 3, bottom: 2, left: 3 } },
+        headStyles: { fillColor: false, textColor: [0,0,0], fontStyle: 'bold',
+                      lineWidth: { bottom: 0.5 }, lineColor: [0,0,0] },
+        bodyStyles: { fillColor: false, textColor: [0,0,0], lineWidth: 0 },
+        columnStyles: {
+          price: { halign: 'right', cellWidth: 30 },
+          qty:   { halign: 'right', cellWidth: 15 },
+          total: { halign: 'right', cellWidth: 28 }
+        }
+      });
+
+      y = doc.lastAutoTable.finalY + 2;
+
+      // ── Totals ────────────────────────────────────────────────────────────
+      doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
+      doc.line(margin, y, pageW - margin, y);
+      y += 4;
+
+      var lX = pageW - margin - 35;
+      var rX2 = pageW - margin;
+
+      doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
+      doc.text('NET:', lX, y, { align: 'right' });
+      doc.text((document.getElementById('net-total')||{}).textContent || '£0.00', rX2, y, { align: 'right' });
+      y += 5;
+
+      var discAmt = parseFloat((document.getElementById('discount-amt')||{}).value) || 0;
+      var discPct = parseFloat((document.getElementById('discount-pct')||{}).value) || 0;
+      if (discAmt > 0 || discPct > 0) {
+        doc.text(((document.getElementById('discount-label-cell')||{}).textContent) || 'Discount:', lX, y, { align: 'right' });
+        doc.text(((document.getElementById('discount-display')||{}).textContent) || '', rX2, y, { align: 'right' });
+        y += 5;
+      }
+
+      doc.text(((document.getElementById('vat-label')||{}).textContent) || 'VAT (20%):', lX, y, { align: 'right' });
+      doc.text((document.getElementById('vat-total')||{}).textContent || '£0.00', rX2, y, { align: 'right' });
+      y += 3;
+
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.7);
+      doc.line(lX - 15, y, rX2, y);
+      y += 5;
+      doc.setFontSize(12); doc.setFont('helvetica','bold');
+      doc.text('TOTAL:', lX, y, { align: 'right' });
+      doc.text((document.getElementById('grand-total')||{}).textContent || '£0.00', rX2, y, { align: 'right' });
+      y += 6;
+
+      // ── Notes ─────────────────────────────────────────────────────────────
+      var notesEl = document.getElementById('pl-notes');
+      var notesText = notesEl ? (notesEl.innerText || notesEl.textContent || '').trim() : '';
+      if (notesText) {
+        doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
+        doc.line(margin, y, pageW - margin, y);
+        y += 4;
+        doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+        doc.text('Notes:', margin, y);
+        y += 4;
+        doc.setFont('helvetica','normal');
+        var nl = doc.splitTextToSize(notesText, cW);
+        doc.text(nl, margin, y);
+        y += nl.length * 4 + 4;
+      }
+
+      // ── Campaign dates ────────────────────────────────────────────────────
+      var campRows = [];
+      var anyStc   = false;
+      document.querySelectorAll('#camp-dates-tbody tr').forEach(function(tr) {
+        var idx = tr.dataset.cdIdx;
+        var sv = ((document.getElementById('cs'+idx)||{}).value)||'';
+        var ev = ((document.getElementById('ce'+idx)||{}).value)||'';
+        var mv = ((document.getElementById('cm'+idx)||{}).textContent)||'—';
+        var nv = ((document.getElementById('cn'+idx)||{}).value)||'';
+        var stcEl = document.getElementById('stc'+idx);
+        var stc = stcEl && stcEl.checked;
+        if (sv && ev && mv !== '—') {
+          campRows.push([(campRows.length+1).toString(),
+            fmtDateShort(sv)+(stc?' *':''), fmtDateShort(ev)+(stc?' *':''), mv, nv||'']);
+          if (stc) anyStc = true;
+        }
+      });
+
+      if (campRows.length) {
+        doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
+        doc.line(margin, y, pageW - margin, y);
+        y += 4;
+        doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+        doc.text('Campaign Dates:', margin, y);
+        y += 4;
+
+        doc.autoTable({
+          startY: y,
+          head: [['#','Start','End','Duration','Notes']],
+          body: campRows,
+          margin: { left: margin, right: margin },
+          theme: 'plain',
+          styles: { fontSize: 8.5, cellPadding: 1.5 },
+          headStyles: { fillColor: false, textColor: [0,0,0], fontStyle: 'bold',
+                        lineWidth: { bottom: 0.5 }, lineColor: [0,0,0] },
+          bodyStyles: { fillColor: false, textColor: [0,0,0], lineWidth: 0 }
+        });
+        y = doc.lastAutoTable.finalY + 2;
+
+        var tcEl = document.getElementById('pl-total-months');
+        if (tcEl && tcEl.textContent) {
+          doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+          doc.text('Total Duration: ' + tcEl.textContent, pageW - margin, y, { align: 'right' });
+          y += 5;
+        }
+        if (anyStc) {
+          doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(125,78,0);
+          var stcL = doc.splitTextToSize('* Dates Subject to Change: These dates are an estimate based on previous conversations; exact dates will be locked in following a strategy call.', cW);
+          doc.text(stcL, margin, y);
+          doc.setTextColor(0,0,0);
+          y += stcL.length * 3.5 + 3;
+        }
+      }
+
+      // ── Sign-off boxes ────────────────────────────────────────────────────
+      y += 2;
+      doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
+      doc.line(margin, y, pageW-margin, y);
+      y += 5;
+
+      doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(0,0,0);
+      doc.text('**Please fill in both boxes', margin, y);
+      y += 5;
+
+      var boxH = 42;
+      var midX = margin + cW / 2;
+
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+      doc.rect(margin, y, cW/2, boxH);
+      doc.rect(midX, y, cW/2, boxH);
+
+      // Left box — accounts contact
+      var bx = margin + 3;
+      var by = y + 5;
+      doc.setFontSize(8); doc.setFont('helvetica','bold');
+      doc.text('YOUR ACCOUNTS CONTACT DETAILS:', bx, by); by += 4;
+      doc.setFontSize(7.5); doc.setFont('helvetica','italic');
+      doc.text('Contact details for invoicing', bx, by); by += 5;
+      ['CONTACT:', 'EMAIL:', 'TELEPHONE NUMBER:', 'INVOICING ADDRESS:'].forEach(function(lbl) {
+        doc.setFont('helvetica','bold'); doc.text(lbl, bx, by);
+        doc.setDrawColor(180,180,180); doc.setLineWidth(0.2);
+        doc.line(bx + doc.getTextWidth(lbl) + 1, by, midX - 3, by);
+        by += 6;
+      });
+
+      // Right box — campaign contact
+      bx = midX + 3; by = y + 5;
+      doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+      doc.text('CAMPAIGN CONTACT INFORMATION:', bx, by); by += 6;
+      ['SIGNED FOR AND ON BEHALF OF:', 'JOB TITLE:', 'SIGNED:', 'PRINT:', 'DATE:'].forEach(function(lbl) {
+        doc.setFont('helvetica','bold'); doc.text(lbl, bx, by);
+        doc.setDrawColor(180,180,180); doc.setLineWidth(0.2);
+        doc.line(bx + doc.getTextWidth(lbl) + 1, by, pageW - margin - 3, by);
+        by += 6.5;
+      });
+
+      y += boxH + 5;
+
+      // ── Page 2: T&Cs ─────────────────────────────────────────────────────
+      doc.addPage();
+      y = margin;
+
+      doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+      doc.text('TERMS & CONDITIONS', margin, y);
+      y += 4;
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+      doc.line(margin, y, pageW - margin, y);
+      y += 5;
+
+      var colW2 = (cW - 5) / 2;
+      var c1X = margin;
+      var c2X = margin + colW2 + 5;
+      var c1Y = y;
+      var c2Y = y;
+      var lnH = 3.6;
+
+      doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
+
+      [
+        'By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.',
+        'The order value (plus VAT if applicable) is payable within 30 days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin — if your campaign is due to begin in less than 30 days from the invoice date, your payment terms will be shortened accordingly.',
+        'All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested. If you would like to separate your invoice into instalments, these must be paid by Direct Debit and will be due the month prior to each month of the campaign.',
+        'The order form together with these terms and conditions constitute all the terms of this contract, and no employee, agent or representative of this company has any right to amend these terms. You are solely responsible for submitting suitable artwork/copy by the date agreed.'
+      ].forEach(function(p) {
+        var ls = doc.splitTextToSize(p, colW2);
+        doc.text(ls, c1X, c1Y);
+        c1Y += ls.length * lnH + 3;
+      });
+
+      [
+        'Materials must be supplied as: JPG, PNG or GIF files for Online Ads; Word Document Format for content. These must be supplied to the correct specifications and submitted via email. If you fail to supply the copy by the due date you will be responsible for paying for the advertising space even if your advertisement does not appear.',
+        'The agreed total KPIs for this campaign are averaged per month. Student Media Ltd will not be considered in breach of this agreement if monthly KPIs are not met so long as the total KPIs are met by the end of the campaign. Student Media Ltd may partner with third-party companies to deliver agreed KPIs.',
+        'If you do not pay Student Media Ltd on the due date then you will pay interest at 8% above the Bank of England base rate as prescribed under the Late Payment of Commercial Debts (Interest) Act 1998. Student Media Ltd reserves the right to cancel or pause your campaign if you do not pay within agreed payment terms. This contract shall be governed in accordance with the laws of England and Wales.'
+      ].forEach(function(p) {
+        var ls = doc.splitTextToSize(p, colW2);
+        doc.text(ls, c2X, c2Y);
+        c2Y += ls.length * lnH + 3;
+      });
+
+      y = Math.max(c1Y, c2Y) + 5;
+
+      // Bank details
+      doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
+      doc.line(margin, y, pageW - margin, y);
+      y += 4;
+      doc.setFontSize(7); doc.setTextColor(68,68,68); doc.setFont('helvetica','normal');
+      doc.text('VAT No: 303 1339 53  |  Account Name: Student Media Ltd  |  Acc No: 23261409  |  Sort Code: 20-03-84', margin, y);
+      y += 4;
+      doc.text('Bank: Barclays  |  Address: 62/64 High Street, Watford, Hertfordshire, WD17 2BT  |  Payment Terms: 30 Days', margin, y);
+
+      resolve(doc.output('blob'));
+    } catch(e) {
+      reject(e);
+    }
+  });
 }
 
 // For large forms: render page 1 (main content, no T&Cs) and page 2 (T&Cs only)
