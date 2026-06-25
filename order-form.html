@@ -448,8 +448,7 @@
   <button class="btn-ghost" id="admin-btn" onclick="showAdmin()" style="display:none;">⚙️ Admin</button>
   <button class="btn btn-clear" onclick="clearForm()">Clear Form</button>
   <button class="btn btn-validate" onclick="validateForm()">Check Fields</button>
-  <button class="btn btn-print" onclick="printForm()">🖨 Print</button>
-  <button class="btn btn-pdf" onclick="saveAsPDF()">⬇ Save PDF</button>
+  <button class="btn btn-pdf" onclick="printForm()">🖨 Print / Save PDF</button>
   <button class="btn btn-drive" id="btn-drive" onclick="saveToDrive()">☁ Save to Drive</button>
   <button class="btn-ghost" onclick="showChangePw()">🔑 Change Password</button>
   <button class="btn-ghost" onclick="doLogout()" style="margin-left:4px;">Sign Out</button>
@@ -2760,31 +2759,8 @@ function generateOrderPdfBlob(filename) {
 }
 
 function saveAsPDF() {
-  if (!validateForm()) return;
-  calcCampaignMonths();
-  populatePrintLayout();
-  window.scrollTo(0, 0);
-  var refNo = document.getElementById('ref-no').value || 'order';
-  var companyFull2 = document.getElementById('client-company').value || 'Client';
-  var company2 = companyFull2.split(/[,\n]/)[0].trim();
-  var pdfFilename = (refNo + ' - ' + company2).replace(/[<>:"/\\|?*]/g, '').trim() + '.pdf';
-  addToHistory();
-  generateOrderPdfBlob(pdfFilename)
-    .then(function(blob) {
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = pdfFilename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
-    })
-    ['catch'](function(err) {
-      console.error('PDF error:', err);
-      alert('PDF save failed. Use the Print button and choose Save as PDF from your print dialog.');
-    });
-  autoSaveChecklist();
+  // Delegates to printForm() so the PDF contains selectable, copyable text
+  printForm();
 }
 </script>
 </body>
