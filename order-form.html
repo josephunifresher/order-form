@@ -2352,7 +2352,7 @@ function doChecklistUpload(token) {
   var refNo   = document.getElementById('ref-no').value || 'REF';
   var company = (document.getElementById('client-company').value || 'Client').split(/[,\n]/)[0].trim();
   var clName  = (refNo + ' - ' + company).replace(/[<>:"\/\\|?*]/g, '').trim() + ' - Checklist.pdf';
-  html2pdf().set(pdfOpts(clName)).from(getChecklistHtml(), 'string').outputPdf('blob')
+  generateTextBasedChecklistBlob(clName)
     .then(function(blob) {
       var clFolderId = GDRIVE_CONFIG.checklistFolderId || GDRIVE_CONFIG.folderId;
       var metadata = { name: clName, mimeType: 'application/pdf', parents: [clFolderId] };
@@ -2537,7 +2537,7 @@ function uploadToDrive(accessToken, btn) {
   })
   .then(function(blob) {
     orderBlob = blob;
-    return html2pdf().set(pdfOpts(checklistFilename)).from(getChecklistHtml(), 'string').outputPdf('blob');
+    return generateTextBasedChecklistBlob(checklistFilename);
   })
   .then(function(blob) {
     clBlob = blob;
@@ -2667,6 +2667,100 @@ function pdfOpts(filename) {
     html2canvas: { scale: 3, useCORS: true, logging: false, scrollY: 0, scrollX: 0 },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
+}
+
+// ─── Text-based checklist PDF (jsPDF, selectable text) ───────────────────────
+function generateTextBasedChecklistBlob(filename) {
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  var margin = 15;
+  var pageW  = 210;
+  var y = margin;
+
+  // ── Header ──
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(20);
+  doc.setTextColor(112, 45, 215);
+  doc.text('ORDER CHECKLIST', margin, y + 7);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(85, 85, 85);
+  doc.text('Internal quality check — to be completed with every order form', margin, y + 14);
+
+  // Right meta block
+  var refVal  = (document.getElementById('ref-no')         ? document.getElementById('ref-no').value         : '') || '';
+  var compVal = (document.getElementById('client-company')  ? document.getElementById('client-company').value  : '') || '';
+  compVal = compVal.split(/[\n,]/)[0].trim();
+  var dateEl  = document.getElementById('order-date');
+  var dateStr = (dateEl && dateEl.value) ? new Date(dateEl.value + 'T00:00:00').toLocaleDateString('en-GB') : '';
+  var byEl    = document.getElementById('cl-by');
+  var byVal   = byEl ? byEl.value : '';
+  var meta    = [['REF:', refVal], ['Client:', compVal], ['Date:', dateStr], ['Checked by:', byVal]];
+  var rightX  = pageW - margin;
+  meta.forEach(function(pair, i) {
+    var ry = y + 4 + i * 5;
+    doc.setFont('helvetica', 'bold');   doc.setTextColor(51, 51, 51);
+    doc.text(pair[0], rightX - 58, ry);
+    doc.setFont('helvetica', 'normal');
+    doc.text(pair[1], rightX - 43, ry);
+  });
+
+  // Purple divider
+  y += 22;
+  doc.setDrawColor(112, 45, 215); doc.setLineWidth(0.8);
+  doc.line(margin, y, pageW - margin, y);
+  y += 8;
+
+  // ── 3 columns ──
+  var contentW = pageW - margin * 2;
+  var colW = contentW / 3;
+  var groups = [
+    { title: 'TOP OF ORDER FORM', x: margin,              items: CL_ITEMS.group1 },
+    { title: 'DESCRIPTION',       x: margin + colW,       items: CL_ITEMS.group2 },
+    { title: 'NOTES',             x: margin + colW * 2,   items: CL_ITEMS.group3 }
+  ];
+
+  groups.forEach(function(grp) {
+    var cy = y;
+    // Section header
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8);
+    doc.setTextColor(112, 45, 215);
+    doc.text(grp.title, grp.x, cy);
+    cy += 2;
+    doc.setDrawColor(198, 171, 239); doc.setLineWidth(0.25);
+    doc.line(grp.x, cy, grp.x + colW - 3, cy);
+    cy += 5;
+
+    // Items
+    doc.setFontSize(8.5);
+    grp.items.forEach(function(item) {
+      var cb      = document.getElementById(item.id);
+      var checked = cb && cb.checked;
+      // Tick / cross
+      doc.setFont('helvetica', 'bold');
+      if (checked) { doc.setTextColor(39, 174, 96);  doc.text('✓', grp.x, cy); }
+      else         { doc.setTextColor(231, 76, 60);  doc.text('✗', grp.x, cy); }
+      // Label (wrapped)
+      doc.setFont('helvetica', 'normal'); doc.setTextColor(34, 34, 34);
+      var lines = doc.splitTextToSize(item.label, colW - 8);
+      doc.text(lines, grp.x + 5, cy);
+      cy += lines.length * 5 + 1;
+    });
+  });
+
+  // Advance y past tallest column (estimate)
+  var maxItems = Math.max(CL_ITEMS.group1.length, CL_ITEMS.group2.length, CL_ITEMS.group3.length);
+  y += 10 + maxItems * 6 + 18;
+
+  // ── Footer ──
+  doc.setDrawColor(200, 200, 200); doc.setLineWidth(0.25);
+  doc.line(margin, y, pageW - margin, y);
+  y += 5;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(120, 120, 120);
+  doc.text('This checklist was completed as part of the order process for Student Media Ltd / Unifresher',
+           pageW / 2, y, { align: 'center' });
+
+  return Promise.resolve(doc.output('blob'));
 }
 
 // ─── Text-based PDF generator (selectable text, Google Drive compatible) ──────
