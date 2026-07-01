@@ -3087,8 +3087,8 @@ function generateTextBasedPdfBlob(filename) {
       // Pre-calculate the exact height using jsPDF's own line-break logic so the
       // decision uses the same measurements as the actual drawing pass.
       var colW2  = (cW - 5) / 2;
-      var tcLnH  = 3.6;   // baseline-to-baseline in mm
-      var tcPGap = 2;     // gap between paragraphs in mm (tightened from 3 → fits more orders on p1)
+      var tcLnH  = 2.5;   // baseline-to-baseline in mm (5.5pt × 1.3 line-height = 2.52mm)
+      var tcPGap = 1.0;   // gap between paragraphs in mm (matches browser CSS margin-bottom:2.5pt)
 
       var tcCol1 = [
         'By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.',
@@ -3103,7 +3103,7 @@ function generateTextBasedPdfBlob(filename) {
       ];
 
       // Measure column heights (same splitTextToSize as the drawing pass below)
-      doc.setFontSize(7.5);
+      doc.setFontSize(5.5);
       var _h1 = 0, _h2 = 0;
       tcCol1.forEach(function(p) { _h1 += doc.splitTextToSize(p, colW2).length * tcLnH + tcPGap; });
       tcCol2.forEach(function(p) { _h2 += doc.splitTextToSize(p, colW2).length * tcLnH + tcPGap; });
@@ -3130,7 +3130,7 @@ function generateTextBasedPdfBlob(filename) {
       var c1Y = y;
       var c2Y = y;
 
-      doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
+      doc.setFontSize(5.5); doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
 
       tcCol1.forEach(function(p) {
         var ls = doc.splitTextToSize(p, colW2);
@@ -3150,7 +3150,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
       doc.line(margin, y, pageW - margin, y);
       y += 4;
-      doc.setFontSize(7); doc.setTextColor(68,68,68); doc.setFont('helvetica','normal');
+      doc.setFontSize(5.5); doc.setTextColor(68,68,68); doc.setFont('helvetica','normal');
       doc.text('VAT No: 303 1339 53  |  Account Name: Student Media Ltd  |  Acc No: 23261409  |  Sort Code: 20-03-84', margin, y);
       y += 4;
       doc.text('Bank: Barclays  |  Address: 62/64 High Street, Watford, Hertfordshire, WD17 2BT  |  Payment Terms: 30 Days', margin, y);
