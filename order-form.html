@@ -2613,12 +2613,13 @@ function printForm() {
                        'position:fixed!important;top:-9999px!important;' +
                        'left:0!important;width:793px!important;height:auto!important;';
     var tcSection = pl.querySelector('.pl-tc-section');
-    // offsetTop = distance from top of pl to top of T&C section = main content height
-    var mainH = tcSection ? tcSection.offsetTop : 0;
+    // Measure where the bottom of the T&C section falls (offsetTop = where T&Cs start,
+    // offsetHeight = how tall the T&C block is). Only force page 2 if the T&Cs
+    // genuinely overflow the A4 page (1123px ≈ 297mm at 96dpi).
+    var tcTop = tcSection ? tcSection.offsetTop    : 0;
+    var tcH   = tcSection ? tcSection.offsetHeight : 0;
     pl.style.cssText = savedCss;
-    // A4 at 96dpi ~1122px; minus ~15mm margins (~114px) = ~1008px usable.
-    // T&Cs take ~160px. If main content > ~820px, T&Cs won't fit on page 1.
-    if (mainH > 820) { pl.classList.add('pl-print-lg'); }
+    if (tcTop + tcH > 1123) { pl.classList.add('pl-print-lg'); }
   }
 
   addToHistory();
@@ -3082,10 +3083,41 @@ function generateTextBasedPdfBlob(filename) {
 
       y += boxH + 5;
 
-      // ── Page 2: T&Cs ─────────────────────────────────────────────────────
-      doc.addPage();
-      y = margin;
+      // ── T&Cs: only start a new page when content genuinely won't fit ────────
+      // Pre-calculate the exact height using jsPDF's own line-break logic so the
+      // decision uses the same measurements as the actual drawing pass.
+      var colW2  = (cW - 5) / 2;
+      var tcLnH  = 3.6;   // baseline-to-baseline in mm
+      var tcPGap = 2;     // gap between paragraphs in mm (tightened from 3 → fits more orders on p1)
 
+      var tcCol1 = [
+        'By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.',
+        'The order value (plus VAT if applicable) is payable within 30 days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin — if your campaign is due to begin in less than 30 days from the invoice date, your payment terms will be shortened accordingly.',
+        'All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested. If you would like to separate your invoice into instalments, these must be paid by Direct Debit and will be due the month prior to each month of the campaign.',
+        'The order form together with these terms and conditions constitute all the terms of this contract, and no employee, agent or representative of this company has any right to amend these terms. You are solely responsible for submitting suitable artwork/copy by the date agreed.'
+      ];
+      var tcCol2 = [
+        'Materials must be supplied as: JPG, PNG or GIF files for Online Ads; Word Document Format for content. These must be supplied to the correct specifications and submitted via email. If you fail to supply the copy by the due date you will be responsible for paying for the advertising space even if your advertisement does not appear.',
+        'The agreed total KPIs for this campaign are averaged per month. Student Media Ltd will not be considered in breach of this agreement if monthly KPIs are not met so long as the total KPIs are met by the end of the campaign. Student Media Ltd may partner with third-party companies to deliver agreed KPIs.',
+        'If you do not pay Student Media Ltd on the due date then you will pay interest at 8% above the Bank of England base rate as prescribed under the Late Payment of Commercial Debts (Interest) Act 1998. Student Media Ltd reserves the right to cancel or pause your campaign if you do not pay within agreed payment terms. This contract shall be governed in accordance with the laws of England and Wales.'
+      ];
+
+      // Measure column heights (same splitTextToSize as the drawing pass below)
+      doc.setFontSize(7.5);
+      var _h1 = 0, _h2 = 0;
+      tcCol1.forEach(function(p) { _h1 += doc.splitTextToSize(p, colW2).length * tcLnH + tcPGap; });
+      tcCol2.forEach(function(p) { _h2 += doc.splitTextToSize(p, colW2).length * tcLnH + tcPGap; });
+      // 9 = title(4) + separator + 5mm gap; 5 = col-to-bank gap; 8 = two bank detail lines
+      var tcTotalH = 9 + Math.max(_h1, _h2) + 5 + 8;
+
+      if (y + tcTotalH > 297 - 15) {
+        doc.addPage();
+        y = margin;
+      } else {
+        y += 6;   // breathing room between sign-off boxes and T&Cs
+      }
+
+      // ── T&Cs body ─────────────────────────────────────────────────────────
       doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
       doc.text('TERMS & CONDITIONS', margin, y);
       y += 4;
@@ -3093,34 +3125,23 @@ function generateTextBasedPdfBlob(filename) {
       doc.line(margin, y, pageW - margin, y);
       y += 5;
 
-      var colW2 = (cW - 5) / 2;
       var c1X = margin;
       var c2X = margin + colW2 + 5;
       var c1Y = y;
       var c2Y = y;
-      var lnH = 3.6;
 
       doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
 
-      [
-        'By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.',
-        'The order value (plus VAT if applicable) is payable within 30 days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin — if your campaign is due to begin in less than 30 days from the invoice date, your payment terms will be shortened accordingly.',
-        'All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested. If you would like to separate your invoice into instalments, these must be paid by Direct Debit and will be due the month prior to each month of the campaign.',
-        'The order form together with these terms and conditions constitute all the terms of this contract, and no employee, agent or representative of this company has any right to amend these terms. You are solely responsible for submitting suitable artwork/copy by the date agreed.'
-      ].forEach(function(p) {
+      tcCol1.forEach(function(p) {
         var ls = doc.splitTextToSize(p, colW2);
         doc.text(ls, c1X, c1Y);
-        c1Y += ls.length * lnH + 3;
+        c1Y += ls.length * tcLnH + tcPGap;
       });
 
-      [
-        'Materials must be supplied as: JPG, PNG or GIF files for Online Ads; Word Document Format for content. These must be supplied to the correct specifications and submitted via email. If you fail to supply the copy by the due date you will be responsible for paying for the advertising space even if your advertisement does not appear.',
-        'The agreed total KPIs for this campaign are averaged per month. Student Media Ltd will not be considered in breach of this agreement if monthly KPIs are not met so long as the total KPIs are met by the end of the campaign. Student Media Ltd may partner with third-party companies to deliver agreed KPIs.',
-        'If you do not pay Student Media Ltd on the due date then you will pay interest at 8% above the Bank of England base rate as prescribed under the Late Payment of Commercial Debts (Interest) Act 1998. Student Media Ltd reserves the right to cancel or pause your campaign if you do not pay within agreed payment terms. This contract shall be governed in accordance with the laws of England and Wales.'
-      ].forEach(function(p) {
+      tcCol2.forEach(function(p) {
         var ls = doc.splitTextToSize(p, colW2);
         doc.text(ls, c2X, c2Y);
-        c2Y += ls.length * lnH + 3;
+        c2Y += ls.length * tcLnH + tcPGap;
       });
 
       y = Math.max(c1Y, c2Y) + 5;
