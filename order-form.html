@@ -2860,7 +2860,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.setFont('helvetica', 'normal');
       var addrRaw = addr.split('\n').map(function(l) { return l.trim(); }).filter(Boolean);
       var addrY = y + 9;
-      addrRaw.forEach(function(line) { doc.text(line, margin + 7, addrY); addrY += 4; });
+      addrRaw.forEach(function(line) { doc.text(line, margin + 7, addrY); addrY += 3.5; });
 
       // Description notice (right half)
       var rX = margin + cW / 2 + 2;
@@ -2873,7 +2873,7 @@ function generateTextBasedPdfBlob(filename) {
       var nLines = doc.splitTextToSize(notice, cW / 2 - 4);
       doc.text(nLines, rX, y + 9);
 
-      y += Math.max(addrRaw.length * 4 + 10, nLines.length * 3.5 + 10) + 3;
+      y += Math.max(addrRaw.length * 3.5 + 9, nLines.length * 3.2 + 9) + 2;
 
       // ── Items table ───────────────────────────────────────────────────────
       var items = [];
@@ -2928,7 +2928,7 @@ function generateTextBasedPdfBlob(filename) {
         }
       });
 
-      y = doc.lastAutoTable.finalY + 2;
+      y = doc.lastAutoTable.finalY + 1;
 
       // ── Totals ────────────────────────────────────────────────────────────
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
@@ -2961,7 +2961,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.setFontSize(12); doc.setFont('helvetica','bold');
       doc.text('TOTAL:', lX, y, { align: 'right' });
       doc.text((document.getElementById('grand-total')||{}).textContent || '£0.00', rX2, y, { align: 'right' });
-      y += 6;
+      y += 4;
 
       // ── Notes ─────────────────────────────────────────────────────────────
       var notesEl = document.getElementById('pl-notes');
@@ -2976,7 +2976,7 @@ function generateTextBasedPdfBlob(filename) {
         doc.setFont('helvetica','normal');
         var nl = doc.splitTextToSize(notesText, cW);
         doc.text(nl, margin, y);
-        y += nl.length * 4 + 4;
+        y += nl.length * 3.5 + 3;
       }
 
       // ── Campaign dates ────────────────────────────────────────────────────
@@ -3022,13 +3022,13 @@ function generateTextBasedPdfBlob(filename) {
             }
           }
         });
-        y = doc.lastAutoTable.finalY + 2;
+        y = doc.lastAutoTable.finalY + 1;
 
         var tcEl = document.getElementById('pl-total-months');
         if (tcEl && tcEl.textContent) {
           doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
           doc.text('Total Duration: ' + tcEl.textContent, pageW - margin, y, { align: 'right' });
-          y += 5;
+          y += 3;
         }
         if (anyStc) {
           doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(125,78,0);
@@ -3040,7 +3040,6 @@ function generateTextBasedPdfBlob(filename) {
       }
 
       // ── Sign-off boxes ────────────────────────────────────────────────────
-      y += 2;
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
       doc.line(margin, y, pageW-margin, y);
       y += 5;
@@ -3081,7 +3080,7 @@ function generateTextBasedPdfBlob(filename) {
         by += 6.5;
       });
 
-      y += boxH + 5;
+      y += boxH + 2;
 
       // ── T&Cs: only start a new page when content genuinely won't fit ────────
       // Pre-calculate the exact height using jsPDF's own line-break logic so the
@@ -3110,7 +3109,7 @@ function generateTextBasedPdfBlob(filename) {
       // 9 = title(4) + separator + 5mm gap; 5 = col-to-bank gap; 8 = two bank detail lines
       var tcTotalH = 9 + Math.max(_h1, _h2) + 5 + 8;
 
-      if (y + tcTotalH > 297 - 15) {
+      if (y + tcTotalH > 297 - 8) {
         doc.addPage();
         y = margin;
       } else {
