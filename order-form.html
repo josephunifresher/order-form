@@ -1518,10 +1518,9 @@ function validateUniBlur() {
 }
 
 // Check whether a UNI number already exists as a real order (not a REUSE: record)
+// Uses authenticated session token so RLS allows the read
 function checkUniExists(ref) {
-  return fetch(SB_URL + '/rest/v1/order_history?ref=eq.' + encodeURIComponent(ref) + '&select=id,user_name,saved_at,company', {
-    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-  }).then(function(r) { return r.json(); })
+  return sbFetch('order_history?ref=eq.' + encodeURIComponent(ref) + '&select=id,user_name,saved_at,company')
     .then(function(rows) { return (rows || []).filter(function(r) { return !/^REUSE[_:]/i.test(r.ref || ''); }); })
     ['catch'](function() { return []; });
 }
