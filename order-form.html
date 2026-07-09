@@ -456,6 +456,19 @@
   <button class="btn-ghost" onclick="doLogout()" style="margin-left:4px;">Sign Out</button>
 </div>
 
+<!-- UNI reuse approval modal (shown to admin on login) -->
+<div id="uni-reuse-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:32px 36px;max-width:520px;width:92%;box-shadow:0 8px 48px rgba(0,0,0,0.35);position:relative;max-height:80vh;overflow-y:auto;">
+    <div style="font-size:32px;text-align:center;margin-bottom:8px;">🔢</div>
+    <h2 style="font-family:'Roboto',Arial,sans-serif;font-size:18px;color:#702DD7;text-align:center;margin-bottom:4px;">Pending UNI Number Reuse Requests</h2>
+    <p style="font-size:12px;color:#888;text-align:center;margin-bottom:20px;">The following users have requested permission to reuse a UNI number that was already issued.</p>
+    <div id="uni-reuse-list"></div>
+    <div style="text-align:center;margin-top:20px;">
+      <button onclick="closeUniReuseModal()" style="background:#eee;color:#333;border:none;border-radius:20px;padding:10px 28px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Lato',Arial,sans-serif;">Close (decide later)</button>
+    </div>
+  </div>
+</div>
+
 <!-- T&C approval modal -->
 <div id="tc-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:14px;padding:32px 36px;max-width:440px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.25);text-align:center;position:relative;">
@@ -483,7 +496,7 @@
     </div>
     <div style="text-align:right">
       <div class="order-tag">ORDER</div>
-      <div class="meta-row"><span><label>REF NO:</label><input type="text" id="ref-no" placeholder="e.g. UNI03001" style="width:120px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required></span></div>
+      <div class="meta-row"><span><label>UNI Number:</label><input type="text" id="ref-no" placeholder="e.g. UNI02500" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField();" onblur="validateUniField()" required title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status" style="margin-left:6px;font-size:10px;"></span></span></div>
       <div class="meta-row"><span><label>Date:</label><input type="date" id="order-date" required></span></div>
       <div class="meta-row"><span><label>Initials *</label><input type="text" id="initials" placeholder="e.g. JB" maxlength="5" style="width:60px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required><span class="error-label" id="err-initials" style="margin-left:6px;font-size:10px;">Required</span></span></div>
     </div>
@@ -730,7 +743,7 @@
     </div>
     <div class="pl-header-right">
       <div class="pl-order-word">ORDER</div>
-      <div class="pl-meta-row"><span class="pl-meta-label">REF NO:</span> <span id="pl-ref"></span><span id="pl-initials" style="color:#555;"></span></div>
+      <div class="pl-meta-row"><span class="pl-meta-label">UNI Number:</span> <span id="pl-ref"></span><span id="pl-initials" style="color:#555;"></span></div>
       <div class="pl-meta-row"><span class="pl-meta-label">Date:</span> <span id="pl-date"></span></div>
     </div>
   </div>
@@ -839,7 +852,7 @@
       <div style="font-size:9pt;margin-top:3pt;color:#555;">Internal quality check — to be completed with every order form</div>
     </div>
     <div style="text-align:right;font-size:9pt;color:#333;">
-      <div><strong>REF:</strong> <span id="pl-cl-ref"></span></div>
+      <div><strong>UNI:</strong> <span id="pl-cl-ref"></span></div>
       <div><strong>Client:</strong> <span id="pl-cl-company"></span></div>
       <div><strong>Date:</strong> <span id="pl-cl-date"></span></div>
       <div><strong>Checked by:</strong> <span id="pl-cl-by"></span></div>
@@ -1436,6 +1449,206 @@ var SB_URL = 'https://jyljjlaqogqpsdtvseqf.supabase.co';
 var SB_KEY = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
 var SUPER_ADMIN = 'Joseph'; // Cannot be deleted or demoted
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// UNI NUMBER MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Validate format: UNI followed by exactly 5 digits
+function isValidUniFormat(ref) {
+  return /^UNI\d{5}$/.test(ref);
+}
+
+// Initialise the UNI field on page load — validates any pre-filled value
+function initUniNumber() {
+  var el = document.getElementById('ref-no');
+  if (!el) return;
+  if (el.value && el.value !== '') validateUniField();
+}
+
+// Validate the UNI field on blur / change and show status
+function validateUniField() {
+  var el = document.getElementById('ref-no');
+  var st = document.getElementById('uni-status');
+  if (!el || !st) return;
+  var val = el.value.trim().toUpperCase();
+  el.value = val;
+  if (!val) { st.textContent = ''; return; }
+  if (!isValidUniFormat(val)) {
+    st.textContent = '⚠ Must be UNI + 5 digits';
+    st.style.color = '#e74c3c';
+    el.style.borderColor = '#e74c3c';
+    return;
+  }
+  st.textContent = '✓';
+  st.style.color = '#27ae60';
+  el.style.borderColor = '';
+}
+
+// Check whether a UNI number already exists as a real order (not a REUSE: record)
+function checkUniExists(ref) {
+  return fetch(SB_URL + '/rest/v1/order_history?ref=eq.' + encodeURIComponent(ref) + '&select=id,user_name,saved_at,company', {
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+  }).then(function(r) { return r.json(); })
+    .then(function(rows) { return (rows || []).filter(function(r) { return !/^REUSE[_:]/i.test(r.ref || ''); }); })
+    ['catch'](function() { return []; });
+}
+
+// Check whether an approved reuse token exists for this UNI number
+function checkUniApproved(ref) {
+  var approvedRef = 'APPROVED:' + ref;
+  return fetch(SB_URL + '/rest/v1/order_history?ref=eq.' + encodeURIComponent(approvedRef) + '&select=id', {
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+  }).then(function(r) { return r.json(); })
+    .then(function(rows) { return (rows || []).length > 0 ? rows[0] : null; })
+    ['catch'](function() { return null; });
+}
+
+// Check whether a pending reuse request already exists for this UNI number
+function checkUniPendingRequest(ref) {
+  var reuseRef = 'REUSE:' + ref;
+  return fetch(SB_URL + '/rest/v1/order_history?ref=eq.' + encodeURIComponent(reuseRef) + '&select=id,user_name,saved_at,form_data', {
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+  }).then(function(r) { return r.json(); })
+    .then(function(rows) { return (rows || []).length > 0 ? rows[0] : null; })
+    ['catch'](function() { return null; });
+}
+
+// Submit a reuse request — stores a REUSE: record in order_history
+function requestUniReuse(ref) {
+  var user = currentUser();
+  var reason = prompt('Please give a reason for reusing ' + ref + ' (this will be shown to the admin):');
+  if (reason === null) return; // user cancelled
+  var session = currentUser();
+  var token = (session && session.access_token) ? session.access_token : SB_KEY;
+  fetch(SB_URL + '/rest/v1/order_history', {
+    method: 'POST',
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      user_name: user ? user.name : 'Unknown',
+      ref:       'REUSE:' + ref,
+      company:   '⟳ UNI Reuse Request',
+      total:     '',
+      form_data: {
+        type:         'uni_reuse_request',
+        uni_number:   ref,
+        requested_by: user ? user.name : 'Unknown',
+        reason:       reason || '(no reason given)'
+      }
+    })
+  }).then(function() {
+    alert('✅ Reuse request submitted for ' + ref + '.\n\nAn admin will review it at their next login. You will receive verbal confirmation once approved.');
+  })['catch'](function() {
+    alert('Could not submit request — please check your connection.');
+  });
+}
+
+// Delete an approved-reuse token (called after a reuse is consumed)
+function consumeUniApproval(approvedId) {
+  var session = currentUser();
+  var token = (session && session.access_token) ? session.access_token : SB_KEY;
+  fetch(SB_URL + '/rest/v1/order_history?id=eq.' + approvedId, {
+    method: 'DELETE',
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + token, 'Prefer': '' }
+  })['catch'](function() {});
+}
+
+// Check for pending UNI reuse requests — called after admin login
+function checkPendingUniReuseRequests() {
+  fetch(SB_URL + '/rest/v1/order_history?ref=like.REUSE:*&select=id,user_name,saved_at,form_data&order=saved_at.asc', {
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+  }).then(function(r) { return r.json(); })
+    .then(function(rows) {
+      var pending = (rows || []).filter(function(r) {
+        return r.form_data && r.form_data.type === 'uni_reuse_request';
+      });
+      if (pending.length > 0) showUniReuseModal(pending);
+    })['catch'](function() {});
+}
+
+// Show the admin approval modal
+function showUniReuseModal(requests) {
+  var listEl = document.getElementById('uni-reuse-list');
+  if (!listEl) return;
+  var html = '';
+  requests.forEach(function(req) {
+    var fd = req.form_data || {};
+    var dt = new Date(req.saved_at).toLocaleDateString('en-GB');
+    html += '<div style="border:1.5px solid #e0d0ff;border-radius:10px;padding:14px 16px;margin-bottom:12px;">' +
+      '<div style="font-size:14px;font-weight:700;color:#702DD7;margin-bottom:4px;">' + (fd.uni_number || '?') + '</div>' +
+      '<div style="font-size:12px;color:#333;margin-bottom:2px;">Requested by: <strong>' + (fd.requested_by || req.user_name || '?') + '</strong> on ' + dt + '</div>' +
+      '<div style="font-size:12px;color:#555;margin-bottom:10px;font-style:italic;">Reason: ' + (fd.reason || '(none given)') + '</div>' +
+      '<div style="display:flex;gap:8px;">' +
+      '<button onclick="adminApproveReuse(' + req.id + ',\'' + (fd.uni_number || '') + '\')" ' +
+        'style="background:#27ae60;color:#fff;border:none;border-radius:16px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:\'Lato\',Arial,sans-serif;">✅ Approve</button>' +
+      '<button onclick="adminRejectReuse(' + req.id + ',\'' + (fd.uni_number || '') + '\')" ' +
+        'style="background:#e74c3c;color:#fff;border:none;border-radius:16px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:\'Lato\',Arial,sans-serif;">❌ Reject</button>' +
+      '</div></div>';
+  });
+  listEl.innerHTML = html;
+  document.getElementById('uni-reuse-modal').style.display = 'flex';
+}
+
+function closeUniReuseModal() { document.getElementById('uni-reuse-modal').style.display = 'none'; }
+
+// Admin approves a reuse request
+function adminApproveReuse(requestId, uniNumber) {
+  var adminUser = currentUser();
+  var session = adminUser;
+  var token = (session && session.access_token) ? session.access_token : SB_KEY;
+  // 1. Delete the REUSE: request record
+  fetch(SB_URL + '/rest/v1/order_history?id=eq.' + requestId, {
+    method: 'DELETE',
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + token, 'Prefer': '' }
+  }).then(function() {
+    // 2. Create an APPROVED: token record so the user can save
+    return fetch(SB_URL + '/rest/v1/order_history', {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        user_name: adminUser ? adminUser.name : 'Admin',
+        ref:       'APPROVED:' + uniNumber,
+        company:   '✓ UNI Reuse Approved',
+        total:     '',
+        form_data: {
+          type:        'uni_reuse_approved',
+          uni_number:  uniNumber,
+          approved_by: adminUser ? adminUser.name : 'Admin'
+        }
+      })
+    });
+  }).then(function() {
+    alert('✅ Approved! ' + uniNumber + ' can now be reused. The user can proceed with their order.');
+    // Refresh the modal list
+    checkPendingUniReuseRequests();
+    closeUniReuseModal();
+  })['catch'](function() { alert('Error approving — please try again.'); });
+}
+
+// Admin rejects a reuse request
+function adminRejectReuse(requestId, uniNumber) {
+  if (!confirm('Reject the reuse request for ' + uniNumber + '?\n\nThe user will not be able to reuse this number.')) return;
+  var session = currentUser();
+  var token = (session && session.access_token) ? session.access_token : SB_KEY;
+  fetch(SB_URL + '/rest/v1/order_history?id=eq.' + requestId, {
+    method: 'DELETE',
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + token, 'Prefer': '' }
+  }).then(function() {
+    alert('❌ Reuse request for ' + uniNumber + ' has been rejected. Please inform the user verbally.');
+    checkPendingUniReuseRequests();
+    closeUniReuseModal();
+  })['catch'](function() { alert('Error rejecting — please try again.'); });
+}
+
 // ─── sbFetch: uses JWT when logged in, anon key otherwise ────────────────────
 function sbFetch(path, method, body, extraHeaders) {
   var session = currentUser();
@@ -1521,7 +1734,10 @@ function doLogin() {
           }));
           document.getElementById('login-overlay').style.display = 'none';
           document.getElementById('toolbar-user').textContent = '👤 ' + profile.name;
-          if (isAdminUser(profile)) document.getElementById('admin-btn').style.display = '';
+          if (isAdminUser(profile)) {
+            document.getElementById('admin-btn').style.display = '';
+            setTimeout(checkPendingUniReuseRequests, 800); // check for pending UNI reuse requests
+          }
           // Auto-fill initials on the order form
           if (profile.initials) {
             var initEl = document.getElementById('initials');
@@ -1588,12 +1804,16 @@ function doLogout() {
   if (u) {
     document.getElementById('login-overlay').style.display = 'none';
     document.getElementById('toolbar-user').textContent = '👤 ' + u.name;
-    if (isAdminUser(u)) document.getElementById('admin-btn').style.display = '';
+    if (isAdminUser(u)) {
+      document.getElementById('admin-btn').style.display = '';
+      setTimeout(checkPendingUniReuseRequests, 1000); // check on page load for admins
+    }
     if (u.initials) {
       var initEl = document.getElementById('initials');
       if (initEl && !initEl.value) initEl.value = u.initials.toUpperCase();
     }
   }
+  initUniNumber(); // validate UNI field on load
 })();
 
 function captureFormData() {
@@ -1640,7 +1860,7 @@ function captureFormData() {
 function restoreFormData(data) {
   if (!data) return;
   var setVal = function(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; };
-  setVal('ref-no',         data.ref);
+  setVal('ref-no',         data.ref); validateUniField();
   setVal('order-date',     data.date);
   setVal('initials',       data.initials);
   setVal('client-company', data.company);
@@ -1696,6 +1916,59 @@ function addToHistory() {
   var user = currentUser();
   var fd = captureFormData();
   if (!fd.ref && !fd.company) return;
+
+  var ref = fd.ref ? fd.ref.trim().toUpperCase() : '';
+
+  // ── UNI format validation ──────────────────────────────────────────────────
+  if (ref && !isValidUniFormat(ref)) {
+    alert('⚠️ UNI Number format is invalid.\n\nIt must start with UNI followed by exactly 5 digits (e.g. UNI02500).\n\nPlease correct it before saving.');
+    return;
+  }
+
+  // ── Duplicate UNI check ────────────────────────────────────────────────────
+  if (!ref) {
+    doSaveHistory(user, fd); return;
+  }
+
+  checkUniExists(ref).then(function(existing) {
+    if (!existing || existing.length === 0) {
+      // No duplicate — save normally
+      doSaveHistory(user, fd);
+      return;
+    }
+    // Duplicate found — check if admin has pre-approved reuse
+    checkUniApproved(ref).then(function(approvedRec) {
+      if (approvedRec) {
+        // Admin approved — consume the token and save
+        consumeUniApproval(approvedRec.id);
+        doSaveHistory(user, fd);
+        return;
+      }
+      // Not approved — check if a request is already pending
+      checkUniPendingRequest(ref).then(function(pending) {
+        var ex = existing[0];
+        var usedBy = ex.user_name || 'someone';
+        var usedDate = ex.saved_at ? new Date(ex.saved_at).toLocaleDateString('en-GB') : 'unknown date';
+        if (pending) {
+          alert('⚠️ UNI Number ' + ref + ' has already been used (by ' + usedBy + ' on ' + usedDate + ').\n\nYou already have a PENDING reuse request with the admin.\n\nPlease wait for admin approval before proceeding.');
+        } else {
+          var doRequest = confirm(
+            '🚫 UNI Number ' + ref + ' has already been issued!\n\n' +
+            'Originally used by: ' + usedBy + ' on ' + usedDate + '\n\n' +
+            'To reuse this number you need ADMIN APPROVAL.\n\n' +
+            'Would you like to submit a reuse request to the admin now?'
+          );
+          if (doRequest) requestUniReuse(ref);
+        }
+      });
+    });
+  })['catch'](function() {
+    // Network error — allow save rather than block
+    doSaveHistory(user, fd);
+  });
+}
+
+function doSaveHistory(user, fd) {
   sbFetch('order_history', 'POST', {
     user_name:  user ? user.name : 'Unknown',
     ref:        fd.ref,
@@ -1706,6 +1979,8 @@ function addToHistory() {
 }
 
 function renderHistoryRows(history, inAdmin) {
+  // Filter out internal REUSE: and APPROVED: system records
+  history = history.filter(function(h) { return !/^(REUSE:|APPROVED:)/i.test(h.ref || ''); });
   if (!history.length) return '<div class="hist-empty">No orders found.</div>';
   var months = {};
   history.forEach(function(h) {
@@ -1823,8 +2098,28 @@ function renderAdminBody() {
       '<select class="adm-inp" id="adm-new-role"><option value="user">User</option><option value="admin">Admin</option></select>' +
       '<button class="adm-btn" onclick="adminAddUser()">Add User</button>' +
       '</div></div>';
+    // ── UNI Reuse Requests section ──────────────────────────────────────────
+    var reuseRows = (history || []).filter(function(h) { return /^REUSE:/i.test(h.ref || ''); });
+    if (reuseRows.length > 0) {
+      html += '<div class="adm-section" style="border:2px solid #e74c3c;border-radius:10px;padding:14px 16px;margin-bottom:16px;">';
+      html += '<h3 style="color:#c0392b;margin-top:0;">🔢 Pending UNI Number Reuse Requests (' + reuseRows.length + ')</h3>';
+      reuseRows.forEach(function(req) {
+        var fd = req.form_data || {};
+        var dt = new Date(req.saved_at).toLocaleDateString('en-GB');
+        html += '<div style="background:#fff5f5;border-radius:8px;padding:10px 14px;margin-bottom:10px;">' +
+          '<strong style="color:#702DD7;">' + (fd.uni_number || req.ref) + '</strong>' +
+          ' — requested by <strong>' + (fd.requested_by || req.user_name) + '</strong> on ' + dt + '<br>' +
+          '<em style="color:#555;font-size:12px;">Reason: ' + (fd.reason || '—') + '</em><br>' +
+          '<div style="margin-top:8px;display:flex;gap:8px;">' +
+          '<button class="adm-btn" style="background:#27ae60;" onclick="adminApproveReuse(' + req.id + ',\'' + (fd.uni_number || '') + '\');renderAdminBody();">✅ Approve</button>' +
+          '<button class="adm-btn danger" onclick="adminRejectReuse(' + req.id + ',\'' + (fd.uni_number || '') + '\');renderAdminBody();">❌ Reject</button>' +
+          '</div></div>';
+      });
+      html += '</div>';
+    }
+
     html += '<div class="adm-section"><h3>All Order History</h3>';
-    if (!history.length) { html += '<div class="hist-empty">No history yet.</div>'; }
+    if (!history.filter(function(h){return !/^(REUSE:|APPROVED:)/i.test(h.ref||'');}).length) { html += '<div class="hist-empty">No history yet.</div>'; }
     else {
       html += '<div style="display:flex;justify-content:flex-end;margin-bottom:8px;">' +
         '<button class="adm-btn danger" onclick="adminClearHistory()">Clear All History</button></div>';
@@ -1839,7 +2134,7 @@ function renderAdminBody() {
         '<thead><tr style="background:var(--purple-lightest);font-weight:700;">' +
         '<td style="padding:6px 8px;">Date &amp; Time</td>' +
         '<td style="padding:6px 8px;">User</td>' +
-        '<td style="padding:6px 8px;">REF</td>' +
+        '<td style="padding:6px 8px;">UNI</td>' +
         '<td style="padding:6px 8px;">Client</td>' +
         '<td style="padding:6px 8px;">File</td>' +
         '<td style="padding:6px 8px;">Type</td>' +
@@ -2859,7 +3154,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(0, 0, 0);
-      doc.text('REF NO: ' + refNo + (inits ? ' (' + inits + ')' : ''), pageW - margin, y + 16, { align: 'right' });
+      doc.text('UNI: ' + refNo + (inits ? ' (' + inits + ')' : ''), pageW - margin, y + 16, { align: 'right' });
       doc.text('Date: ' + dateStr, pageW - margin, y + 21, { align: 'right' });
 
       y += headerH;
