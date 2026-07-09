@@ -1634,6 +1634,44 @@ function adminApproveReuse(requestId, uniNumber) {
   })['catch'](function() { alert('Error approving — please try again.'); });
 }
 
+// ── Import historical UNI numbers from spreadsheet ───────────────────────────
+function importHistoricalUnis() {
+  var user = currentUser();
+  if (!user || !isAdminUser(user)) { alert('Admin login required.'); return; }
+  if (!confirm('This will import 634 historical UNI numbers (UNI01991\u2013UNI06014) from your spreadsheets into the database so the duplicate check covers them.\n\nAlready-existing entries will be skipped. Continue?')) return;
+  var ALL_UNIS = ["UNI01991","UNI02000","UNI02001","UNI02002","UNI02003","UNI02004","UNI02005","UNI02006","UNI02007","UNI02008","UNI02009","UNI02010","UNI02011","UNI02012","UNI02013","UNI02014","UNI02015","UNI02016","UNI02017","UNI02018","UNI02019","UNI02020","UNI02021","UNI02022","UNI02023","UNI02024","UNI02025","UNI02026","UNI02027","UNI02028","UNI02029","UNI02030","UNI02031","UNI02032","UNI02033","UNI02034","UNI02035","UNI02036","UNI02037","UNI02038","UNI02039","UNI02040","UNI02041","UNI02042","UNI02043","UNI02044","UNI02045","UNI02046","UNI02047","UNI02048","UNI02049","UNI02050","UNI02051","UNI02052","UNI02053","UNI02054","UNI02055","UNI02056","UNI02057","UNI02058","UNI02059","UNI02060","UNI02061","UNI02062","UNI02063","UNI02064","UNI02065","UNI02066","UNI02067","UNI02068","UNI02069","UNI02070","UNI02071","UNI02072","UNI02073","UNI02074","UNI02075","UNI02076","UNI02077","UNI02078","UNI02079","UNI02080","UNI02081","UNI02082","UNI02083","UNI02084","UNI02085","UNI02086","UNI02087","UNI02088","UNI02089","UNI02090","UNI02091","UNI02092","UNI02093","UNI02094","UNI02095","UNI02096","UNI02097","UNI02098","UNI02099","UNI02100","UNI02101","UNI02102","UNI02103","UNI02104","UNI02105","UNI02106","UNI02107","UNI02108","UNI02109","UNI02110","UNI02111","UNI02112","UNI02113","UNI02114","UNI02116","UNI02117","UNI02118","UNI02119","UNI02120","UNI02121","UNI02122","UNI02123","UNI02124","UNI02126","UNI02128","UNI02129","UNI02130","UNI02131","UNI02133","UNI02134","UNI02135","UNI02136","UNI02138","UNI02139","UNI02140","UNI02141","UNI02143","UNI02144","UNI02146","UNI02147","UNI02148","UNI02149","UNI02150","UNI02151","UNI02152","UNI02153","UNI02154","UNI02155","UNI02157","UNI02158","UNI02159","UNI02160","UNI02161","UNI02162","UNI02163","UNI02165","UNI02166","UNI02169","UNI02170","UNI02171","UNI02172","UNI02173","UNI02174","UNI02175","UNI02176","UNI02177","UNI02181","UNI02182","UNI02183","UNI02184","UNI02185","UNI02186","UNI02187","UNI02188","UNI02189","UNI02190","UNI02191","UNI02192","UNI02193","UNI02194","UNI02195","UNI02196","UNI02197","UNI02198","UNI02199","UNI02200","UNI02201","UNI02202","UNI02203","UNI02204","UNI02205","UNI02206","UNI02207","UNI02208","UNI02209","UNI02210","UNI02211","UNI02212","UNI02213","UNI02214","UNI02215","UNI02216","UNI02217","UNI02218","UNI02219","UNI02220","UNI02221","UNI02222","UNI02223","UNI02224","UNI02225","UNI02226","UNI02227","UNI02228","UNI02229","UNI02230","UNI02231","UNI02233","UNI02234","UNI02235","UNI02236","UNI02237","UNI02238","UNI02239","UNI02240","UNI02241","UNI02242","UNI02243","UNI02244","UNI02245","UNI02246","UNI02247","UNI02250","UNI02251","UNI02252","UNI02253","UNI02254","UNI02255","UNI02256","UNI02257","UNI02258","UNI02259","UNI02260","UNI02261","UNI02262","UNI02263","UNI02264","UNI02265","UNI02266","UNI02267","UNI02268","UNI02269","UNI02270","UNI02271","UNI02272","UNI02273","UNI02274","UNI02275","UNI02276","UNI02277","UNI02278","UNI02279","UNI02280","UNI02281","UNI02282","UNI02283","UNI02284","UNI02285","UNI02286","UNI02287","UNI02288","UNI02289","UNI02290","UNI02291","UNI02292","UNI02293","UNI02294","UNI02295","UNI02296","UNI02297","UNI02298","UNI02299","UNI02300","UNI02301","UNI02302","UNI02303","UNI02304","UNI02305","UNI02306","UNI02307","UNI02308","UNI02309","UNI02310","UNI02311","UNI02312","UNI02313","UNI02314","UNI02315","UNI02316","UNI02317","UNI02318","UNI02319","UNI02320","UNI02321","UNI02322","UNI02323","UNI02324","UNI02325","UNI02326","UNI02327","UNI02328","UNI02329","UNI02330","UNI02331","UNI02332","UNI02333","UNI02334","UNI02335","UNI02336","UNI02337","UNI02338","UNI02339","UNI02340","UNI02341","UNI02342","UNI02343","UNI02344","UNI02345","UNI02346","UNI02347","UNI02348","UNI02349","UNI02350","UNI02351","UNI02352","UNI02353","UNI02354","UNI02355","UNI02356","UNI02357","UNI02358","UNI02359","UNI02360","UNI02361","UNI02362","UNI02363","UNI02364","UNI02365","UNI02366","UNI02367","UNI02368","UNI02369","UNI02370","UNI02371","UNI02372","UNI02373","UNI02374","UNI02375","UNI02376","UNI02377","UNI02378","UNI02379","UNI02380","UNI02381","UNI02382","UNI02383","UNI02384","UNI02385","UNI02386","UNI02387","UNI02388","UNI02389","UNI02390","UNI02391","UNI02392","UNI02393","UNI02394","UNI02395","UNI02396","UNI02397","UNI02398","UNI02399","UNI02400","UNI02401","UNI02402","UNI02403","UNI02404","UNI02405","UNI02406","UNI02407","UNI02408","UNI02409","UNI02410","UNI02411","UNI02412","UNI02413","UNI02414","UNI02415","UNI02416","UNI02417","UNI02418","UNI02419","UNI02420","UNI02421","UNI02422","UNI02423","UNI02424","UNI02425","UNI02426","UNI02427","UNI02428","UNI02429","UNI02430","UNI02431","UNI02432","UNI02433","UNI02434","UNI02435","UNI02436","UNI02437","UNI02438","UNI02439","UNI02440","UNI02441","UNI02442","UNI02443","UNI02444","UNI02445","UNI02456","UNI02457","UNI02458","UNI02459","UNI02460","UNI02461","UNI02462","UNI02463","UNI02464","UNI02465","UNI02466","UNI02467","UNI02468","UNI02469","UNI02470","UNI02471","UNI02472","UNI02473","UNI02474","UNI02478","UNI02479","UNI02480","UNI02481","UNI02482","UNI02483","UNI02484","UNI02489","UNI02490","UNI02491","UNI02492","UNI02493","UNI02494","UNI02495","UNI02496","UNI02497","UNI03145","UNI03240","UNI03290","UNI03512","UNI03513","UNI03514","UNI03515","UNI03516","UNI03517","UNI03518","UNI03519","UNI03530","UNI03614","UNI04001","UNI04002","UNI04003","UNI04004","UNI04005","UNI04006","UNI04007","UNI04008","UNI04009","UNI04010","UNI04011","UNI04012","UNI04013","UNI04014","UNI04015","UNI04016","UNI04017","UNI04018","UNI04019","UNI04020","UNI04021","UNI04022","UNI04023","UNI04024","UNI04025","UNI04026","UNI04027","UNI04028","UNI04029","UNI04030","UNI04031","UNI04033","UNI04034","UNI04035","UNI04036","UNI04037","UNI04038","UNI04039","UNI04040","UNI04041","UNI04042","UNI04043","UNI04044","UNI04045","UNI04046","UNI04047","UNI04048","UNI04049","UNI04050","UNI04051","UNI04052","UNI04053","UNI04054","UNI04055","UNI04056","UNI04057","UNI04058","UNI04059","UNI04060","UNI04061","UNI04062","UNI04063","UNI04064","UNI04065","UNI04066","UNI04067","UNI04068","UNI04069","UNI04070","UNI04071","UNI04072","UNI04073","UNI04074","UNI04075","UNI04076","UNI04077","UNI04078","UNI04079","UNI04080","UNI04081","UNI04082","UNI04083","UNI04084","UNI04085","UNI04086","UNI04087","UNI04088","UNI04089","UNI04090","UNI04091","UNI04092","UNI04093","UNI04094","UNI04095","UNI04096","UNI04097","UNI04098","UNI04099","UNI04100","UNI04101","UNI04102","UNI04103","UNI04104","UNI04105","UNI04106","UNI04107","UNI04108","UNI04109","UNI04110","UNI04111","UNI04112","UNI04113","UNI04114","UNI04115","UNI04116","UNI04117","UNI04118","UNI04119","UNI04120","UNI04121","UNI04122","UNI04123","UNI04124","UNI04125","UNI04126","UNI04127","UNI04128","UNI04129","UNI04130","UNI04131","UNI04132","UNI04133","UNI04134","UNI04135","UNI04136","UNI04138","UNI04139","UNI04140","UNI04141","UNI04142","UNI04143","UNI04144","UNI04145","UNI06001","UNI06002","UNI06003","UNI06004","UNI06005","UNI06006","UNI06007","UNI06008","UNI06009","UNI06010","UNI06011","UNI06012","UNI06014"];
+  var btn = document.getElementById('import-hist-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Importing\u2026'; }
+  sbFetch('order_history?select=ref').then(function(rows) {
+    var existing = new Set((rows || []).map(function(r) { return r.ref; }));
+    var toInsert = ALL_UNIS.filter(function(u) { return !existing.has(u); });
+    if (toInsert.length === 0) {
+      alert('\u2705 All 634 historical UNI numbers are already in the database \u2014 nothing to import.');
+      if (btn) { btn.disabled = false; btn.textContent = '\u2705 Import Historical UNIs (already done)'; }
+      return;
+    }
+    var records = toInsert.map(function(ref) {
+      return { ref: ref, user_name: 'Historical Import', company: 'Pre-existing record', total: '', form_data: { type: 'historical_import', source: 'spreadsheet_import_2026' } };
+    });
+    var batchSize = 50; var batches = [];
+    for (var i = 0; i < records.length; i += batchSize) batches.push(records.slice(i, i + batchSize));
+    var done = 0;
+    function nextBatch() {
+      if (done >= batches.length) {
+        alert('\u2705 Done! Imported ' + toInsert.length + ' historical UNI numbers.\n(' + (ALL_UNIS.length - toInsert.length) + ' were already in the database and skipped.)');
+        if (btn) { btn.disabled = true; btn.textContent = '\u2705 Import complete'; btn.style.background = '#27ae60'; }
+        return;
+      }
+      if (btn) btn.textContent = 'Importing\u2026 (' + Math.round((done / batches.length) * 100) + '%)';
+      sbFetch('order_history', 'POST', batches[done]).then(function() { done++; nextBatch(); })['catch'](function() { done++; nextBatch(); });
+    }
+    nextBatch();
+  })['catch'](function() {
+    alert('Error reading existing records. Check your connection.');
+    if (btn) { btn.disabled = false; btn.textContent = '\ud83d\udce5 Import Historical UNIs'; }
+  });
+}
+
 // Admin rejects a reuse request
 function adminRejectReuse(requestId, uniNumber) {
   if (!confirm('Reject the reuse request for ' + uniNumber + '?\n\nThe user will not be able to reuse this number.')) return;
@@ -1979,8 +2017,12 @@ function doSaveHistory(user, fd) {
 }
 
 function renderHistoryRows(history, inAdmin) {
-  // Filter out internal REUSE: and APPROVED: system records
-  history = history.filter(function(h) { return !/^(REUSE:|APPROVED:)/i.test(h.ref || ''); });
+  // Filter out internal REUSE:, APPROVED: system records and historical imports
+  history = history.filter(function(h) {
+    if (/^(REUSE:|APPROVED:)/i.test(h.ref || '')) return false;
+    if (h.form_data && h.form_data.type === 'historical_import') return false;
+    return true;
+  });
   if (!history.length) return '<div class="hist-empty">No orders found.</div>';
   var months = {};
   history.forEach(function(h) {
@@ -2119,7 +2161,12 @@ function renderAdminBody() {
     }
 
     html += '<div class="adm-section"><h3>All Order History</h3>';
-    if (!history.filter(function(h){return !/^(REUSE:|APPROVED:)/i.test(h.ref||'');}).length) { html += '<div class="hist-empty">No history yet.</div>'; }
+    var histImported = (history || []).some(function(h) { return h.form_data && h.form_data.type === 'historical_import'; });
+    html += '<div style="margin-bottom:12px;padding:10px 14px;background:#f0ebfa;border-radius:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">' +
+      '<span style="font-size:12px;color:#555;flex:1;">Historical UNI numbers from your spreadsheets (pre-2026) need to be imported once so the duplicate check covers them.</span>' +
+      '<button id="import-hist-btn" class="adm-btn" style="background:' + (histImported ? '#27ae60' : '#702DD7') + ';white-space:nowrap;" onclick="importHistoricalUnis()">' +
+      (histImported ? '\u2705 Re-run Import' : '\ud83d\udce5 Import Historical UNIs') + '</button></div>';
+    if (!history.filter(function(h){return !/^(REUSE:|APPROVED:|historical)/i.test(h.ref||'') && !(h.form_data && h.form_data.type==='historical_import');}).length) { html += '<div class="hist-empty">No history yet.</div>'; }
     else {
       html += '<div style="display:flex;justify-content:flex-end;margin-bottom:8px;">' +
         '<button class="adm-btn danger" onclick="adminClearHistory()">Clear All History</button></div>';
