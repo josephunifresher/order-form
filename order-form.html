@@ -761,12 +761,18 @@
   </div>
 
   <table class="pl-items" id="pl-items-table">
+    <colgroup id="pl-items-cols">
+      <col style="width:56%">
+      <col style="width:18%">
+      <col style="width:8%">
+      <col style="width:18%">
+    </colgroup>
     <thead id="pl-items-head">
       <tr>
-        <th style="width:41%">Description</th>
-        <th class="r" style="width:16%">Unit Price</th>
+        <th style="width:56%">Description</th>
+        <th class="r" style="width:18%">Unit Price</th>
         <th class="r" style="width:8%">Qty</th>
-        <th class="r" style="width:16%">Total</th>
+        <th class="r" style="width:18%">Total</th>
       </tr>
     </thead>
     <tbody id="pl-items-body"></tbody>
@@ -1059,6 +1065,14 @@ function populatePrintLayout() {
       '<th class="r" style="width:18%">Unit Price</th>' +
       (anyQty ? '<th class="r" style="width:8%">Qty</th>' : '') +
       '<th class="r" style="width:18%">Total</th>';
+  }
+  var plCols = document.getElementById('pl-items-cols');
+  if (plCols) {
+    plCols.innerHTML =
+      '<col style="width:' + (anyQty ? '56%' : '66%') + '">' +
+      '<col style="width:18%">' +
+      (anyQty ? '<col style="width:8%">' : '') +
+      '<col style="width:18%">';
   }
 
   var plBody = document.getElementById('pl-items-body');
@@ -3320,6 +3334,14 @@ function generateTextBasedPdfBlob(filename) {
           price: { halign: 'right', cellWidth: 30 },
           qty:   { halign: 'right', cellWidth: 15 },
           total: { halign: 'right', cellWidth: 28 }
+        },
+        didParseCell: function(data) {
+          // jsPDF-autoTable headStyles can override columnStyles alignment,
+          // so explicitly force right-align on header cells for numeric columns
+          if (data.section === 'head' &&
+              (data.column.dataKey === 'price' || data.column.dataKey === 'qty' || data.column.dataKey === 'total')) {
+            data.cell.styles.halign = 'right';
+          }
         },
         didDrawCell: function(data) {
           // Draw bottom border on header row only
