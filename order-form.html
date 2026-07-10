@@ -195,12 +195,12 @@
   .pl-notice { font-size:8.5pt; font-weight:bold; color:#cc0000; line-height:1.55; text-transform:uppercase; text-align:justify; }
 
   /* Items table */
-  .pl-items { width:100%; border-collapse:collapse; margin:6pt 0 2pt; }
+  .pl-items { width:100%; border-collapse:collapse; margin:6pt 0 2pt; table-layout:fixed; }
   .pl-items thead tr { border-bottom:1.5pt solid #000; }
-  .pl-items th { font-weight:bold; font-size:10pt; padding:2pt 8pt 4pt 0; text-align:left; background:none; color:#000; }
+  .pl-items th { font-weight:bold; font-size:10pt; padding:2pt 4pt 4pt 0; text-align:left; background:none; color:#000; overflow:hidden; }
   .pl-items th.r { text-align:right; }
   .pl-items tbody tr { border-bottom:.5pt solid #ccc; }
-  .pl-items td { font-size:10pt; padding:4pt 8pt 4pt 0; vertical-align:top; background:none; }
+  .pl-items td { font-size:10pt; padding:4pt 4pt 4pt 0; vertical-align:top; background:none; overflow:hidden; }
   .pl-items td.r { text-align:right; }
   .pl-items td.bold { font-weight:bold; }
 
@@ -1055,10 +1055,10 @@ function populatePrintLayout() {
   var plHead = document.querySelector('#pl-items-body').closest('table').querySelector('thead tr');
   if (plHead) {
     plHead.innerHTML =
-      '<th style="width:' + (anyQty ? '48%' : '62%') + '">Description</th>' +
-      '<th class="r" style="width:16%">Unit Price</th>' +
+      '<th style="width:' + (anyQty ? '56%' : '66%') + '">Description</th>' +
+      '<th class="r" style="width:18%">Unit Price</th>' +
       (anyQty ? '<th class="r" style="width:8%">Qty</th>' : '') +
-      '<th class="r" style="width:16%">Total</th>';
+      '<th class="r" style="width:18%">Total</th>';
   }
 
   var plBody = document.getElementById('pl-items-body');
