@@ -375,6 +375,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -2515,6 +2517,20 @@ function updateClProgress() {
     });
     updateClProgress();
 
+    // ─── EmailJS Configuration ─────────────────────────────────────────
+    // Set these values from your EmailJS dashboard (emailjs.com)
+    // Service ID: Email & Settings > Add New Service
+    // Template ID: Email Templates > Create New Template
+    // Public Key:  Account > API Keys
+    var EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // e.g. 'service_abc123'
+    var EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // e.g. 'template_xyz789'
+    var EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // e.g. 'AbCdEfGhIjKl123'
+    var EMAILJS_TO_EMAIL    = 'joseph@unifresher.co.uk';
+    // Initialise EmailJS once
+    if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+    }
+
     // ─── Accreditation Scheme ─────────────────────────────────────────
     var accredState = { answer: null, pending: null };
 
@@ -2530,6 +2546,26 @@ function updateClProgress() {
       if (nPanel) nPanel.style.display  = (val === 'no')  ? 'block' : 'none';
       if (val === 'no') {
         accredState.pending = null;
+        // Send email notification
+        (function(){
+          try {
+            if (typeof emailjs !== 'undefined' && EMAILJS_SERVICE_ID !== 'YOUR_SERVICE_ID') {
+              var _company  = (document.getElementById('client-company')   || {}).value || '(not filled)';
+              var _contact  = (document.getElementById('accounts-contact') || {}).value || '(not filled)';
+              var _filledBy = (document.getElementById('print-name')       || {}).value ||
+                              (document.getElementById('cl-by')            || {}).value || '(unknown)';
+              var _now = new Date().toLocaleString('en-GB', {dateStyle:'short', timeStyle:'short'});
+              emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                to_email:    EMAILJS_TO_EMAIL,
+                company:     _company,
+                contact:     _contact,
+                filled_by:   _filledBy,
+                timestamp:   _now,
+                form_url:    window.location.href
+              });
+            }
+          } catch(e) { console.warn('EmailJS error:', e); }
+        })();
         ['accred-pend-yes-btn','accred-pend-no-btn'].forEach(function(id){var el=document.getElementById(id);if(el)el.className='accred-btn';});
         var rPanel = document.getElementById('accred-reason-panel');
         if (rPanel) rPanel.style.display = 'none';
