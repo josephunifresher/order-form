@@ -1518,7 +1518,7 @@ function doRecoverySet(tok) {
     method: 'PUT',
     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
     body: JSON.stringify({ password: pw1 })
-  }).then(function(r) { return r.json(); }).then(function(data) {
+  }).then(function(r) { if(!r.ok){return r.json().then(function(e){throw new Error(e.msg||e.error_description||'Password reset link may have expired — please request a new one.');});} return r.json(); }).then(function(data) {
     if (data.error) { msg.style.color='#e74c3c'; msg.textContent = data.error || 'Error — please try again.'; return; }
     msg.style.color='#27ae60'; msg.textContent='✅ Password updated!';
     setTimeout(function() {
@@ -1527,7 +1527,7 @@ function doRecoverySet(tok) {
       var loginOv = document.getElementById('login-overlay');
       if (loginOv) loginOv.style.display = 'flex';
     }, 1500);
-  })['catch'](function() { msg.style.color='#e74c3c'; msg.textContent='Network error — please try again.'; });
+  })['catch'](function(e) { msg.style.color='#e74c3c'; msg.textContent=(e&&e.message)?e.message:'Network error — please try again.'; });
 }
 
 // ─── Page load setup ────────────────────────────────────────────────────────
