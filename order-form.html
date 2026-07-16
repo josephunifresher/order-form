@@ -192,7 +192,7 @@
   .pl-to-addr { font-size:10pt; white-space:pre-line; line-height:1.65; margin-top:2pt; }
   .pl-desc { }
   .pl-desc-title { font-size:10pt; font-weight:bold; margin-bottom:6pt; }
-  .pl-notice { font-size:8.5pt; font-weight:bold; color:#cc0000; line-height:1.55; text-transform:uppercase; text-align:justify; }
+  .pl-notice { font-size:8.5pt; font-weight:bold; color:#cc0000; line-height:1.55; text-transform:uppercase; text-align:left; }
 
   /* Items table */
   .pl-items { width:100%; border-collapse:collapse; margin:6pt 0 2pt; table-layout:fixed; }
@@ -3309,10 +3309,19 @@ function generateTextBasedPdfBlob(filename) {
       });
 
       var cols = anyQty
-        ? [{ header: 'Description', dataKey: 'desc' }, { header: 'Unit Price', dataKey: 'price' },
-           { header: 'Qty', dataKey: 'qty' }, { header: 'Total', dataKey: 'total' }]
-        : [{ header: 'Description', dataKey: 'desc' }, { header: 'Unit Price', dataKey: 'price' },
-           { header: 'Total', dataKey: 'total' }];
+        ? [{ dataKey: 'desc' }, { dataKey: 'price' }, { dataKey: 'qty' }, { dataKey: 'total' }]
+        : [{ dataKey: 'desc' }, { dataKey: 'price' }, { dataKey: 'total' }];
+
+      // Build head row with explicit per-cell halign — highest-priority style in
+      // jsPDF-autoTable, cannot be overridden by headStyles.
+      var headRow = anyQty
+        ? ['Description',
+           { content: 'Unit Price', styles: { halign: 'right' } },
+           { content: 'Qty',        styles: { halign: 'right' } },
+           { content: 'Total',      styles: { halign: 'right' } }]
+        : ['Description',
+           { content: 'Unit Price', styles: { halign: 'right' } },
+           { content: 'Total',      styles: { halign: 'right' } }];
 
       var rows = items.map(function(it) {
         var r = { desc: it.desc, price: it.price ? '£' + it.price.toFixed(2) : '',
@@ -3323,6 +3332,7 @@ function generateTextBasedPdfBlob(filename) {
 
       doc.autoTable({
         startY: y,
+        head: [headRow],
         columns: cols,
         body: rows,
         margin: { left: margin, right: margin },
@@ -3334,14 +3344,6 @@ function generateTextBasedPdfBlob(filename) {
           price: { halign: 'right', cellWidth: 30 },
           qty:   { halign: 'right', cellWidth: 15 },
           total: { halign: 'right', cellWidth: 28 }
-        },
-        didParseCell: function(data) {
-          // jsPDF-autoTable headStyles can override columnStyles alignment,
-          // so explicitly force right-align on header cells for numeric columns
-          if (data.section === 'head' &&
-              (data.column.dataKey === 'price' || data.column.dataKey === 'qty' || data.column.dataKey === 'total')) {
-            data.cell.styles.halign = 'right';
-          }
         },
         didDrawCell: function(data) {
           // Draw bottom border on header row only
@@ -3361,7 +3363,7 @@ function generateTextBasedPdfBlob(filename) {
       y += 4;
 
       var lX = pageW - margin - 35;
-      var rX2 = pageW - margin;
+      var rX2 = pageW - margin - 3; // -3 to match autoTable's 3mm right cell padding
 
       doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
       doc.text('NET:', lX, y, { align: 'right' });
