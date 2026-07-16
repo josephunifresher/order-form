@@ -756,7 +756,7 @@
     </div>
     <div class="pl-desc">
       <div class="pl-desc-title">DESCRIPTION: Full details below</div>
-      <div class="pl-notice">PLEASE NOTE: THIS IS AN ORDER AND IS FOR INFORMATION ONLY. IF YOU WISH TO PROCEED WITH THIS ORDER, PLEASE CONFIRM THAT THE INFORMATION IS CORRECT AND THAT YOU WISH TO PROCEED.</div>
+      <div class="pl-notice">PLEASE NOTE: THIS IS AN ORDER AND IS FOR INFORMATION ONLY.<br>IF YOU WISH TO PROCEED WITH THIS ORDER, PLEASE CONFIRM THAT THE INFORMATION IS CORRECT AND THAT YOU WISH TO PROCEED.</div>
     </div>
   </div>
 
@@ -3284,7 +3284,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.text('DESCRIPTION: Full details below', rX, y + 4);
       doc.setFontSize(7);
       doc.setFont('helvetica', 'normal');
-      var notice = 'PLEASE NOTE: THIS IS AN ORDER AND IS FOR INFORMATION ONLY. IF YOU WISH TO PROCEED WITH THIS ORDER, PLEASE CONFIRM THAT THE INFORMATION IS CORRECT AND THAT YOU WISH TO PROCEED.';
+      var notice = 'PLEASE NOTE: THIS IS AN ORDER AND IS FOR INFORMATION ONLY.\nIF YOU WISH TO PROCEED WITH THIS ORDER, PLEASE CONFIRM THAT THE INFORMATION IS CORRECT AND THAT YOU WISH TO PROCEED.';
       var nLines = doc.splitTextToSize(notice, cW / 2 - 4);
       doc.setTextColor(204, 0, 0);
       doc.text(nLines, rX, y + 9);
