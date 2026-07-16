@@ -3391,8 +3391,25 @@ function generateTextBasedPdfBlob(filename) {
       y += 4;
 
       // ── Notes ─────────────────────────────────────────────────────────────
-      var notesEl = document.getElementById('pl-notes');
-      var notesText = notesEl ? (notesEl.innerText || notesEl.textContent || '').trim() : '';
+      // Read from the visible campaign-notes div so <br> tags become \n properly.
+      // (pl-notes is inside the hidden print layout; textContent on hidden elements
+      //  strips <br> silently, concatenating lines like "ManchesterKPIs:".)
+      var _cnEl = document.getElementById('campaign-notes');
+      var notesText = '';
+      if (_cnEl) {
+        var _tmp = document.createElement('div');
+        _tmp.innerHTML = _cnEl.innerHTML;
+        _tmp.querySelectorAll('br').forEach(function(br) {
+          br.parentNode.replaceChild(document.createTextNode('\n'), br);
+        });
+        _tmp.querySelectorAll('*').forEach(function(el) {
+          el.parentNode.replaceChild(document.createTextNode(el.textContent), el);
+        });
+        notesText = _tmp.textContent.replace(/&[a-z]+;/gi, function(e) {
+          var m = { '&amp;':'&','&nbsp;':' ','&ndash;':'\u2013','&mdash;':'\u2014','&lt;':'<','&gt;':'>','&quot;':'"','&#39;':"'" };
+          return m[e] || e;
+        }).trim();
+      }
       if (notesText) {
         doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
         doc.line(margin, y, pageW - margin, y);
