@@ -334,6 +334,11 @@
   .cl-note { font-size:11px; color:#e74c3c; font-weight:700; margin-bottom:10px; }
   .cl-progress { font-size:11px; color:var(--purple-dark); margin-left:auto; }
 
+  /* ACCREDITATION SCHEME */
+  .accred-section{margin-bottom:6px}.accred-question{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}.accred-label{font-size:13px;font-weight:600;color:var(--black)}.accred-toggle{display:flex;gap:6px}.accred-btn{background:var(--grey-bg);border:1.5px solid var(--grey-border);border-radius:20px;padding:4px 18px;font-size:12px;font-family:'Lato',Arial,sans-serif;cursor:pointer;color:var(--black);font-weight:600;transition:background .15s,border-color .15s,color .15s}.accred-btn.active-yes{background:#27ae60;border-color:#219a52;color:#fff}.accred-btn.active-no{background:#e74c3c;border-color:#c0392b;color:#fff}.accred-panel{margin-top:8px;padding:12px 16px;background:var(--grey-bg);border:1.5px solid var(--grey-border);border-radius:8px}.accred-sub-question{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}.accred-pending-note{font-size:11px;color:#e67e22;font-weight:700}.accred-reasons{display:flex;flex-direction:column;gap:6px;margin-top:6px}.accred-reasons label{display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer}.accred-reasons input[type=radio]{accent-color:var(--purple);cursor:pointer}.accred-fields{display:flex;gap:20px;flex-wrap:wrap;margin-top:4px}.accred-field-row{display:flex;align-items:center;gap:8px}.accred-field-row label{font-size:12px;font-weight:600;white-space:nowrap}.accred-field-row input[type=text]{border:none;border-bottom:1.5px solid var(--purple-lighter);font-size:12px;font-family:'Lato',Arial,sans-serif;padding:2px 4px;outline:none;width:160px;background:transparent}.accred-field-row input[type=text]:focus{border-bottom-color:var(--purple)}
+  /* PAY MONTHLY */
+  .pay-monthly-row{display:flex;align-items:center;gap:10px;padding:6px 0}.pay-monthly-row label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;cursor:pointer;color:var(--black)}.pay-monthly-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--purple);cursor:pointer}
+
   @media print {
     @page { margin:0; size:A4; }
     body { margin:0; padding:0; }
@@ -634,7 +639,53 @@
     </div>
   </div>
 
-  <div class="section-title">Sign-off</div>
+  <div class="section-title">Accreditation Scheme</div>
+      <div class="accred-section">
+        <div class="accred-question">
+          <span class="accred-label">Have you offered Accreditation Scheme?</span>
+          <div class="accred-toggle">
+            <button type="button" class="accred-btn" id="accred-yes-btn" onclick="setAccred('yes')">Yes</button>
+            <button type="button" class="accred-btn" id="accred-no-btn" onclick="setAccred('no')">No</button>
+          </div>
+        </div>
+        <div id="accred-yes-panel" class="accred-panel" style="display:none">
+          <div class="accred-fields">
+            <div class="accred-field-row"><label for="accred-city">City</label><input type="text" id="accred-city" placeholder="e.g. Manchester" oninput="populatePrintLayout()"></div>
+            <div class="accred-field-row"><label for="accred-category">Category</label><input type="text" id="accred-category" placeholder="e.g. Things to do" oninput="populatePrintLayout()"></div>
+          </div>
+        </div>
+        <div id="accred-no-panel" class="accred-panel" style="display:none">
+          <div class="accred-sub-question">
+            <span class="accred-label">Are they Pending?</span>
+            <span class="accred-pending-note">Max 5 days</span>
+            <div class="accred-toggle">
+              <button type="button" class="accred-btn" id="accred-pend-yes-btn" onclick="setAccredPending('yes')">Yes</button>
+              <button type="button" class="accred-btn" id="accred-pend-no-btn" onclick="setAccredPending('no')">No</button>
+            </div>
+          </div>
+          <div id="accred-reason-panel" style="display:none">
+            <div style="font-size:12px;font-weight:600;margin-bottom:6px;">Reason for No:</div>
+            <div class="accred-reasons">
+              <label><input type="radio" name="accred-reason" value="city-allocated" onchange="accredReasonChanged()"> City already allocated</label>
+              <label><input type="radio" name="accred-reason" value="category-taken" onchange="accredReasonChanged()"> Category already taken</label>
+              <label><input type="radio" name="accred-reason" value="other" onchange="accredReasonChanged()"> Other</label>
+            </div>
+            <div id="accred-other-panel" style="display:none;margin-top:8px;">
+              <input type="text" id="accred-other-reason" placeholder="Please specify reason..." style="border:none;border-bottom:1.5px solid var(--purple-lighter);font-size:12px;font-family:'Lato',Arial,sans-serif;padding:2px 4px;outline:none;width:300px;background:transparent;" oninput="updateAccredChecklist()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Pay Monthly</div>
+      <div class="pay-monthly-row">
+        <label>
+          <input type="checkbox" id="pay-monthly" onchange="payMonthlyChanged()">
+          <span>Pay Monthly</span>
+        </label>
+      </div>
+
+      <div class="section-title">Sign-off</div>
   <div class="bottom-boxes">
     <div class="bottom-box partner-box">
       <div class="box-title">Your Accounts Contact Details</div>
@@ -720,7 +771,16 @@
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl15"><span>Multiple KPI sets have clear dates (if applicable)</span></label>
     </div>
   </div>
-  <div class="cl-footer">
+  <div id="accred-cl-group" class="cl-group" style="display:none;margin-top:10px;">
+        <div class="cl-group-title">Accreditation Scheme</div>
+        <div id="accred-cl-info" style="font-size:11px;padding:5px 8px;background:#fff8ee;border-left:3px solid #e67e22;border-radius:3px;margin-bottom:8px;line-height:1.45;"></div>
+        <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl16"><span id="cl16-label">Accreditation scheme status confirmed</span></label>
+      </div>
+      <div id="pay-monthly-cl-group" class="cl-group" style="display:none;margin-top:10px;">
+        <div class="cl-group-title">Pay Monthly</div>
+        <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl17"><span>Pay Monthly confirmed on order</span></label>
+      </div>
+      <div class="cl-footer">
     <label for="cl-by">Checked by:</label>
     <input type="text" id="cl-by" placeholder="Your name">
     <span class="cl-progress" id="cl-progress">0 / 15 ticked</span>
@@ -782,6 +842,8 @@
   <hr class="pl-hr">
   <div class="pl-notes-label">Notes:</div>
   <div id="pl-notes" class="pl-notes-body"></div>
+          <div id="pl-accred-wrap" style="display:none;margin-top:6pt;padding:5pt 10pt;background:#f0fff4;border-left:3pt solid #27ae60;font-size:9pt;line-height:1.5;"><strong>Accreditation Scheme:</strong> <span id="pl-accred-text"></span></div>
+          <div id="pl-pay-monthly-wrap" style="display:none;margin-top:4pt;padding:5pt 10pt;background:#eff6ff;border-left:3pt solid #3b82f6;font-size:9pt;font-weight:700;color:#1e40af;">&#10003; Pay Monthly</div>
 
   <div id="pl-camp-dates-wrap" style="display:none;margin-top:6pt;">
     <div style="font-weight:bold;font-size:9.5pt;margin-bottom:3pt;">Campaign Dates:</div>
@@ -861,7 +923,15 @@
       <div><strong>UNI:</strong> <span id="pl-cl-ref"></span></div>
       <div><strong>Client:</strong> <span id="pl-cl-company"></span></div>
       <div><strong>Date:</strong> <span id="pl-cl-date"></span></div>
-      <div><strong>Checked by:</strong> <span id="pl-cl-by"></span></div>
+      <div id="pl-cl-accred-wrap" style="display:none;margin-top:14pt;padding:8pt 10pt;background:#fff8ee;border:1pt solid #f0d09a;border-radius:4pt;">
+            <div style="font-weight:bold;font-size:9pt;text-transform:uppercase;letter-spacing:.5pt;color:#702DD7;margin-bottom:6pt;padding-bottom:3pt;border-bottom:1pt solid #C6ABEF;">Accreditation Scheme</div>
+            <div id="pl-cl-accred-content"></div>
+          </div>
+          <div id="pl-cl-pay-monthly-wrap" style="display:none;margin-top:10pt;padding:7pt 10pt;background:#eff6ff;border:1pt solid #bfdbfe;border-radius:4pt;">
+            <div style="font-weight:bold;font-size:9pt;color:#1e40af;margin-bottom:4pt;">&#10003; Pay Monthly</div>
+            <div id="pl-cl-pay-monthly-content" style="font-size:9pt;"></div>
+          </div>
+          <div><strong>Checked by:</strong> <span id="pl-cl-by"></span></div>
     </div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14pt;">
@@ -1136,6 +1206,23 @@ function populatePrintLayout() {
   tfoot.appendChild(makeTotRow('TOTAL:', document.getElementById('grand-total').textContent, true, true));
 
   document.getElementById('pl-notes').innerHTML = document.getElementById('campaign-notes').innerHTML || '';
+  // Accreditation print
+  var plAccredWrap = document.getElementById('pl-accred-wrap');
+  var plAccredText = document.getElementById('pl-accred-text');
+  if (plAccredWrap) {
+    if (accredState && accredState.answer === 'yes') {
+      var _accCity = (document.getElementById('accred-city')     || {}).value || '';
+      var _accCat  = (document.getElementById('accred-category') || {}).value || '';
+      if (plAccredText) plAccredText.textContent = (_accCity || '—') + ' — ' + (_accCat || '—');
+      plAccredWrap.style.display = 'block';
+    } else { plAccredWrap.style.display = 'none'; }
+  }
+  // Pay monthly print
+  var plPmWrap = document.getElementById('pl-pay-monthly-wrap');
+  if (plPmWrap) {
+    var pmChecked = document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked;
+    plPmWrap.style.display = pmChecked ? 'block' : 'none';
+  }
   populateChecklistPrint();
 
   // Campaign dates
@@ -1280,8 +1367,10 @@ function validateForm() {
   }
 
   // Checklist validation
-  var totalChecks = document.querySelectorAll('.cl-check').length;
-  var tickedChecks = document.querySelectorAll('.cl-check:checked').length;
+  var _allCl = Array.from(document.querySelectorAll('.cl-check'));
+    var _visCl = _allCl.filter(function(cb) { return cb.offsetParent !== null; });
+    var totalChecks  = _visCl.length;
+    var tickedChecks = _visCl.filter(function(cb) { return cb.checked; }).length;
   var clBy = (document.getElementById('cl-by') || {}).value || '';
   var clBad = tickedChecks < totalChecks || !clBy.trim();
   var clErr = document.getElementById('err-checklist');
@@ -1401,7 +1490,20 @@ updateLastUpdated();
     document.body.appendChild(overlay);
     setTimeout(function() { var el = document.getElementById('rec-pw1'); if (el) el.focus(); }, 100);
   }
-})();
+
+    // Reset accreditation
+    accredState.answer  = null;
+    accredState.pending = null;
+    ['accred-yes-btn','accred-no-btn','accred-pend-yes-btn','accred-pend-no-btn'].forEach(function(id){ var el=document.getElementById(id); if(el) el.className='accred-btn'; });
+    ['accred-yes-panel','accred-no-panel','accred-reason-panel','accred-other-panel','accred-cl-group'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display='none'; });
+    document.querySelectorAll('[name=accred-reason]').forEach(function(r){ r.checked=false; });
+    ['accred-city','accred-category','accred-other-reason'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+    var cl16=document.getElementById('cl16'); if(cl16) cl16.checked=false;
+    // Reset pay monthly
+    var pmEl=document.getElementById('pay-monthly'); if(pmEl) pmEl.checked=false;
+    var pmCl=document.getElementById('pay-monthly-cl-group'); if(pmCl) pmCl.style.display='none';
+    var cl17=document.getElementById('cl17'); if(cl17) cl17.checked=false;
+  })();
 
 function doRecoverySet(tok) {
   var pw1 = (document.getElementById('rec-pw1') || {}).value || '';
@@ -1937,7 +2039,14 @@ function captureFormData() {
     items:        rows,
     campDates:    campDates,
     checks:       checks,
-    grandTotal:   (document.getElementById('grand-total')     || {}).textContent || ''
+    grandTotal:   (document.getElementById('grand-total')     || {}).textContent || '',
+    accredAnswer:  accredState ? accredState.answer  : null,
+    accredPending: accredState ? accredState.pending : null,
+    accredCity:    (document.getElementById('accred-city')     || {}).value || '',
+    accredCat:     (document.getElementById('accred-category') || {}).value || '',
+    accredReason:  (function(){ var r=document.querySelector('[name=accred-reason]:checked'); return r ? r.value : ''; })(),
+    accredOther:   (document.getElementById('accred-other-reason') || {}).value || '',
+    payMonthly:    !!(document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked)
   };
 }
 
@@ -1956,6 +2065,32 @@ function restoreFormData(data) {
     document.getElementById('campaign-notes').innerHTML = data.notesHtml;
   if (document.getElementById('cl-by') && data.clBy)
     document.getElementById('cl-by').value = data.clBy;
+    // Restore accreditation
+    if (data.accredAnswer) {
+      setAccred(data.accredAnswer);
+      if (data.accredAnswer === 'yes') {
+        var _acityEl = document.getElementById('accred-city');
+        var _acatEl  = document.getElementById('accred-category');
+        if (_acityEl) _acityEl.value = data.accredCity || '';
+        if (_acatEl)  _acatEl.value  = data.accredCat  || '';
+      }
+      if (data.accredAnswer === 'no' && data.accredPending) {
+        setAccredPending(data.accredPending);
+        if (data.accredPending === 'no' && data.accredReason) {
+          var _rEl = document.querySelector('[name=accred-reason][value="' + data.accredReason + '"]');
+          if (_rEl) { _rEl.checked = true; accredReasonChanged(); }
+          if (data.accredReason === 'other' && data.accredOther) {
+            var _oEl = document.getElementById('accred-other-reason');
+            if (_oEl) _oEl.value = data.accredOther;
+          }
+        }
+      }
+    }
+    // Restore pay monthly
+    if (data.payMonthly) {
+      var _pmEl = document.getElementById('pay-monthly');
+      if (_pmEl) { _pmEl.checked = true; payMonthlyChanged(); }
+    }
   // Restore items
   var tbody = document.getElementById('items-body');
   tbody.innerHTML = ''; rowCount = 0;
@@ -2365,18 +2500,110 @@ function adminClearHistory() {
 
 // ─── Checklist progress counter ──────────────────────────────────────────────
 function updateClProgress() {
-  var total = document.querySelectorAll('.cl-check').length;
-  var ticked = document.querySelectorAll('.cl-check:checked').length;
-  var el = document.getElementById('cl-progress');
-  if (el) {
-    el.textContent = ticked + ' / ' + total + ' ticked';
-    el.style.color = ticked === total ? '#27ae60' : 'var(--purple-dark)';
-  }
-}
-document.querySelectorAll('.cl-check').forEach(function(cb) {
-  cb.addEventListener('change', updateClProgress);
-});
-updateClProgress();
+      var allChecks = Array.from(document.querySelectorAll('.cl-check'));
+      var visChecks = allChecks.filter(function(cb) { return cb.offsetParent !== null; });
+      var total  = visChecks.length;
+      var ticked = visChecks.filter(function(cb) { return cb.checked; }).length;
+      var el = document.getElementById('cl-progress');
+      if (el) {
+        el.textContent = ticked + ' / ' + total + ' ticked';
+        el.style.color = ticked === total ? '#27ae60' : 'var(--purple-dark)';
+      }
+    }
+    document.querySelectorAll('.cl-check').forEach(function(cb) {
+      cb.addEventListener('change', updateClProgress);
+    });
+    updateClProgress();
+
+    // ─── Accreditation Scheme ─────────────────────────────────────────
+    var accredState = { answer: null, pending: null };
+
+    function setAccred(val) {
+      accredState.answer = val;
+      var yBtn = document.getElementById('accred-yes-btn');
+      var nBtn = document.getElementById('accred-no-btn');
+      if (yBtn) yBtn.className = 'accred-btn' + (val === 'yes' ? ' active-yes' : '');
+      if (nBtn) nBtn.className  = 'accred-btn' + (val === 'no'  ? ' active-no'  : '');
+      var yPanel = document.getElementById('accred-yes-panel');
+      var nPanel = document.getElementById('accred-no-panel');
+      if (yPanel) yPanel.style.display = (val === 'yes') ? 'block' : 'none';
+      if (nPanel) nPanel.style.display  = (val === 'no')  ? 'block' : 'none';
+      if (val === 'no') {
+        accredState.pending = null;
+        ['accred-pend-yes-btn','accred-pend-no-btn'].forEach(function(id){var el=document.getElementById(id);if(el)el.className='accred-btn';});
+        var rPanel = document.getElementById('accred-reason-panel');
+        if (rPanel) rPanel.style.display = 'none';
+      }
+      updateAccredChecklist();
+      populatePrintLayout();
+    }
+
+    function setAccredPending(val) {
+      accredState.pending = val;
+      var pyBtn = document.getElementById('accred-pend-yes-btn');
+      var pnBtn = document.getElementById('accred-pend-no-btn');
+      if (pyBtn) pyBtn.className = 'accred-btn' + (val === 'yes' ? ' active-yes' : '');
+      if (pnBtn) pnBtn.className  = 'accred-btn' + (val === 'no'  ? ' active-no'  : '');
+      var rPanel = document.getElementById('accred-reason-panel');
+      if (rPanel) rPanel.style.display = (val === 'no') ? 'block' : 'none';
+      if (val === 'yes') {
+        document.querySelectorAll('[name=accred-reason]').forEach(function(r) { r.checked = false; });
+        var oPanel = document.getElementById('accred-other-panel');
+        if (oPanel) oPanel.style.display = 'none';
+        var oEl = document.getElementById('accred-other-reason');
+        if (oEl) oEl.value = '';
+      }
+      updateAccredChecklist();
+    }
+
+    function accredReasonChanged() {
+      var selected = document.querySelector('[name=accred-reason]:checked');
+      var oPanel = document.getElementById('accred-other-panel');
+      if (oPanel) oPanel.style.display = (selected && selected.value === 'other') ? 'block' : 'none';
+      if (!selected || selected.value !== 'other') {
+        var oEl = document.getElementById('accred-other-reason'); if (oEl) oEl.value = '';
+      }
+      updateAccredChecklist();
+    }
+
+    function updateAccredChecklist() {
+      var clGroup = document.getElementById('accred-cl-group');
+      var clInfo  = document.getElementById('accred-cl-info');
+      var cl16Lbl = document.getElementById('cl16-label');
+      var cb16    = document.getElementById('cl16');
+      if (!clGroup) return;
+      if (accredState.answer !== 'no') { clGroup.style.display = 'none'; updateClProgress(); return; }
+      clGroup.style.display = 'block';
+      var infoText = 'Not offered. ';
+      var lbl16    = 'Accreditation: Not offered — status confirmed';
+      if (accredState.pending === 'yes') {
+        infoText += 'Status: Pending (max 5 days).';
+        lbl16 = 'Accreditation: Pending (max 5 days) — confirmed';
+      } else if (accredState.pending === 'no') {
+        var reasonEl = document.querySelector('[name=accred-reason]:checked');
+        var reasonMap = { 'city-allocated':'City already allocated', 'category-taken':'Category already taken', 'other':'Other' };
+        if (reasonEl) {
+          var reasonText = reasonEl.value === 'other'
+            ? ((document.getElementById('accred-other-reason')||{}).value||'Other')
+            : (reasonMap[reasonEl.value]||reasonEl.value);
+          infoText += 'Reason: ' + reasonText + '.';
+          lbl16 = 'Accreditation: Not offered (' + reasonText + ') — confirmed';
+        } else { infoText += 'Reason: not yet specified.'; }
+      } else { infoText += 'Pending status not yet selected.'; }
+      if (clInfo)  clInfo.textContent  = infoText;
+      if (cl16Lbl) cl16Lbl.textContent = lbl16;
+      if (cb16)    cb16.checked = false;
+      updateClProgress();
+    }
+
+    // ─── Pay Monthly ───────────────────────────────────────────────────
+    function payMonthlyChanged() {
+      var checked = document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked;
+      var clGroup = document.getElementById('pay-monthly-cl-group');
+      if (clGroup) clGroup.style.display = checked ? 'block' : 'none';
+      updateClProgress();
+      populatePrintLayout();
+    }
 
 // ─── Populate checklist print page ───────────────────────────────────────────
 var CL_ITEMS = {
@@ -2430,7 +2657,41 @@ function populateChecklistPrint() {
   if (document.getElementById('pl-cl-company')) document.getElementById('pl-cl-company').textContent = compEl ? compEl.value.split(/[\n,]/)[0].trim() : '';
   if (document.getElementById('pl-cl-date'))    document.getElementById('pl-cl-date').textContent    = dateEl && dateEl.value ? fmtDateShort(dateEl.value) : '';
   if (document.getElementById('pl-cl-by'))      document.getElementById('pl-cl-by').textContent      = byEl   ? byEl.value   : '';
-}
+
+    // Accreditation Scheme checklist print
+    var clAccredWrap = document.getElementById('pl-cl-accred-wrap');
+    var clAccredContent = document.getElementById('pl-cl-accred-content');
+    if (clAccredWrap) {
+      if (accredState && accredState.answer === 'no') {
+        clAccredWrap.style.display = 'block';
+        var _info = 'Not offered. ';
+        if (accredState.pending === 'yes') { _info += 'Pending (max 5 days).'; }
+        else if (accredState.pending === 'no') {
+          var _r = document.querySelector('[name=accred-reason]:checked');
+          if (_r) {
+            var _rMap = {'city-allocated':'City already allocated','category-taken':'Category already taken','other':'Other'};
+            var _rTxt = _r.value === 'other' ? ((document.getElementById('accred-other-reason')||{}).value||'Other') : (_rMap[_r.value]||_r.value);
+            _info += 'Reason: ' + _rTxt;
+          } else { _info += 'Reason: not specified.'; }
+        } else { _info += 'Pending status not selected.'; }
+        var _cb16 = document.getElementById('cl16');
+        var _chk16 = _cb16 && _cb16.checked ? '[x] ' : '[ ] ';
+        if (clAccredContent) clAccredContent.textContent = _chk16 + _info;
+      } else { clAccredWrap.style.display = 'none'; }
+    }
+    // Pay Monthly checklist print
+    var clPmWrap = document.getElementById('pl-cl-pay-monthly-wrap');
+    var clPmContent = document.getElementById('pl-cl-pay-monthly-content');
+    if (clPmWrap) {
+      var _pmOn = document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked;
+      if (_pmOn) {
+        clPmWrap.style.display = 'block';
+        var _cb17 = document.getElementById('cl17');
+        var _chk17 = _cb17 && _cb17.checked ? '[x] Confirmed' : '[ ] Pending confirmation';
+        if (clPmContent) clPmContent.textContent = _chk17;
+      } else { clPmWrap.style.display = 'none'; }
+    }
+  }
 
 // ─── Campaign duration helpers ────────────────────────────────────────────────
 // Returns exact { months, weeks, days, totalDays } between two date strings, or null if invalid.
@@ -3423,7 +3684,30 @@ function generateTextBasedPdfBlob(filename) {
         y += nl.length * 3.5 + 3;
       }
 
-      // ── Campaign dates ────────────────────────────────────────────────────
+      // Accreditation Scheme (partner-facing, YES path only)
+        if (accredState && accredState.answer === 'yes') {
+          var _accCity = (document.getElementById('accred-city')     || {}).value || '';
+          var _accCat  = (document.getElementById('accred-category') || {}).value || '';
+          if (_accCity || _accCat) {
+            doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
+            doc.line(margin, y, pageW - margin, y); y += 4;
+            doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+            doc.text('Accreditation Scheme:', margin, y); y += 4;
+            doc.setFont('helvetica','normal');
+            var _accLine = (_accCity||'—') + ' — ' + (_accCat||'—');
+            var _accLines = doc.splitTextToSize(_accLine, cW);
+            doc.text(_accLines, margin, y); y += _accLines.length * 3.5 + 3;
+          }
+        }
+        // Pay Monthly (partner-facing)
+        if (document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked) {
+          doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
+          doc.line(margin, y, pageW - margin, y); y += 4;
+          doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(59,130,246);
+          doc.text('✓ Pay Monthly', margin, y); y += 5;
+          doc.setTextColor(0,0,0); doc.setFont('helvetica','normal');
+        }
+        // ── Campaign dates ────────────────────────────────────────────────────
       var campRows = [];
       var anyStc   = false;
       document.querySelectorAll('#camp-dates-tbody tr').forEach(function(tr) {
