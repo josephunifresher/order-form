@@ -282,6 +282,7 @@ function doLogin() {
     }
     _session = data;
     _isAdmin = !!(data.user.user_metadata && data.user.user_metadata.is_admin);
+    try { localStorage.setItem('uf_session', JSON.stringify(data)); } catch(e) {}
     onLoggedIn();
   })
   .catch(function() { err.textContent = 'Network error.'; btn.textContent = 'Sign in'; btn.disabled = false; });
@@ -302,6 +303,7 @@ function onLoggedIn() {
 
 function doLogout() {
   _session = null;
+  try { localStorage.removeItem('uf_session'); } catch(e) {}
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('l-pw').value = '';
@@ -499,6 +501,23 @@ function markSigned(id, checkbox) {
   })
   .catch(function(e) { toast('Error: ' + (e.message || 'Could not update.')); checkbox.disabled = false; checkbox.checked = false; });
 }
+// ── AUTO-RESTORE SESSION ──
+(function() {
+  try {
+    var saved = localStorage.getItem('uf_session');
+    if (saved) {
+      var sess = JSON.parse(saved);
+      var exp = sess.expires_at || 0;
+      if (exp > Math.floor(Date.now() / 1000) + 60) {
+        _session = sess;
+        _isAdmin = !!(sess.user && sess.user.user_metadata && sess.user.user_metadata.is_admin);
+        onLoggedIn();
+      } else {
+        localStorage.removeItem('uf_session');
+      }
+    }
+  } catch(e) { try { localStorage.removeItem('uf_session'); } catch(e2) {} }
+})();
 </script>
 </body>
 </html>
