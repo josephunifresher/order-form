@@ -68,9 +68,10 @@
     /* ── SUMMARY CARDS ── */
     .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
     .card { background: #fff; border-radius: 10px; padding: 16px 15px; border-left: 4px solid var(--purple); box-shadow: 0 1px 4px rgba(0,0,0,.07); }
-    .card.green { border-color: var(--green); }
-    .card.amber { border-color: var(--amber); }
-    .card.red   { border-color: var(--red); }
+    .card.purple { border-color: var(--purple-dark); }
+    .card.green  { border-color: var(--green); }
+    .card.amber  { border-color: var(--amber); }
+    .card.red    { border-color: var(--red); }
     .card-value { font-size: 1.9rem; font-weight: 700; font-family: 'Roboto', sans-serif; color: var(--purple-dark); line-height: 1; }
     .card.green .card-value { color: var(--green); }
     .card.amber .card-value { color: var(--amber); }
@@ -107,6 +108,15 @@
     .countdown.due-soon { background: var(--amber-bg); color: var(--amber); }
     .countdown.ok       { background: var(--green-bg); color: var(--green); }
     .countdown.waiting  { background: #f0f0f0; color: #999; font-weight: 400; }
+
+    /* ── BACK BAR ── */
+    .back-bar { display: none; align-items: center; gap: 12px; margin-bottom: 16px; padding: 10px 16px; background: #fff; border-radius: 8px; border-left: 4px solid var(--purple); box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+    .back-bar .back-name { font-weight: 700; color: var(--purple-dark); font-size: .95rem; }
+    .back-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border: none; border-radius: 6px; font-size: .8rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; background: var(--purple-lightest); color: var(--purple-dark); transition: opacity .15s; }
+    .back-btn:hover { opacity: .8; }
+    .person-row { cursor: pointer; }
+    .person-row:hover td { background: var(--purple-lightest) !important; }
+    .card-value.small { font-size: 1.2rem; }
 
     /* ── TOAST ── */
     #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: 9px 18px; border-radius: 8px; font-size: .83rem; z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none; }
@@ -160,18 +170,24 @@
       <div class="spacer"></div>
       <div class="admin-wrap" id="admin-wrap">
         <label class="admin-toggle-label">
-          <input type="checkbox" id="admin-toggle" onchange="buildMonthTabs()">
+          <input type="checkbox" id="admin-toggle" onchange="_selectedPerson=null;document.getElementById('back-bar').style.display='none';_activeMonth=null;buildMonthTabs()">
           View all users
         </label>
       </div>
     </div>
 
+    <!-- Back bar (admin drill-down) -->
+    <div class="back-bar" id="back-bar">
+      <button class="back-btn" onclick="backToOverview()">← All People</button>
+      <span class="back-name" id="back-name"></span>
+    </div>
+
     <!-- Cards -->
     <div class="cards">
-      <div class="card"><div class="card-value" id="c-total">—</div><div class="card-label">Orders this period</div></div>
-      <div class="card green"><div class="card-value" id="c-sent">—</div><div class="card-label">Form Sent</div></div>
-      <div class="card green"><div class="card-value" id="c-signed">—</div><div class="card-label">Form Signed</div></div>
-      <div class="card amber"><div class="card-value" id="c-pending">—</div><div class="card-label">Awaiting Signature</div></div>
+      <div class="card"><div class="card-value" id="c-total">—</div><div class="card-label" id="cl-total">Orders this period</div></div>
+      <div class="card purple"><div class="card-value small" id="c-totalval">—</div><div class="card-label">Total Value</div></div>
+      <div class="card green"><div class="card-value small" id="c-sent">—</div><div class="card-label">Value Out</div></div>
+      <div class="card green"><div class="card-value small" id="c-signed">—</div><div class="card-label">Value Signed</div></div>
       <div class="card red"><div class="card-value" id="c-due">—</div><div class="card-label">Verification Due / Overdue</div></div>
     </div>
 
@@ -179,7 +195,7 @@
     <div class="table-wrap">
       <div id="tbl-loading" class="loading"><div class="spinner"></div>Loading…</div>
       <table id="orders-table" style="display:none">
-        <thead>
+        <thead id="table-head">
           <tr>
             <th>Date</th>
             <th>Ref</th>
@@ -205,7 +221,7 @@
 var SB_URL = 'https://jyljjlaqogqpsdtvseqf.supabase.co';
 var SB_KEY = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
 
-var _session = null, _isAdmin = false, _activeMonth = null, _allMonths = [];
+var _session = null, _isAdmin = false, _activeMonth = null, _allMonths = [], _selectedPerson = null;
 
 /* ── SUPABASE FETCH ── */
 function sbFetch(url, opts) {
@@ -260,6 +276,13 @@ function currentYM() {
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+function parseAmt(str) {
+  return parseFloat(String(str||'0').replace(/[^0-9.]/g,'')) || 0;
+}
+function fmtVal(num) {
+  if (!num) return '£0';
+  return '£' + num.toLocaleString('en-GB', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
 
 /* ── AUTH ── */
 function doLogin() {
@@ -311,7 +334,10 @@ function doLogout() {
 
 /* ── MONTH TABS ── */
 function buildMonthTabs() {
+  var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
+  var myName  = (_session.user.user_metadata && _session.user.user_metadata.full_name) || '';
   var qs = 'select=saved_at&order=saved_at.desc';
+  if (!showAll && myName) qs += '&user_name=eq.' + encodeURIComponent(myName);
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
@@ -343,6 +369,9 @@ function buildMonthTabs() {
 
 function selectMonth(ym) {
   _activeMonth = ym;
+  _selectedPerson = null;
+  document.getElementById('back-bar').style.display = 'none';
+  document.getElementById('back-name').textContent = '';
   document.querySelectorAll('.month-tab').forEach(function(t) {
     t.classList.toggle('active', t.textContent === monthLabel(ym));
   });
@@ -352,11 +381,12 @@ function selectMonth(ym) {
 /* ── LOAD ORDERS ── */
 function loadOrders() {
   if (!_activeMonth) return;
-  var parts = _activeMonth.split('-');
-  var year = parseInt(parts[0]), month = parseInt(parts[1]);
-  var start = new Date(year, month-1, 1).toISOString();
-  var end   = new Date(year, month,   1).toISOString();
+  var parts   = _activeMonth.split('-');
+  var year    = parseInt(parts[0]), month = parseInt(parts[1]);
+  var start   = new Date(year, month-1, 1).toISOString();
+  var end     = new Date(year, month,   1).toISOString();
   var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
+  var myName  = (_session.user.user_metadata && _session.user.user_metadata.full_name) || '';
 
   document.getElementById('tbl-loading').style.display = 'block';
   document.getElementById('orders-table').style.display = 'none';
@@ -365,6 +395,11 @@ function loadOrders() {
   var qs = 'select=*&saved_at=gte.' + encodeURIComponent(start)
          + '&saved_at=lt.'          + encodeURIComponent(end)
          + '&order=saved_at.desc';
+
+  // Only show form submissions (rows with form_data)
+  qs += '&form_data=not.is.null';
+  // Filter to current user unless admin viewing all
+  if (!showAll && myName) qs += '&user_name=eq.' + encodeURIComponent(myName);
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
@@ -375,40 +410,63 @@ function loadOrders() {
 /* ── RENDER ── */
 function renderTable(rows) {
   document.getElementById('tbl-loading').style.display = 'none';
-  if (!rows || rows.length === 0) {
-    document.getElementById('no-data').style.display = 'block';
-    updateCards(0,0,0,0,0); return;
+
+  // Admin overview mode: group by person
+  if (_isAdmin && document.getElementById('admin-toggle').checked && _selectedPerson === null) {
+    if (!rows || rows.length === 0) {
+      document.getElementById('no-data').style.display = 'block';
+      updateCards(0,'£0','£0','£0',0); return;
+    }
+    renderPersonOverview(rows); return;
   }
 
-  var total=rows.length, sent=0, signed=0, pending=0, due=0;
+  // Detail mode: filter to selected person if set
+  var detailRows = rows || [];
+  if (_selectedPerson) {
+    detailRows = detailRows.filter(function(r) { return r.user_name === _selectedPerson; });
+  }
+
+  if (!detailRows || detailRows.length === 0) {
+    document.getElementById('no-data').style.display = 'block';
+    updateCards(0,'£0','£0','£0',0); return;
+  }
+
+  // Set standard detail thead
+  document.getElementById('table-head').innerHTML =
+    '<tr>' +
+      '<th>Date</th><th>Ref</th><th>Company</th><th>Sales Person</th><th>Total</th>' +
+      '<th>ORDER FORM SENT</th><th>ORDER FORM SIGNED</th>' +
+      '<th style="text-align:center">Partner Verification<br>Timer</th>' +
+    '</tr>';
+
+  var total=detailRows.length, totalVal=0, sentVal=0, signedVal=0, due=0;
   var now = new Date(); now.setHours(0,0,0,0);
   var html = '';
 
-  rows.forEach(function(row) {
+  detailRows.forEach(function(row) {
     var fd       = row.form_data || {};
     var isSent   = !!fd.sent_at;
     var isSigned = !!fd.signed_at;
     var followup = fd.partner_followup_date || null;
+    var amt      = parseAmt(row.total);
 
-    if (isSent)   sent++;
-    if (isSigned) signed++;
-    else          pending++;
+    totalVal += amt;
+    if (isSent)   sentVal   += amt;
+    if (isSigned) signedVal += amt;
     if (followup) { var dd=new Date(followup); dd.setHours(0,0,0,0); if(dd<=now) due++; }
 
     var totalStr = row.total || '—';
-
-    var sentChecked  = isSent  ? 'checked disabled' : '';
-    var sentLabel    = isSent  ? '<div class="check-label done">✓ Sent</div><div class="check-date">' + fmtDateShort(fd.sent_at) + '</div>' : '<div class="check-label">Mark sent</div>';
-
+    var sentChecked = isSent  ? 'checked disabled' : '';
+    var sentLabel   = isSent
+      ? '<div class="check-label done">✓ Sent</div><div class="check-date">' + fmtDateShort(fd.sent_at) + '</div>'
+      : '<div class="check-label">Mark sent</div>';
     var signedChecked = isSigned ? 'checked disabled' : '';
-    var signedLabel   = isSigned ? '<div class="check-label done">✓ Signed</div><div class="check-date">' + fmtDateShort(fd.signed_at) + '</div>' : '<div class="check-label">Mark signed</div>';
-
-    var verifyCell = '—';
-    if (isSigned) {
-      verifyCell = followup ? countdownTag(followup) : '<span class="countdown waiting">No timer set</span>';
-    } else {
-      verifyCell = '<span class="countdown waiting">Awaiting signature</span>';
-    }
+    var signedLabel   = isSigned
+      ? '<div class="check-label done">✓ Signed</div><div class="check-date">' + fmtDateShort(fd.signed_at) + '</div>'
+      : '<div class="check-label">Mark signed</div>';
+    var verifyCell = isSigned
+      ? (followup ? countdownTag(followup) : '<span class="countdown waiting">No timer set</span>')
+      : '<span class="countdown waiting">Awaiting signature</span>';
 
     html +=
       '<tr>' +
@@ -417,35 +475,100 @@ function renderTable(rows) {
         '<td>' + escHtml(row.company || '—') + '</td>' +
         '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name || '—') + '</td>' +
         '<td>' + totalStr + '</td>' +
-        '<td class="check-cell">' +
-          '<div class="order-checkbox-wrap">' +
-            '<input type="checkbox" class="order-checkbox" ' + sentChecked +
-              ' onchange="markSent(\'' + row.id + '\', this)">' +
-            sentLabel +
-          '</div>' +
-        '</td>' +
-        '<td class="check-cell">' +
-          '<div class="order-checkbox-wrap">' +
-            '<input type="checkbox" class="order-checkbox" ' + signedChecked +
-              ' onchange="markSigned(\'' + row.id + '\', this)">' +
-            signedLabel +
-          '</div>' +
-        '</td>' +
+        '<td class="check-cell"><div class="order-checkbox-wrap">' +
+          '<input type="checkbox" class="order-checkbox" ' + sentChecked + ' onchange="markSent('' + row.id + '', this)">' +
+          sentLabel +
+        '</div></td>' +
+        '<td class="check-cell"><div class="order-checkbox-wrap">' +
+          '<input type="checkbox" class="order-checkbox" ' + signedChecked + ' onchange="markSigned('' + row.id + '', this)">' +
+          signedLabel +
+        '</div></td>' +
         '<td class="check-cell">' + verifyCell + '</td>' +
       '</tr>';
   });
 
   document.getElementById('orders-body').innerHTML = html;
   document.getElementById('orders-table').style.display = 'table';
-  updateCards(total, sent, signed, pending, due);
+  updateCards(total, fmtVal(totalVal), fmtVal(sentVal), fmtVal(signedVal), due);
 }
 
-function updateCards(total, sent, signed, pending, due) {
-  document.getElementById('c-total').textContent   = total;
-  document.getElementById('c-sent').textContent    = sent;
-  document.getElementById('c-signed').textContent  = signed;
-  document.getElementById('c-pending').textContent = pending;
-  document.getElementById('c-due').textContent     = due;
+/* ── ADMIN: OVERVIEW BY PERSON ── */
+function renderPersonOverview(rows) {
+  document.getElementById('table-head').innerHTML =
+    '<tr>' +
+      '<th>Sales Person</th>' +
+      '<th style="text-align:right">Orders</th>' +
+      '<th style="text-align:right">Total Value</th>' +
+      '<th style="text-align:right">Forms Out</th>' +
+      '<th style="text-align:right">Value Out</th>' +
+      '<th style="text-align:right">Forms Signed</th>' +
+      '<th style="text-align:right">Value Signed</th>' +
+      '<th></th>' +
+    '</tr>';
+
+  var people = {};
+  var now = new Date(); now.setHours(0,0,0,0);
+  var grandTotal=0, grandSentVal=0, grandSignedVal=0, grandDue=0;
+
+  rows.forEach(function(row) {
+    var name = row.user_name || '(unknown)';
+    if (!people[name]) people[name] = {orders:0, totalVal:0, sentCount:0, sentVal:0, signedCount:0, signedVal:0, due:0};
+    var p   = people[name];
+    var fd  = row.form_data || {};
+    var amt = parseAmt(row.total);
+    var followup = fd.partner_followup_date || null;
+
+    p.orders++;
+    p.totalVal += amt;
+    grandTotal += amt;
+
+    if (fd.sent_at)   { p.sentCount++;   p.sentVal   += amt; grandSentVal   += amt; }
+    if (fd.signed_at) { p.signedCount++; p.signedVal += amt; grandSignedVal += amt; }
+    if (followup) { var dd=new Date(followup); dd.setHours(0,0,0,0); if(dd<=now){p.due++; grandDue++;} }
+  });
+
+  var html = '';
+  Object.keys(people).sort().forEach(function(name) {
+    var p = people[name];
+    html +=
+      '<tr class="person-row" onclick="drillIntoPerson('' + escHtml(name) + '')">' +
+        '<td><strong>' + escHtml(name) + '</strong></td>' +
+        '<td style="text-align:right">' + p.orders + '</td>' +
+        '<td style="text-align:right">' + fmtVal(p.totalVal) + '</td>' +
+        '<td style="text-align:right">' + p.sentCount + '</td>' +
+        '<td style="text-align:right">' + fmtVal(p.sentVal) + '</td>' +
+        '<td style="text-align:right">' + p.signedCount + '</td>' +
+        '<td style="text-align:right">' + fmtVal(p.signedVal) + '</td>' +
+        '<td style="text-align:right;color:var(--purple);font-size:.78rem;font-weight:700">View →</td>' +
+      '</tr>';
+  });
+
+  document.getElementById('orders-body').innerHTML = html;
+  document.getElementById('orders-table').style.display = 'table';
+  updateCards(rows.length, fmtVal(grandTotal), fmtVal(grandSentVal), fmtVal(grandSignedVal), grandDue);
+}
+
+function drillIntoPerson(name) {
+  _selectedPerson = name;
+  var bar = document.getElementById('back-bar');
+  bar.style.display = 'flex';
+  document.getElementById('back-name').textContent = name;
+  loadOrders();
+}
+
+function backToOverview() {
+  _selectedPerson = null;
+  document.getElementById('back-bar').style.display = 'none';
+  document.getElementById('back-name').textContent = '';
+  loadOrders();
+}
+
+function updateCards(total, totalVal, sentVal, signedVal, due) {
+  document.getElementById('c-total').textContent    = total;
+  document.getElementById('c-totalval').textContent = totalVal;
+  document.getElementById('c-sent').textContent     = sentVal;
+  document.getElementById('c-signed').textContent   = signedVal;
+  document.getElementById('c-due').textContent      = due;
 }
 
 /* ── MARK SENT ── */
