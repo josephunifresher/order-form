@@ -311,16 +311,14 @@ function doLogout() {
 
 /* ── MONTH TABS ── */
 function buildMonthTabs() {
-  var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
-  var qs = 'select=created_at&order=created_at.desc';
-  if (!showAll) qs += '&user_name=eq.' + encodeURIComponent(_session.user.email);
+  var qs = 'select=saved_at&order=saved_at.desc';
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     var months = {};
     (rows || []).forEach(function(r) {
-      var d = new Date(r.created_at);
+      var d = new Date(r.saved_at);
       var ym = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
       months[ym] = true;
     });
@@ -364,10 +362,9 @@ function loadOrders() {
   document.getElementById('orders-table').style.display = 'none';
   document.getElementById('no-data').style.display = 'none';
 
-  var qs = 'select=*&created_at=gte.' + encodeURIComponent(start)
-         + '&created_at=lt.'          + encodeURIComponent(end)
-         + '&order=created_at.desc';
-  if (!showAll) qs += '&user_name=eq.' + encodeURIComponent(_session.user.email);
+  var qs = 'select=*&saved_at=gte.' + encodeURIComponent(start)
+         + '&saved_at=lt.'          + encodeURIComponent(end)
+         + '&order=saved_at.desc';
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
@@ -398,9 +395,7 @@ function renderTable(rows) {
     else          pending++;
     if (followup) { var dd=new Date(followup); dd.setHours(0,0,0,0); if(dd<=now) due++; }
 
-    var totalStr = row.total != null
-      ? '£' + parseFloat(row.total).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})
-      : '—';
+    var totalStr = row.total || '—';
 
     var sentChecked  = isSent  ? 'checked disabled' : '';
     var sentLabel    = isSent  ? '<div class="check-label done">✓ Sent</div><div class="check-date">' + fmtDateShort(fd.sent_at) + '</div>' : '<div class="check-label">Mark sent</div>';
@@ -417,7 +412,7 @@ function renderTable(rows) {
 
     html +=
       '<tr>' +
-        '<td>' + fmtDate(row.created_at) + '</td>' +
+        '<td>' + fmtDate(row.saved_at) + '</td>' +
         '<td><strong>' + escHtml(row.ref || '—') + '</strong></td>' +
         '<td>' + escHtml(row.company || '—') + '</td>' +
         '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name || '—') + '</td>' +
