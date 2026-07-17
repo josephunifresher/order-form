@@ -61,9 +61,6 @@
     .month-tab:hover { border-color: var(--purple-lighter); color: var(--purple); }
     .month-tab.active { background: var(--purple); color: #fff; border-color: var(--purple); }
     .spacer { flex: 1; }
-    .admin-wrap { display: none; }
-    .admin-toggle-label { display: flex; align-items: center; gap: 7px; background: var(--purple-lightest); border: 1.5px solid var(--purple-lighter); border-radius: 8px; padding: 5px 12px; cursor: pointer; font-size: .8rem; font-weight: 700; color: var(--purple-dark); user-select: none; }
-    .admin-toggle-label input { cursor: pointer; accent-color: var(--purple); }
 
     /* ── SUMMARY CARDS ── */
     .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
@@ -168,12 +165,6 @@
       <span class="toolbar-label">Month:</span>
       <div class="month-tabs" id="month-tabs"></div>
       <div class="spacer"></div>
-      <div class="admin-wrap" id="admin-wrap">
-        <label class="admin-toggle-label">
-          <input type="checkbox" id="admin-toggle" onchange="_selectedPerson=null;document.getElementById('back-bar').style.display='none';_activeMonth=null;buildMonthTabs()">
-          View all users
-        </label>
-      </div>
     </div>
 
     <!-- Back bar (admin drill-down) -->
@@ -320,7 +311,6 @@ function onLoggedIn() {
   document.getElementById('app').style.display = 'block';
   var name = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
   document.getElementById('user-label').textContent = name;
-  if (_isAdmin) document.getElementById('admin-wrap').style.display = 'block';
   buildMonthTabs();
 }
 
@@ -334,10 +324,10 @@ function doLogout() {
 
 /* ── MONTH TABS ── */
 function buildMonthTabs() {
-  var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
-  var myName  = (_session.user.user_metadata && _session.user.user_metadata.full_name) || '';
-  var qs = 'select=saved_at&order=saved_at.desc&total=not.is.null';
-  if (!showAll && myName) qs += '&user_name=eq.' + encodeURIComponent(myName);
+  var myName = (_session.user.user_metadata && _session.user.user_metadata.full_name) || '';
+  var qs = 'select=saved_at&order=saved_at.desc&total=like.%C2%A3%25';
+  // Admins see months for all users; standard users see only their own
+  if (!_isAdmin && myName) qs += '&user_name=eq.' + encodeURIComponent(myName);
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
@@ -385,12 +375,10 @@ function selectMonth(ym) {
 /* ── LOAD ORDERS ── */
 function loadOrders() {
   if (!_activeMonth) return;
-  var parts   = _activeMonth.split('-');
-  var year    = parseInt(parts[0]), month = parseInt(parts[1]);
-  var start   = new Date(year, month-1, 1).toISOString();
-  var end     = new Date(year, month,   1).toISOString();
-  var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
-  var myName  = (_session.user.user_metadata && _session.user.user_metadata.full_name) || '';
+  var parts = _activeMonth.split('-');
+  var year  = parseInt(parts[0]), month = parseInt(parts[1]);
+  var start = new Date(year, month-1, 1).toISOString();
+  var end   = new Date(year, month,   1).toISOString();
 
   document.getElementById('tbl-loading').style.display = 'block';
   document.getElementById('orders-table').style.display = 'none';
@@ -398,12 +386,18 @@ function loadOrders() {
 
   var qs = 'select=*&saved_at=gte.' + encodeURIComponent(start)
          + '&saved_at=lt.'          + encodeURIComponent(end)
-         + '&order=saved_at.desc';
+         + '&order=saved_at.desc'
+         + '&total=like.%C2%A3%25';  // only real form submissions
 
-  // Only show real form submissions (must have a total value)
-  qs += '&total=not.is.null';
-  // Filter to current user unless admin viewing all
-  if (!showAll && myName) qs += '&user_name=eq.' + encodeURIComponent(myName);
+  if (_isAdmin) {
+    // Admin drilled into a person: server-side filter for that person only
+    if (_selectedPerson) qs += '&user_name=eq.' + encodeURIComponent(_selectedPerson);
+    // else: fetch all users for person overview
+  } else {
+    // Standard user: always filter to their own name
+    var myName = (_session.user.user_metadata && _session.user.user_metadata.full_name) || '';
+    if (myName) qs += '&user_name=eq.' + encodeURIComponent(myName);
+  }
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
@@ -415,8 +409,8 @@ function loadOrders() {
 function renderTable(rows) {
   document.getElementById('tbl-loading').style.display = 'none';
 
-  // Admin overview mode: group by person
-  if (_isAdmin && document.getElementById('admin-toggle').checked && _selectedPerson === null) {
+  // Admin overview mode: group by person (default admin view when no person selected)
+  if (_isAdmin && _selectedPerson === null) {
     if (!rows || rows.length === 0) {
       document.getElementById('no-data').style.display = 'block';
       updateCards(0,'£0','£0','£0',0); return;
