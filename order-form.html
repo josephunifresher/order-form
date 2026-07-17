@@ -830,7 +830,7 @@
       </div>
       <div id="pay-monthly-cl-group" class="cl-group" style="display:none;margin-top:10px;">
         <div class="cl-group-title">Pay Monthly</div>
-        <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl17"><span>Pay Monthly confirmed on order</span></label>
+        <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl17" onchange="cl17Changed()"><span>Pay Monthly confirmed on order</span></label>
       </div>
       <div class="cl-footer">
     <label for="cl-by">Checked by:</label>
@@ -4073,5 +4073,28 @@ function saveAsPDF() {
 }
 </script>
 <script>document.addEventListener("click",function(e){if(!e.target.closest(".user-menu")){var d=document.getElementById("um-drop");if(d)d.classList.remove("open");}});</script>
+<script>
+var _pmAlertSent=false;
+function cl17Changed(){
+  if(!document.getElementById('cl17').checked)return;
+  if(document.getElementById('pay-monthly')&&document.getElementById('pay-monthly').checked)sendPayMonthlyAlert();
+}
+function sendPayMonthlyAlert(){
+  if(_pmAlertSent)return;
+  _pmAlertSent=true;
+  var company=(document.getElementById('client-company')||{}).value||('(unknown)');
+  var filledBy=window._name||window._email||'unknown';
+  var now=new Date().toLocaleString('en-GB');
+  var recipients=['joseph@unifresher.co.uk','felicity@unifresher.co.uk','accounts@unifresher.co.uk'];
+  function doSend(){
+    if(window.EMAILJS_PUBLIC_KEY)emailjs.init({publicKey:window.EMAILJS_PUBLIC_KEY});
+    recipients.forEach(function(addr){
+      emailjs.send('service_a5nfqxx','template_6ba30km',{to_email:addr,company:company,contact:'',filled_by:filledBy,timestamp:now,form_url:location.href,error:'Pay Monthly signed off'});
+    });
+  }
+  if(typeof emailjs!=='undefined')doSend();
+  else{var s=document.querySelector('script[src*="emailjs"]');if(s)s.addEventListener('load',doSend);else setTimeout(doSend,1500);}
+}
+</script>
 </body>
 </html>
