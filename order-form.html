@@ -4085,12 +4085,9 @@ function sendPayMonthlyAlert(){
   var company=(document.getElementById('client-company')||{}).value||('(unknown)');
   var filledBy=window._name||window._email||'unknown';
   var now=new Date().toLocaleString('en-GB');
-  var recipients=['joseph@unifresher.co.uk','felicity@unifresher.co.uk','accounts@unifresher.co.uk'];
   function doSend(){
     if(window.EMAILJS_PUBLIC_KEY)emailjs.init({publicKey:window.EMAILJS_PUBLIC_KEY});
-    recipients.forEach(function(addr){
-      emailjs.send('service_a5nfqxx','template_6ba30km',{to_email:addr,company:company,contact:'',filled_by:filledBy,timestamp:now,form_url:location.href,error:'Pay Monthly signed off'});
-    });
+    emailjs.send('service_a5nfqxx','template_6ba30km',{to_email:'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk',company:company,contact:'',filled_by:filledBy,timestamp:now,form_url:location.href,error:'Pay Monthly signed off'});
   }
   if(typeof emailjs!=='undefined')doSend();
   else{var s=document.querySelector('script[src*="emailjs"]');if(s)s.addEventListener('load',doSend);else setTimeout(doSend,1500);}
