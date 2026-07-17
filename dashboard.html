@@ -336,7 +336,7 @@ function doLogout() {
 function buildMonthTabs() {
   var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
   var myName  = (_session.user.user_metadata && _session.user.user_metadata.full_name) || '';
-  var qs = 'select=saved_at&order=saved_at.desc';
+  var qs = 'select=saved_at&order=saved_at.desc&total=not.is.null';
   if (!showAll && myName) qs += '&user_name=eq.' + encodeURIComponent(myName);
 
   sbFetch('/rest/v1/order_history?' + qs)
@@ -400,8 +400,8 @@ function loadOrders() {
          + '&saved_at=lt.'          + encodeURIComponent(end)
          + '&order=saved_at.desc';
 
-  // Only show form submissions (rows with form_data)
-  qs += '&form_data=not.is.null';
+  // Only show real form submissions (must have a total value)
+  qs += '&total=not.is.null';
   // Filter to current user unless admin viewing all
   if (!showAll && myName) qs += '&user_name=eq.' + encodeURIComponent(myName);
 
