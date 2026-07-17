@@ -476,11 +476,11 @@ function renderTable(rows) {
         '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name || '—') + '</td>' +
         '<td>' + totalStr + '</td>' +
         '<td class="check-cell"><div class="order-checkbox-wrap">' +
-          '<input type="checkbox" class="order-checkbox" ' + sentChecked + ' onchange="markSent('' + row.id + '', this)">' +
+          '<input type="checkbox" class="order-checkbox" ' + sentChecked + ' onchange="markSent(\'' + row.id + '\', this)">' +
           sentLabel +
         '</div></td>' +
         '<td class="check-cell"><div class="order-checkbox-wrap">' +
-          '<input type="checkbox" class="order-checkbox" ' + signedChecked + ' onchange="markSigned('' + row.id + '', this)">' +
+          '<input type="checkbox" class="order-checkbox" ' + signedChecked + ' onchange="markSigned(\'' + row.id + '\', this)">' +
           signedLabel +
         '</div></td>' +
         '<td class="check-cell">' + verifyCell + '</td>' +
@@ -531,7 +531,7 @@ function renderPersonOverview(rows) {
   Object.keys(people).sort().forEach(function(name) {
     var p = people[name];
     html +=
-      '<tr class="person-row" onclick="drillIntoPerson('' + escHtml(name) + '')">' +
+      '<tr class="person-row" onclick="drillIntoPerson(\'' + escHtml(name) + '\')">' +
         '<td><strong>' + escHtml(name) + '</strong></td>' +
         '<td style="text-align:right">' + p.orders + '</td>' +
         '<td style="text-align:right">' + fmtVal(p.totalVal) + '</td>' +
