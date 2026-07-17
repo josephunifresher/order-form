@@ -342,15 +342,18 @@ function buildMonthTabs() {
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
   .then(function(rows) {
+    // Collect unique year-month values
     var months = {};
     (rows || []).forEach(function(r) {
       var d = new Date(r.saved_at);
       var ym = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
       months[ym] = true;
     });
+    // Always include current month
     months[currentYM()] = true;
-    _allMonths = Object.keys(months).sort().reverse();
+    _allMonths = Object.keys(months).sort().reverse(); // newest first
 
+    // Build tabs
     var container = document.getElementById('month-tabs');
     container.innerHTML = '';
     _allMonths.forEach(function(ym) {
@@ -361,6 +364,7 @@ function buildMonthTabs() {
       container.appendChild(tab);
     });
 
+    // Select current or previously selected month
     if (!_activeMonth) _activeMonth = currentYM();
     loadOrders();
   })
@@ -456,14 +460,20 @@ function renderTable(rows) {
     if (followup) { var dd=new Date(followup); dd.setHours(0,0,0,0); if(dd<=now) due++; }
 
     var totalStr = row.total || '—';
+
+    // SENT checkbox
     var sentChecked = isSent  ? 'checked disabled' : '';
     var sentLabel   = isSent
       ? '<div class="check-label done">✓ Sent</div><div class="check-date">' + fmtDateShort(fd.sent_at) + '</div>'
       : '<div class="check-label">Mark sent</div>';
+
+    // SIGNED checkbox
     var signedChecked = isSigned ? 'checked disabled' : '';
     var signedLabel   = isSigned
       ? '<div class="check-label done">✓ Signed</div><div class="check-date">' + fmtDateShort(fd.signed_at) + '</div>'
       : '<div class="check-label">Mark signed</div>';
+
+    // Partner verification countdown
     var verifyCell = isSigned
       ? (followup ? countdownTag(followup) : '<span class="countdown waiting">No timer set</span>')
       : '<span class="countdown waiting">Awaiting signature</span>';
@@ -494,6 +504,7 @@ function renderTable(rows) {
 
 /* ── ADMIN: OVERVIEW BY PERSON ── */
 function renderPersonOverview(rows) {
+  // Set overview thead
   document.getElementById('table-head').innerHTML =
     '<tr>' +
       '<th>Sales Person</th>' +
@@ -506,6 +517,7 @@ function renderPersonOverview(rows) {
       '<th></th>' +
     '</tr>';
 
+  // Group by user_name
   var people = {};
   var now = new Date(); now.setHours(0,0,0,0);
   var grandTotal=0, grandSentVal=0, grandSignedVal=0, grandDue=0;
@@ -558,7 +570,8 @@ function drillIntoPerson(name) {
 
 function backToOverview() {
   _selectedPerson = null;
-  document.getElementById('back-bar').style.display = 'none';
+  var bar = document.getElementById('back-bar');
+  bar.style.display = 'none';
   document.getElementById('back-name').textContent = '';
   loadOrders();
 }
@@ -574,14 +587,14 @@ function updateCards(total, totalVal, sentVal, signedVal, due) {
 /* ── MARK SENT ── */
 function markSent(id, checkbox) {
   checkbox.disabled = true;
-  var by = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
+  var signedBy = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
 
   sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data')
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     var fd = (rows[0] && rows[0].form_data) || {};
     fd.sent_at = new Date().toISOString();
-    fd.sent_by = by;
+    fd.sent_by = signedBy;
     return sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id), {
       method: 'PATCH', body: JSON.stringify({ form_data: fd })
     });
@@ -597,16 +610,18 @@ function markSent(id, checkbox) {
 /* ── MARK SIGNED ── */
 function markSigned(id, checkbox) {
   checkbox.disabled = true;
-  var by = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
-  var at = new Date().toISOString();
+  var signedBy = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
+  var signedAt = new Date().toISOString();
 
   sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data')
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     var fd = (rows[0] && rows[0].form_data) || {};
-    fd.signed_at = at;
-    fd.signed_by = by;
-    if (!fd.sent_at) { fd.sent_at = at; fd.sent_by = by; }
+    fd.signed_at  = signedAt;
+    fd.signed_by  = signedBy;
+    // Also mark as sent if not already
+    if (!fd.sent_at) { fd.sent_at = signedAt; fd.sent_by = signedBy; }
+    // Start 5-working-day partner verification timer
     fd.partner_followup_date = addWorkingDays(new Date(), 5).toISOString().split('T')[0];
     return sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id), {
       method: 'PATCH', body: JSON.stringify({ form_data: fd })
