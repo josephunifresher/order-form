@@ -214,6 +214,10 @@ var SB_KEY = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
 
 var _session = null, _isAdmin = false, _activeMonth = null, _allMonths = [], _selectedPerson = null;
 
+// Emails that always get admin access (fallback if Supabase metadata not set)
+var ADMIN_EMAILS = ['joseph@unifresher.co.uk'];
+function isAdminEmail(email) { return !!email && ADMIN_EMAILS.indexOf(email.toLowerCase()) !== -1; }
+
 /* ── SUPABASE FETCH ── */
 function sbFetch(url, opts) {
   opts = opts || {};
@@ -295,7 +299,8 @@ function doLogin() {
       btn.textContent = 'Sign in'; btn.disabled = false; return;
     }
     _session = data;
-    _isAdmin = !!(data.user.user_metadata && data.user.user_metadata.is_admin);
+    _isAdmin = !!(data.user.user_metadata && data.user.user_metadata.is_admin)
+            || isAdminEmail(data.user.email);
     try { localStorage.setItem('uf_session', JSON.stringify(data)); } catch(e) {}
     onLoggedIn();
   })
@@ -637,7 +642,8 @@ function markSigned(id, checkbox) {
       var exp = sess.expires_at || 0;
       if (exp > Math.floor(Date.now() / 1000) + 60) {
         _session = sess;
-        _isAdmin = !!(sess.user && sess.user.user_metadata && sess.user.user_metadata.is_admin);
+        _isAdmin = !!(sess.user && sess.user.user_metadata && sess.user.user_metadata.is_admin)
+                || isAdminEmail(sess.user && sess.user.email);
         onLoggedIn();
       } else {
         localStorage.removeItem('uf_session');
