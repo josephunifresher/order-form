@@ -371,7 +371,37 @@
     #print-layout.pl-print-xl .pl-totals-wrap { margin:1pt 0 3pt !important; }
   }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
+// ── AUTO-RESTORE SESSION ──
+(function() {
+  try {
+    var saved = localStorage.getItem('uf_session');
+    if (!saved) return;
+    var sess = JSON.parse(saved);
+    var exp = sess.expires_at || 0;
+    if (exp <= Math.floor(Date.now() / 1000) + 60) {
+      localStorage.removeItem('uf_session');
+      return;
+    }
+    // Hide login overlay
+    var overlay = document.getElementById('login-overlay');
+    if (overlay) overlay.style.display = 'none';
+    // Set user name in toolbar
+    var userEl = document.getElementById('toolbar-user');
+    if (userEl) {
+      var name = (sess.user && sess.user.user_metadata && sess.user.user_metadata.full_name)
+               || (sess.user && sess.user.email) || '';
+      userEl.textContent = name;
+    }
+    // Show admin button if admin
+    var isAdmin = !!(sess.user && sess.user.user_metadata && sess.user.user_metadata.is_admin);
+    var adminBtn = document.getElementById('admin-btn');
+    if (adminBtn) adminBtn.style.display = isAdmin ? '' : 'none';
+  } catch(e) {
+    try { localStorage.removeItem('uf_session'); } catch(e2) {}
+  }
+})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
