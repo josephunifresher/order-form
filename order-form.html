@@ -28,7 +28,7 @@
     display:flex; align-items:center; gap:10px; padding:10px 24px;
     box-shadow:0 2px 10px rgba(56,23,108,.4);
   }
-  #toolbar h1 { color:#fff; font-family:'Roboto',Arial,sans-serif; font-size:15px; flex:1; font-weight:700; }
+  #toolbar h1 { color:#fff; font-family:'Roboto',Arial,sans-serif; font-size:15px; flex:none; font-weight:700; white-space:nowrap; margin-right:4px; }
   .btn { padding:8px 20px; border:none; border-radius:20px; cursor:pointer; font-family:'Lato',Arial,sans-serif; font-size:13px; font-weight:700; transition:background .2s; }
   .btn-clear   { background:rgba(255,255,255,.15); color:#fff; }
   .btn-clear:hover { background:rgba(255,255,255,.25); }
@@ -296,6 +296,16 @@
   .user-badge { background:rgba(255,255,255,.15);border-radius:20px;padding:5px 14px;font-size:12px;color:#fff;font-family:'Lato',Arial,sans-serif; }
   .btn-ghost { background:rgba(255,255,255,.12);color:#fff;padding:6px 14px;border:none;border-radius:20px;cursor:pointer;font-size:12px;font-family:'Lato',Arial,sans-serif;transition:background .2s; }
   .btn-ghost:hover { background:rgba(255,255,255,.25); }
+  .toolbar-sep { width:1px;height:20px;background:rgba(255,255,255,.2);flex:none;align-self:center; }
+  .user-menu { position:relative; }
+  .user-menu-btn { display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);color:#fff;padding:5px 12px 5px 14px;border:none;border-radius:20px;cursor:pointer;font-size:12px;font-family:'Lato',Arial,sans-serif;transition:background .2s; }
+  .user-menu-btn:hover { background:rgba(255,255,255,.25); }
+  .user-menu-btn .arrow { font-size:9px;opacity:.7; }
+  .user-dropdown { display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,.18);min-width:172px;z-index:300;overflow:hidden; }
+  .user-dropdown.open { display:block; }
+  .user-dropdown button { display:block;width:100%;text-align:left;background:none;border:none;padding:10px 16px;font-size:13px;cursor:pointer;color:#333;font-family:'Lato',Arial,sans-serif;transition:background .15s; }
+  .user-dropdown button:hover { background:#f5f5f5; }
+  .user-dropdown hr { border:none;border-top:1px solid #eee;margin:0; }
 
   /* CHECKLIST */
   .cl-wrap { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:10px; }
@@ -481,17 +491,26 @@
 </div>
 
 <div id="toolbar">
-  <h1>Student Media Ltd — Order Form</h1>
-  <span class="user-badge" id="toolbar-user"></span>
+  <h1>Order Form</h1>
   <button class="btn-ghost" onclick="location.href='dashboard.html'">📊 Dashboard</button>
   <button class="btn-ghost" onclick="showHistory()">📋 History</button>
   <button class="btn-ghost" id="admin-btn" onclick="showAdmin()" style="display:none;">⚙️ Admin</button>
-  <button class="btn btn-clear" onclick="clearForm()">Clear Form</button>
+  <div style="flex:1"></div>
+  <button class="btn btn-clear" onclick="clearForm()">Clear</button>
   <button class="btn btn-validate" onclick="validateForm()">Check Fields</button>
   <button class="btn btn-pdf" onclick="printForm()">🖨 Print / Save PDF</button>
   <button class="btn btn-drive" id="btn-drive" onclick="saveToDrive()">☁ Save to Drive</button>
-  <button class="btn-ghost" onclick="showChangePw()">🔑 Change Password</button>
-  <button class="btn-ghost" onclick="doLogout()" style="margin-left:4px;">Sign Out</button>
+  <div class="toolbar-sep"></div>
+  <div class="user-menu">
+    <button class="user-menu-btn" onclick="var d=document.getElementById('um-drop');d.classList.toggle('open')">
+      <span id="toolbar-user"></span><span class="arrow">▾</span>
+    </button>
+    <div class="user-dropdown" id="um-drop">
+      <button onclick="document.getElementById('um-drop').classList.remove('open');showChangePw()">🔑 Change Password</button>
+      <hr>
+      <button onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
 </div>
 
 <!-- UNI reuse approval modal (shown to admin on login) -->
@@ -4053,5 +4072,6 @@ function saveAsPDF() {
   printForm();
 }
 </script>
+<script>document.addEventListener("click",function(e){if(!e.target.closest(".user-menu")){var d=document.getElementById("um-drop");if(d)d.classList.remove("open");}});</script>
 </body>
 </html>
