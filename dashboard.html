@@ -463,7 +463,7 @@ function updateCards(total, sent, signed, pending, due) {
 }
 
 /* SEND EMAILS ON SIGN */
-function sendSignedEmails(company, contact, signedBy) {
+function sendSignedEmails(company, contact, signedBy, payMonthly) {
   try {
     if (typeof emailjs === 'undefined') return;
     emailjs.init({ publicKey: 'X8v7VjuJWZ9mNRo23' });
@@ -478,10 +478,12 @@ function sendSignedEmails(company, contact, signedBy) {
     emailjs.send('service_a5nfqxx', 'template_6ba30km',
       Object.assign({}, params, { to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk' })
     );
-    // Order signed notification → Accounts
-    emailjs.send('service_a5nfqxx', 'template_6ba30km',
-      Object.assign({}, params, { to_email: 'accounts@unifresher.co.uk' })
-    );
+    // Pay in Instalments → Accounts (only if payMonthly is ticked)
+    if (payMonthly) {
+      emailjs.send('service_a5nfqxx', 'template_6ba30km',
+        Object.assign({}, params, { to_email: 'accounts@unifresher.co.uk' })
+      );
+    }
   } catch(e) {
     console.error('Email send error:', e);
   }
@@ -518,7 +520,7 @@ function markSigned(id, checkbox) {
   checkbox.disabled = true;
   var by = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
   var at = new Date().toISOString();
-  var _company = '', _contact = '';
+  var _company = '', _contact = '', _payMonthly = false;
 
   sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data,company')
   .then(function(r) { return r.json(); })
@@ -526,6 +528,7 @@ function markSigned(id, checkbox) {
     var fd = (rows[0] && rows[0].form_data) || {};
     _company = (rows[0] && rows[0].company) || '';
     _contact = fd.clBy || '';
+    _payMonthly = !!(fd.payMonthly);
     fd.signed_at = at;
     fd.signed_by = by;
     if (!fd.sent_at) { fd.sent_at = at; fd.sent_by = by; }
@@ -537,7 +540,7 @@ function markSigned(id, checkbox) {
   .then(function(r) {
     if (!r.ok) throw new Error('patch failed');
     toast('Signed ✓ — partner verification timer set for 5 working days');
-    sendSignedEmails(_company, _contact, by);
+    sendSignedEmails(_company, _contact, by, _payMonthly);
     loadOrders();
   })
   .catch(function(e) {
