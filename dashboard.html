@@ -478,10 +478,14 @@ function sendSignedEmails(company, contact, signedBy, payMonthly) {
     emailjs.send('service_a5nfqxx', 'template_6ba30km',
       Object.assign({}, params, { to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk' })
     );
-    // Pay in Instalments → Accounts (only if payMonthly is ticked)
+    // Order signed notification → Accounts (always)
+    emailjs.send('service_a5nfqxx', 'template_6ba30km',
+      Object.assign({}, params, { to_email: 'accounts@unifresher.co.uk' })
+    );
+    // Pay in Instalments → Accounts (additional alert, only if payMonthly is ticked)
     if (payMonthly) {
       emailjs.send('service_a5nfqxx', 'template_6ba30km',
-        Object.assign({}, params, { to_email: 'accounts@unifresher.co.uk' })
+        Object.assign({}, params, { to_email: 'accounts@unifresher.co.uk', company: '[PAY MONTHLY] ' + (company || '(unknown)') })
       );
     }
   } catch(e) {
@@ -528,7 +532,7 @@ function markSigned(id, checkbox) {
     var fd = (rows[0] && rows[0].form_data) || {};
     _company = (rows[0] && rows[0].company) || '';
     _contact = fd.clBy || '';
-    _payMonthly = !!(fd.payMonthly);
+    _payMonthly = !!(fd.payMonthly || fd['pay-monthly']);
     fd.signed_at = at;
     fd.signed_by = by;
     if (!fd.sent_at) { fd.sent_at = at; fd.sent_by = by; }
