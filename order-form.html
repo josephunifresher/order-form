@@ -2596,26 +2596,6 @@ function updateClProgress() {
       if (nPanel) nPanel.style.display  = (val === 'no')  ? 'block' : 'none';
       if (val === 'no') {
         accredState.pending = null;
-        // Send email notification
-        (function(){
-          try {
-            if (typeof emailjs !== 'undefined' && EMAILJS_SERVICE_ID !== 'YOUR_SERVICE_ID') {
-              var _company  = (document.getElementById('client-company')   || {}).value || '(not filled)';
-              var _contact  = (document.getElementById('accounts-contact') || {}).value || '(not filled)';
-              var _filledBy = (document.getElementById('print-name')       || {}).value ||
-                              (document.getElementById('cl-by')            || {}).value || (function(){var _s={};try{_s=JSON.parse(localStorage.getItem('uf_session')||'{}')}catch(e){} return(_s.user&&_s.user.user_metadata&&_s.user.user_metadata.full_name)||(_s.user&&_s.user.email)||'(unknown)'})();
-              var _now = new Date().toLocaleString('en-GB', {dateStyle:'short', timeStyle:'short'});
-              emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                to_email:    EMAILJS_TO_EMAIL,
-                company:     _company,
-                contact:     _contact,
-                filled_by:   _filledBy,
-                timestamp:   _now,
-                form_url:    window.location.href
-              });
-            }
-          } catch(e) { console.warn('EmailJS error:', e); }
-        })();
         ['accred-pend-yes-btn','accred-pend-no-btn'].forEach(function(id){var el=document.getElementById(id);if(el)el.className='accred-btn';});
         var rPanel = document.getElementById('accred-reason-panel');
         if (rPanel) rPanel.style.display = 'none';
