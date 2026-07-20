@@ -482,10 +482,10 @@ function sendSignedEmails(company, contact, signedBy, payMonthly) {
     emailjs.send('service_a5nfqxx', 'template_6ba30km',
       Object.assign({}, params, { to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk' })
     );
-    // Pay in Instalments → all three again with [PAY MONTHLY] prefix (only if ticked)
+    // Pay in Instalments → all three again with [PAY IN INSTALMENTS] prefix (only if ticked)
     if (payMonthly) {
       emailjs.send('service_a5nfqxx', 'template_6ba30km',
-        Object.assign({}, params, { to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk', company: '[PAY MONTHLY] ' + (company || '(unknown)') })
+        Object.assign({}, params, { to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk', company: '[PAY IN INSTALMENTS] ' + (company || '(unknown)') })
       );
     }
   } catch(e) {
