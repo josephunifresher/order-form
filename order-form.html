@@ -2603,7 +2603,7 @@ function updateClProgress() {
               var _company  = (document.getElementById('client-company')   || {}).value || '(not filled)';
               var _contact  = (document.getElementById('accounts-contact') || {}).value || '(not filled)';
               var _filledBy = (document.getElementById('print-name')       || {}).value ||
-                              (document.getElementById('cl-by')            || {}).value || '(unknown)';
+                              (document.getElementById('cl-by')            || {}).value || (function(){var _s={};try{_s=JSON.parse(localStorage.getItem('uf_session')||'{}')}catch(e){} return(_s.user&&_s.user.user_metadata&&_s.user.user_metadata.full_name)||(_s.user&&_s.user.email)||'(unknown)'})();
               var _now = new Date().toLocaleString('en-GB', {dateStyle:'short', timeStyle:'short'});
               emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
                 to_email:    EMAILJS_TO_EMAIL,
