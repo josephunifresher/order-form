@@ -474,18 +474,14 @@ function sendSignedEmails(company, contact, signedBy, payMonthly) {
       timestamp: new Date().toLocaleString('en-GB'),
       form_url:  'https://josephunifresher.github.io/order-form/order-form.html'
     };
-    // Accreditation reminder → Joseph + Felicity only
+    // Order signed notification → Joseph, Felicity, Accounts (always)
     emailjs.send('service_a5nfqxx', 'template_6ba30km',
-      Object.assign({}, params, { to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk' })
+      Object.assign({}, params, { to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk' })
     );
-    // Order signed notification → Accounts (always)
-    emailjs.send('service_a5nfqxx', 'template_6ba30km',
-      Object.assign({}, params, { to_email: 'accounts@unifresher.co.uk' })
-    );
-    // Pay in Instalments → Accounts (additional alert, only if payMonthly is ticked)
+    // Pay in Instalments → all three again with [PAY MONTHLY] prefix (only if ticked)
     if (payMonthly) {
       emailjs.send('service_a5nfqxx', 'template_6ba30km',
-        Object.assign({}, params, { to_email: 'accounts@unifresher.co.uk', company: '[PAY MONTHLY] ' + (company || '(unknown)') })
+        Object.assign({}, params, { to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk', company: '[PAY MONTHLY] ' + (company || '(unknown)') })
       );
     }
   } catch(e) {
