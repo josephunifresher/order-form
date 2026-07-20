@@ -621,10 +621,11 @@ function markSent(id, checkbox) {
       toast('Uploading...');
       var token = null;
       try { var s = JSON.parse(localStorage.getItem('uf_session') || '{}'); token = s.access_token; } catch(e) {}
-      sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(orderId) + '&select=ref')
+      sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(orderId) + '&select=ref,form_data')
             .then(function(r) { return r.json(); })
             .then(function(rows) {
                     var ref = (rows[0] && rows[0].ref) || String(orderId);
+              var fd = (rows[0] && rows[0].form_data) || {};
                     var fname = ref.replace(/[^a-zA-Z0-9_-]/g, '-') + '-signed.pdf';
                     return fetch(SB_URL + '/storage/v1/object/signed-pdfs/' + encodeURIComponent(fname), {
                               method: 'POST',
@@ -633,8 +634,10 @@ function markSent(id, checkbox) {
                     }).then(function(u) {
                               if (!u.ok) return u.text().then(function(t) { throw new Error(t); });
                               var url = SB_URL + '/storage/v1/object/public/signed-pdfs/' + encodeURIComponent(fname);
+                      fd.signed_at = new Date().toISOString();
+                      fd.signed_drive_url = url;
                               return sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(orderId), {
-                                          method: 'PATCH', body: JSON.stringify({ signed_at: new Date().toISOString(), signed_drive_url: url })
+                                          method: 'PATCH', body: JSON.stringify({ form_data: fd })
                               });
                     });
             })
