@@ -463,13 +463,13 @@ function updateCards(total, sent, signed, pending, due) {
 }
 
 /* SEND EMAILS ON SIGN */
-function sendSignedEmails(company, signedBy) {
+function sendSignedEmails(company, contact, signedBy) {
   try {
     if (typeof emailjs === 'undefined') return;
     emailjs.init({ publicKey: 'X8v7VjuJWZ9mNRo23' });
     var params = {
       company:   company || '(unknown)',
-      contact:   '',
+      contact:   contact || '',
       filled_by: signedBy || '(unknown)',
       timestamp: new Date().toLocaleString('en-GB'),
       form_url:  'https://josephunifresher.github.io/order-form/order-form.html'
@@ -518,13 +518,14 @@ function markSigned(id, checkbox) {
   checkbox.disabled = true;
   var by = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
   var at = new Date().toISOString();
-  var _company = '';
+  var _company = '', _contact = '';
 
   sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data,company')
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     var fd = (rows[0] && rows[0].form_data) || {};
     _company = (rows[0] && rows[0].company) || '';
+    _contact = fd.clBy || '';
     fd.signed_at = at;
     fd.signed_by = by;
     if (!fd.sent_at) { fd.sent_at = at; fd.sent_by = by; }
@@ -536,7 +537,7 @@ function markSigned(id, checkbox) {
   .then(function(r) {
     if (!r.ok) throw new Error('patch failed');
     toast('Signed ✓ — partner verification timer set for 5 working days');
-    sendSignedEmails(_company, by);
+    sendSignedEmails(_company, _contact, by);
     loadOrders();
   })
   .catch(function(e) {
