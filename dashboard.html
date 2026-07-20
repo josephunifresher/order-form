@@ -151,6 +151,7 @@
     </div>
     <div class="header-right">
       <a href="order-form.html" class="btn btn-outline">+ New Order</a>
+      <a href="order-form.html" class="btn btn-white" id="home-btn" style="display:none">⌂ Home</a>
       <button class="btn btn-white" onclick="doLogout()">Sign out</button>
     </div>
   </div>
@@ -312,7 +313,10 @@ function onLoggedIn() {
   document.getElementById('app').style.display = 'block';
   var name = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
   document.getElementById('user-label').textContent = name;
-  if (_isAdmin) document.getElementById('admin-wrap').style.display = 'block';
+  if (_isAdmin) {
+    document.getElementById('admin-wrap').style.display = 'block';
+    document.getElementById('home-btn').style.display = 'inline-block';
+  }
   buildMonthTabs();
 }
 
@@ -378,6 +382,11 @@ function loadOrders() {
   var qs = 'select=*&saved_at=gte.' + encodeURIComponent(start)
          + '&saved_at=lt.'          + encodeURIComponent(end)
          + '&order=saved_at.desc';
+  // Non-admin: filter to the current user's orders only
+  if (!_isAdmin) {
+    var _userName = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
+    qs += '&user_name=eq.' + encodeURIComponent(_userName);
+  }
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
