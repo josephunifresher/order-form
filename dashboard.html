@@ -382,11 +382,6 @@ function loadOrders() {
   var qs = 'select=*&saved_at=gte.' + encodeURIComponent(start)
          + '&saved_at=lt.'          + encodeURIComponent(end)
          + '&order=saved_at.desc';
-  // Non-admin: filter to the current user's orders only
-  if (!_isAdmin) {
-    var _userName = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
-    qs += '&user_name=eq.' + encodeURIComponent(_userName);
-  }
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
