@@ -614,57 +614,63 @@ function markSigned(id, btn) {
 }
 
 /* UPLOAD SIGNED FORM TO GOOGLE DRIVE */
-// Step 1: Button click → get Google token first (must be direct user gesture for popup to work)
-// Step 2: Token callback → open file picker
-// Step 3: File selected → upload to Drive
+// Two-click approach — both operations need a direct user gesture:
+// Click 1: opens file picker (synchronous from button click ✓)
+// Click 2: button changes to "Click to send to Drive" → OAuth popup (synchronous ✓) → upload
+var _pendingUploads = {};
+
 function uploadSignedForm(rowId, btn) {
   var meta = _rowMeta[rowId];
   if (!meta) { toast('Row data not found — please reload.'); return; }
 
-  if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
-    toast('Google library not loaded yet — please try again in a moment.');
+  // If a file is already selected, this click does the Google auth + upload
+  if (_pendingUploads[rowId]) {
+    var pending = _pendingUploads[rowId];
+    if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+      toast('Google library not loaded yet — please try again.'); return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Connecting...';
+    var tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'https://www.googleapis.com/auth/drive.file',
+      callback: function(resp) {
+        if (resp.error) {
+          toast('Google auth error: ' + resp.error);
+          btn.disabled = false; btn.textContent = '🔐 Click to send to Drive'; return;
+        }
+        btn.textContent = 'Uploading...';
+        doUploadToDrive(pending.file, pending.filename, resp.access_token, btn, rowId);
+      }
+    });
+    tokenClient.requestAccessToken();
     return;
   }
 
-  btn.disabled = true;
-  btn.textContent = 'Connecting...';
-
-  var tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: GOOGLE_CLIENT_ID,
-    scope: 'https://www.googleapis.com/auth/drive.file',
-    callback: function(resp) {
-      if (resp.error) {
-        toast('Google auth error: ' + resp.error);
-        btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; return;
-      }
-      // Token obtained — now open file picker
-      var ref = meta.ref || 'UNI';
-      var company = meta.company || 'Order';
-      var filename = ref + ' ' + company + ' Signed.pdf';
-
-      var input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'application/pdf';
-      input.onchange = function() {
-        var file = input.files[0];
-        if (!file) { btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; return; }
-        btn.textContent = 'Uploading...';
-        doUploadToDrive(file, filename, resp.access_token, btn);
-      };
-      btn.disabled = false;
-      btn.textContent = '☁ Upload Signed PDF';
-      input.click();
-    }
-  });
-  tokenClient.requestAccessToken();
+  // First click: open file picker immediately (must be synchronous)
+  var ref = meta.ref || 'UNI';
+  var company = meta.company || 'Order';
+  var filename = ref + ' ' + company + ' Signed.pdf';
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/pdf';
+  input.onchange = function() {
+    var file = input.files[0];
+    if (!file) return;
+    _pendingUploads[rowId] = { file: file, filename: filename };
+    btn.textContent = '🔐 Click to send to Drive';
+    btn.style.cssText = 'background:#e8f5e9;border-color:#2e7d32;color:#2e7d32';
+  };
+  input.click();
 }
 
-function doUploadToDrive(file, filename, token, btn) {
+function doUploadToDrive(file, filename, token, btn, rowId) {
+  delete _pendingUploads[rowId];
+  btn.style.cssText = '';
   var metadata = JSON.stringify({ name: filename, parents: [DRIVE_FOLDER_ID] });
   var form = new FormData();
   form.append('metadata', new Blob([metadata], { type: 'application/json' }));
   form.append('file', file);
-
   fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + token },
@@ -675,13 +681,9 @@ function doUploadToDrive(file, filename, token, btn) {
     if (data.id) {
       toast('✓ Uploaded: ' + filename);
       btn.textContent = '✓ Uploaded';
-      setTimeout(function() {
-        btn.disabled = false;
-        btn.textContent = '☁ Upload Signed PDF';
-      }, 3000);
+      setTimeout(function() { btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; }, 3000);
     } else {
-      var msg = (data.error && data.error.message) || 'Upload failed';
-      toast('Error: ' + msg);
+      toast('Error: ' + ((data.error && data.error.message) || 'Upload failed'));
       btn.disabled = false; btn.textContent = '☁ Upload Signed PDF';
     }
   })
