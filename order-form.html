@@ -610,7 +610,8 @@
   <div class="discount-wrap" style="margin-top:4px;">
     <span>Payment Terms:</span>
     <select id="payment-terms" onchange="updatePaymentTerms()" style="border:none;border-bottom:1.5px solid var(--purple-lighter);background:transparent;font-family:'Lato',Arial,sans-serif;font-size:13px;color:var(--black);padding:2px 4px;outline:none;cursor:pointer;">
-      <option value="30">30 days</option>
+      <option value="receipt">Due on receipt</option>
+        <option value="30">30 days</option>
       <option value="45">45 days</option>
       <option value="60">60 days</option>
       <option value="90">90 days</option>
@@ -781,7 +782,7 @@
   <div class="tc-box" id="tc-box">
     <div class="tc-title">Terms &amp; Conditions</div>
     <p>By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.</p>
-    <p>The order value (plus VAT if applicable) is payable within <span class="tc-pay-days">30</span> days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin.</p>
+    <p>The order value (plus VAT if applicable) is payable <span class="tc-pay-phrase">within <span class="tc-pay-days">30</span> days of invoice</span> and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin.</p>
     <p>All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested. If you would like instalments, these must be paid by Direct Debit, due the month prior to each month of the campaign.</p>
     <p>The order form together with these terms and conditions constitute all terms of this contract. You are solely responsible for submitting suitable artwork/copy by the date agreed.</p>
     <p>Materials must be supplied as: JPG, PNG or GIF for Online Ads; Word Document for content. Submitted via email to correct specifications.</p>
@@ -793,7 +794,7 @@
     <div class="bank-details">
       <strong style="color:var(--purple-dark)">Payment Details</strong><br>
       VAT No: 303 1339 53 &nbsp;|&nbsp; Account Name: Student Media Ltd &nbsp;|&nbsp; Acc No: 23261409 &nbsp;|&nbsp; Sort Code: 20-03-84<br>
-      Bank: Barclays &nbsp;|&nbsp; 62/64 High Street, Watford, WD17 2BT &nbsp;|&nbsp; Payment Terms: <span class="tc-pay-days">30</span> Days
+      Bank: Barclays &nbsp;|&nbsp; 62/64 High Street, Watford, WD17 2BT &nbsp;|&nbsp; Payment Terms: <span class="tc-pay-label"><span class="tc-pay-days">30</span> Days</span>
     </div>
   </div>
   <div class="section-title">Order Checklist *</div>
@@ -946,7 +947,7 @@
     <div class="pl-tc-cols">
       <div class="pl-tc-col">
         <p>By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.</p>
-        <p>The order value (plus VAT if applicable) is payable within <span class="tc-pay-days">30</span> days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin &mdash; if your campaign is due to begin in less than <span class="tc-pay-days">30</span> days from the invoice date, your payment terms will be shortened accordingly.</p>
+        <p>The order value (plus VAT if applicable) is payable <span class="tc-pay-phrase">within <span class="tc-pay-days">30</span> days of invoice</span> and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin &mdash; if your campaign is due to begin in less than <span class="tc-pay-days">30</span> days from the invoice date, your payment terms will be shortened accordingly.</p>
         <p>All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested. If you would like to separate your invoice into instalments, these must be paid by Direct Debit and will be due the month prior to each month of the campaign.</p>
         <p>The order form together with these terms and conditions constitute all the terms of this contract, and no employee, agent or representative of this company has any right to amend these terms. You are solely responsible for submitting suitable artwork/copy by the date agreed.</p>
       </div>
@@ -958,7 +959,7 @@
     </div>
     <div class="pl-bank">
       VAT No: 303 1339 53 &nbsp;|&nbsp; Account Name: Student Media Ltd &nbsp;|&nbsp; Acc No: 23261409 &nbsp;|&nbsp; Sort Code: 20-03-84<br>
-      Bank: Barclays &nbsp;|&nbsp; Address: 62/64 High Street, Watford, Hertfordshire, WD17 2BT &nbsp;|&nbsp; Payment Terms: <span class="tc-pay-days">30</span> Days
+      Bank: Barclays &nbsp;|&nbsp; Address: 62/64 High Street, Watford, Hertfordshire, WD17 2BT &nbsp;|&nbsp; Payment Terms: <span class="tc-pay-label"><span class="tc-pay-days">30</span> Days</span>
     </div>
   </div>
 
@@ -1090,17 +1091,39 @@ function getNetTotal() {
 function updatePaymentTerms() {
   var sel  = document.getElementById('payment-terms');
   var days = sel ? sel.value : '30';
-  if (days !== '30') {
+  if (days !== '30' && days !== 'receipt') {
     var ok = confirm('⚠️ APPROVAL REQUIRED\n\nHave you checked with Fizz or Chris before changing the payment terms?\n\nThis CANNOT be changed without their approval.\n\nClick OK only if you have received explicit approval.');
     if (!ok) {
       if (sel) sel.value = '30';
       return;
     }
   }
-  document.querySelectorAll('.tc-pay-days').forEach(function(el) { el.textContent = days; });
+  var isReceipt = (days === 'receipt');
+    document.querySelectorAll('.tc-pay-phrase').forEach(function(el) {
+      el.innerHTML = isReceipt ? 'upon receipt of' : 'within <span class=\"tc-pay-days\">' + days + '</span> days of';
+    });
+    document.querySelectorAll('.tc-pay-label').forEach(function(el) {
+      el.innerHTML = isReceipt ? 'Due on Receipt' : '<span class=\"tc-pay-days\">' + days + '</span> Days';
+    });
+    document.querySelectorAll('.tc-pay-days').forEach(function(el) { el.textContent = isReceipt ? 'receipt' : days; });
   var warn = document.getElementById('payment-terms-warning');
   if (warn) warn.style.display = (days !== '30') ? 'block' : 'none';
 }
+
+// Auto-select "Due on receipt" if earliest campaign go-live is within 1 month
+document.addEventListener('change', function(e) {
+  if (!e.target.classList.contains('camp-start')) return;
+  var today = new Date(); today.setHours(0,0,0,0);
+  var cutoff = new Date(today); cutoff.setMonth(cutoff.getMonth() + 1);
+  var earliest = null;
+  document.querySelectorAll('.camp-start').forEach(function(inp) {
+    if (inp.value) { var d = new Date(inp.value); if (!earliest || d < earliest) earliest = d; }
+  });
+  if (earliest && earliest >= today && earliest <= cutoff) {
+    var sel = document.getElementById('payment-terms');
+    if (sel && sel.value !== 'receipt') { sel.value = 'receipt'; updatePaymentTerms(); }
+  }
+});
 
 function toggleVat() {
   var exempt = document.getElementById('vat-exempt').checked;
@@ -3884,6 +3907,9 @@ function generateTextBasedPdfBlob(filename) {
       var tcPGap = 1.0;   // gap between paragraphs in mm (matches browser CSS margin-bottom:2.5pt)
 
       var payDays = (document.getElementById('payment-terms') || {}).value || '30';
+    var isReceipt = (payDays === 'receipt');
+    var payTermsLabel = isReceipt ? 'Due on Receipt' : payDays + ' Days';
+    var payTermsPhrase = isReceipt ? 'upon receipt of invoice' : 'within ' + payDays + ' days of invoice';
       var tcCol1 = [
         'By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.',
         'The order value (plus VAT if applicable) is payable within ' + payDays + ' days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin — if your campaign is due to begin in less than ' + payDays + ' days from the invoice date, your payment terms will be shortened accordingly.',
