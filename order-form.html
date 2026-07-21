@@ -3102,7 +3102,8 @@ var EMAILJS_CONFIG = {
   publicKey:     'YOUR_EMAILJS_PUBLIC_KEY',
   serviceId:     'YOUR_EMAILJS_SERVICE_ID',
   templateId:    'YOUR_EMAILJS_TEMPLATE_ID',
-  accountsEmail: 'accounts@unifresher.co.uk'
+  accountsEmail: 'accounts@unifresher.co.uk',
+  ownerEmail:    'joseph@unifresher.co.uk'
 };
 
 
@@ -3273,7 +3274,7 @@ function sendAccountsEmail(refNo, companyFull, user, driveFileId, orderBlob, ord
   var now = new Date();
   var dateTime = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
   var params = {
-    to_email:       EMAILJS_CONFIG.accountsEmail,
+    to_email:       EMAILJS_CONFIG.ownerEmail + ',' + EMAILJS_CONFIG.accountsEmail,
     company_name:   companyFull,
     uni_number:     refNo,
     team_member:    memberName,
