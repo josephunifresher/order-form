@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unifresher – Order Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Latoh:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
@@ -614,43 +614,49 @@ function markSigned(id, btn) {
 }
 
 /* UPLOAD SIGNED FORM TO GOOGLE DRIVE */
+// Step 1: Button click → get Google token first (must be direct user gesture for popup to work)
+// Step 2: Token callback → open file picker
+// Step 3: File selected → upload to Drive
 function uploadSignedForm(rowId, btn) {
   var meta = _rowMeta[rowId];
   if (!meta) { toast('Row data not found — please reload.'); return; }
-  var ref = meta.ref || 'UNI';
-  var company = meta.company || 'Order';
-  var filename = ref + ' ' + company + ' Signed.pdf';
 
-  // Open file picker
-  var input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'application/pdf';
-  input.onchange = function() {
-    var file = input.files[0];
-    if (!file) return;
-    btn.disabled = true;
-    btn.textContent = 'Connecting...';
+  if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+    toast('Google library not loaded yet — please try again in a moment.');
+    return;
+  }
 
-    if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
-      toast('Google library not loaded yet — please try again in a moment.');
-      btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; return;
-    }
+  btn.disabled = true;
+  btn.textContent = 'Connecting...';
 
-    var tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: GOOGLE_CLIENT_ID,
-      scope: 'https://www.googleapis.com/auth/drive.file',
-      callback: function(resp) {
-        if (resp.error) {
-          toast('Google auth error: ' + resp.error);
-          btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; return;
-        }
+  var tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/drive.file',
+    callback: function(resp) {
+      if (resp.error) {
+        toast('Google auth error: ' + resp.error);
+        btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; return;
+      }
+      // Token obtained — now open file picker
+      var ref = meta.ref || 'UNI';
+      var company = meta.company || 'Order';
+      var filename = ref + ' ' + company + ' Signed.pdf';
+
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'application/pdf';
+      input.onchange = function() {
+        var file = input.files[0];
+        if (!file) { btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; return; }
         btn.textContent = 'Uploading...';
         doUploadToDrive(file, filename, resp.access_token, btn);
-      }
-    });
-    tokenClient.requestAccessToken();
-  };
-  input.click();
+      };
+      btn.disabled = false;
+      btn.textContent = '☁ Upload Signed PDF';
+      input.click();
+    }
+  });
+  tokenClient.requestAccessToken();
 }
 
 function doUploadToDrive(file, filename, token, btn) {
