@@ -3268,7 +3268,7 @@ function driveUploadBlob(blob, filename, accessToken, folderId) {
 }
 
 
-function sendAccountsEmail(refNo, companyFull, user, driveFileId, orderBlob, orderFilename) {
+function sendAccountsEmail(refNo, companyFull, user, driveFileId) {
   if (typeof emailjs === 'undefined') return;
   var memberName = user ? (user.name || user.initials || 'Unknown') : 'Unknown';
   var driveLink = 'https://drive.google.com/file/d/' + driveFileId + '/view';
@@ -3283,15 +3283,9 @@ function sendAccountsEmail(refNo, companyFull, user, driveFileId, orderBlob, ord
     timestamp: dateTime,
     form_url:  driveLink
   };
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    params.attachment      = e.target.result;
-    params.attachment_name = orderFilename;
-    emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, params)
-      .then(function() { console.log('Accounts email sent.'); })
-      ['catch'](function(err) { console.warn('Accounts email failed:', err); });
-  };
-  reader.readAsDataURL(orderBlob);
+  emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, params)
+    .then(function() { console.log('Accounts email sent.'); })
+    ['catch'](function(err) { console.warn('Accounts email failed:', err); });
 }
 
 
@@ -3359,7 +3353,7 @@ function uploadToDrive(accessToken, btn) {
     if (storedFolderId && initials) folder = ' → ' + initials + '/ (direct)';
     if (data.id) {
       logDriveUpload(refNo, company, checklistFilename, 'Checklist');
-      addToHistory(); sendAccountsEmail(refNo, companyFull, user, orderFileId, orderBlob, orderFilename); // auto-save to history list on successful Drive upload
+      addToHistory(); sendAccountsEmail(refNo, companyFull, user, orderFileId); // auto-save to history list on successful Drive upload
       alert('✅ Both files saved to Google Drive!' + folder + '\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename);
     } else {
       alert('Order saved but checklist upload failed: ' + JSON.stringify(data));
