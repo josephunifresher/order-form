@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -111,6 +112,17 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 }
 .status-btn:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
 .status-btn:disabled { opacity: .5; cursor: default; }
+
+/* DRIVE UPLOAD BUTTON */
+.upload-btn {
+  display: inline-block; margin-top: 6px; padding: 5px 11px;
+  border: 1.5px solid #1558b0; border-radius: 6px;
+  background: #e8f0fe; color: #1558b0;
+  font-size: .72rem; font-weight: 700; cursor: pointer;
+  font-family: 'Lato', sans-serif; transition: all .15s; white-space: nowrap;
+}
+.upload-btn:hover { background: #1a73e8; color: #fff; border-color: #1a73e8; }
+.upload-btn:disabled { opacity: .5; cursor: default; }
 
 /* COUNTDOWN */
 .countdown { display: inline-block; font-size: .74rem; font-weight: 700; padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
@@ -238,7 +250,11 @@ View all users
 var SB_URL = 'https://jyljjlaqogqpsdtvseqf.supabase.co';
 var SB_KEY = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
 
+var GOOGLE_CLIENT_ID = '978032756141-8ch9id7gvdhvp2qke5lqf0vts453vur2.apps.googleusercontent.com';
+var DRIVE_FOLDER_ID  = '1ZR9uhvtNc_6fMlR4SSGQv4FSPxQ8_fbe'; // same folder as order form PDFs
+
 var _session = null, _isAdmin = false, _activeMonth = null, _allMonths = [];
+var _rowMeta = {}; // keyed by row.id, stores { ref, company } for Drive upload
 
 function sbFetch(url, opts) {
   opts = opts || {};
@@ -424,6 +440,7 @@ function renderTable(rows) {
   var byPerson = {};
   var now = new Date(); now.setHours(0,0,0,0);
   var html = '';
+  _rowMeta = {}; // reset metadata for this render
 
   rows.forEach(function(row) {
     var fd = row.form_data || {};
@@ -444,6 +461,9 @@ function renderTable(rows) {
     if (isSigned) { byPerson[pn].signed++; byPerson[pn].signedVal += amount; }
     else           { byPerson[pn].pending++; byPerson[pn].pendingVal += amount; }
 
+    /* store metadata for Drive upload */
+    _rowMeta[row.id] = { ref: row.ref || '', company: row.company || '' };
+
     /* ORDER FORM SENT cell */
     var sentCell;
     if (isSent) {
@@ -453,11 +473,12 @@ function renderTable(rows) {
     }
 
     /* ORDER FORM SIGNED cell */
+    var uploadBtn = '<br><button class="upload-btn" onclick="uploadSignedForm(\'' + row.id + '\', this)">☁ Upload Signed PDF</button>';
     var signedCell;
     if (isSigned) {
-      signedCell = '<div class="status-done"><span class="s-icon">Order Form Signed</span><span class="s-date">' + fmtDateShort(fd.signed_at) + '</span></div>';
+      signedCell = '<div class="status-done"><span class="s-icon">Order Form Signed</span><span class="s-date">' + fmtDateShort(fd.signed_at) + '</span></div>' + uploadBtn;
     } else {
-      signedCell = '<button class="status-btn" onclick="markSigned(\'' + row.id + '\', this)">Mark as Signed</button>';
+      signedCell = '<button class="status-btn" onclick="markSigned(\'' + row.id + '\', this)">Mark as Signed</button>' + uploadBtn;
     }
 
     var verifyCell = isSigned
@@ -589,6 +610,78 @@ function markSigned(id, btn) {
   .catch(function(e) {
     toast('Error: ' + (e.message || 'Could not update.'));
     btn.disabled = false; btn.textContent = 'Mark as Signed';
+  });
+}
+
+/* UPLOAD SIGNED FORM TO GOOGLE DRIVE */
+function uploadSignedForm(rowId, btn) {
+  var meta = _rowMeta[rowId];
+  if (!meta) { toast('Row data not found — please reload.'); return; }
+  var ref = meta.ref || 'UNI';
+  var company = meta.company || 'Order';
+  var filename = ref + ' ' + company + ' Signed.pdf';
+
+  // Open file picker
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/pdf';
+  input.onchange = function() {
+    var file = input.files[0];
+    if (!file) return;
+    btn.disabled = true;
+    btn.textContent = 'Connecting...';
+
+    if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+      toast('Google library not loaded yet — please try again in a moment.');
+      btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; return;
+    }
+
+    var tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'https://www.googleapis.com/auth/drive.file',
+      callback: function(resp) {
+        if (resp.error) {
+          toast('Google auth error: ' + resp.error);
+          btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; return;
+        }
+        btn.textContent = 'Uploading...';
+        doUploadToDrive(file, filename, resp.access_token, btn);
+      }
+    });
+    tokenClient.requestAccessToken();
+  };
+  input.click();
+}
+
+function doUploadToDrive(file, filename, token, btn) {
+  var metadata = JSON.stringify({ name: filename, parents: [DRIVE_FOLDER_ID] });
+  var form = new FormData();
+  form.append('metadata', new Blob([metadata], { type: 'application/json' }));
+  form.append('file', file);
+
+  fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token },
+    body: form
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.id) {
+      toast('✓ Uploaded: ' + filename);
+      btn.textContent = '✓ Uploaded';
+      setTimeout(function() {
+        btn.disabled = false;
+        btn.textContent = '☁ Upload Signed PDF';
+      }, 3000);
+    } else {
+      var msg = (data.error && data.error.message) || 'Upload failed';
+      toast('Error: ' + msg);
+      btn.disabled = false; btn.textContent = '☁ Upload Signed PDF';
+    }
+  })
+  .catch(function(e) {
+    toast('Upload error: ' + (e.message || 'unknown'));
+    btn.disabled = false; btn.textContent = '☁ Upload Signed PDF';
   });
 }
 
