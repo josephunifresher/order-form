@@ -604,7 +604,6 @@ function markSigned(id, btn) {
   .then(function(r) {
     if (!r.ok) throw new Error('patch failed');
     toast('Signed - partner verification timer set for 5 working days');
-    sendSignedEmails(_company, _contact, by, _payMonthly);
     loadOrders();
   })
   .catch(function(e) {
