@@ -382,7 +382,6 @@
   }
 </style>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 // ── AUTO-RESTORE SESSION ──
 (function() {
   try {
@@ -417,7 +416,6 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
   <!-- EmailJS SDK -->
-  <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -3098,14 +3096,6 @@ var GDRIVE_CONFIG = {
   checklistFolderId: '1E4XWzyjBBoB_4SQqRp1FCCFUNqhynUEO'    // Checklist PDFs go in sub-folder
 };
 
-var EMAILJS_CONFIG = {
-  publicKey:     'X8v7VjuJWZ9mNRo23',
-  serviceId:     'service_a5nfqxx',
-  templateId:    'template_6ba30km',
-  accountsEmail: 'accounts@unifresher.co.uk',
-  ownerEmail:    'joseph@unifresher.co.uk'
-};
-
 
 // ─── Checklist auto-save to Drive ────────────────────────────────────────────
 var _driveToken   = null;  // cached token for the session
@@ -3267,32 +3257,6 @@ function driveUploadBlob(blob, filename, accessToken, folderId) {
   }).then(function(r) { return r.json(); });
 }
 
-function sendAccountsEmail(refNo, companyFull, user, driveFileId, orderBlob, orderFilename) {
-  if (!EMAILJS_CONFIG.publicKey || EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') return;
-  var memberName = user ? (user.name || user.initials || 'Unknown') : 'Unknown';
-  var driveLink = 'https://drive.google.com/file/d/' + driveFileId + '/view';
-  var now = new Date();
-  var dateTime = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
-  var params = {
-    to_email:  EMAILJS_CONFIG.ownerEmail + ',' + EMAILJS_CONFIG.accountsEmail,
-    company:   companyFull,
-    contact:   refNo,
-    filled_by: memberName,
-    timestamp: dateTime,
-    form_url:  driveLink
-  };
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    params.attachment      = e.target.result;
-    params.attachment_name = orderFilename;
-    emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-    emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, params)
-      .then(function() { console.log('Accounts email sent.'); })
-      ['catch'](function(err) { console.warn('Accounts email failed:', err); });
-  };
-  reader.readAsDataURL(orderBlob);
-}
-
 
 function uploadToDrive(accessToken, btn) {
   calcCampaignMonths();
@@ -3313,7 +3277,7 @@ function uploadToDrive(accessToken, btn) {
 
   btn.textContent = '☁ Uploading…';
 
-  var orderBlob, clBlob, orderFolderId, clFolderId, orderFileId;
+  var orderBlob, clBlob, orderFolderId, clFolderId;
 
   // Step 1: resolve the target folder.
   // If the user has a drive_folder_id saved in their profile, use it directly for both
@@ -3347,7 +3311,7 @@ function uploadToDrive(accessToken, btn) {
     return driveUploadBlob(orderBlob, orderFilename, accessToken, orderFolderId);
   })
   .then(function(data) {
-    if (!data.id) throw new Error('Order upload failed: ' + JSON.stringify(data)); orderFileId = data.id;
+    if (!data.id) throw new Error('Order upload failed: ' + JSON.stringify(data));
     logDriveUpload(refNo, company, orderFilename, 'Order');
     // Step 4: upload checklist to initials subfolder
     return driveUploadBlob(clBlob, checklistFilename, accessToken, clFolderId);
@@ -3358,7 +3322,7 @@ function uploadToDrive(accessToken, btn) {
     if (storedFolderId && initials) folder = ' → ' + initials + '/ (direct)';
     if (data.id) {
       logDriveUpload(refNo, company, checklistFilename, 'Checklist');
-      addToHistory(); sendAccountsEmail(refNo, companyFull, user, orderFileId, orderBlob, orderFilename); // auto-save to history list on successful Drive upload
+      addToHistory(); // auto-save to history list on successful Drive upload
       alert('✅ Both files saved to Google Drive!' + folder + '\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename);
     } else {
       alert('Order saved but checklist upload failed: ' + JSON.stringify(data));
