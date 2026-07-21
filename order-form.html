@@ -1114,7 +1114,7 @@ function updatePaymentTerms() {
 document.addEventListener('change', function(e) {
   if (!e.target.classList.contains('camp-start')) return;
   var today = new Date(); today.setHours(0,0,0,0);
-  var cutoff = new Date(today); cutoff.setMonth(cutoff.getMonth() + 1);
+  var cutoff = new Date(today); cutoff.setDate(cutoff.getDate() + 30);
   var earliest = null;
   document.querySelectorAll('.camp-start').forEach(function(inp) {
     if (inp.value) { var d = new Date(inp.value); if (!earliest || d < earliest) earliest = d; }
