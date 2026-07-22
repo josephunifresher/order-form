@@ -253,7 +253,7 @@ var SB_KEY = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
 var GOOGLE_CLIENT_ID = '978032756141-8ch9id7gvdhvp2qke5lqf0vts453vur2.apps.googleusercontent.com';
 var DRIVE_FOLDER_ID  = '1ZR9uhvtNc_6fMlR4SSGQv4FSPxQ8_fbe'; // same folder as order form PDFs
 
-var _session = null, _isAdmin = false, _activeMonth = null, _allMonths = [];
+var _session = null, _isAdmin = false, _activeMonth = null, _allMonths = [], _userFilter = null;
 var _rowMeta = {}; // keyed by row.id, stores { ref, company } for Drive upload
 
 function sbFetch(url, opts) {
@@ -356,8 +356,16 @@ function onLoggedIn() {
   if (_isAdmin) {
     document.getElementById('admin-wrap').style.display = 'block';
     document.getElementById('home-btn').style.display = 'inline-block';
+    buildMonthTabs();
+  } else {
+    sbFetch('/rest/v1/profiles?select=name&id=eq.' + encodeURIComponent(_session.user.id) + '&limit=1')
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      _userFilter = (rows && rows[0] && rows[0].name) || name;
+      buildMonthTabs();
+    })
+    .catch(function() { _userFilter = name; buildMonthTabs(); });
   }
-  buildMonthTabs();
 }
 
 function doLogout() {
@@ -370,7 +378,8 @@ function doLogout() {
 
 /* MONTH TABS */
 function buildMonthTabs() {
-  sbFetch('/rest/v1/order_history?select=saved_at&order=saved_at.desc')
+  var _uf = _userFilter ? '&filled_by=eq.' + encodeURIComponent(_userFilter) : '';
+  sbFetch('/rest/v1/order_history?select=saved_at&order=saved_at.desc' + _uf)
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     var months = {};
@@ -420,7 +429,8 @@ function loadOrders() {
 
   var qs = 'select=*&saved_at=gte.' + encodeURIComponent(start)
          + '&saved_at=lt.'          + encodeURIComponent(end)
-         + '&order=saved_at.desc';
+         + '&order=saved_at.desc'
+         + (_userFilter ? '&filled_by=eq.' + encodeURIComponent(_userFilter) : '');
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
