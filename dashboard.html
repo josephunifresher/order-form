@@ -282,7 +282,7 @@ function fmtDateShort(iso) {
 }
 function fmtPound(val) {
   if (!val && val !== 0) return '-';
-  return 'PS' + val.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return '£' + val.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 function addWorkingDays(date, days) {
   var d = new Date(date), added = 0;
