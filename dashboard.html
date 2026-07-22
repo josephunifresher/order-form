@@ -472,7 +472,7 @@ function renderTable(rows) {
     else           { byPerson[pn].pending++; byPerson[pn].pendingVal += amount; }
 
     /* store metadata for Drive upload */
-    _rowMeta[row.id] = { ref: row.ref || '', company: row.company || '' };
+    _rowMeta[row.id] = { ref: row.ref || '', company: row.company || '', filled_by: row.filled_by || '' };
 
     /* ORDER FORM SENT cell */
     var sentCell;
@@ -676,30 +676,47 @@ function uploadSignedForm(rowId, btn) {
 function doUploadToDrive(file, filename, token, btn, rowId) {
   delete _pendingUploads[rowId];
   btn.style.cssText = '';
-  var metadata = JSON.stringify({ name: filename, parents: [DRIVE_FOLDER_ID] });
-  var form = new FormData();
-  form.append('metadata', new Blob([metadata], { type: 'application/json' }));
-  form.append('file', file);
-  fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + token },
-    body: form
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (data.id) {
-      toast('✓ Uploaded: ' + filename);
-      btn.textContent = '✓ Uploaded';
-      setTimeout(function() { btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; }, 3000);
-    } else {
-      toast('Error: ' + ((data.error && data.error.message) || 'Upload failed'));
+  var meta = _rowMeta[rowId] || {};
+  var filledBy = meta.filled_by || '';
+
+  function performUpload(folderId) {
+    var driveMetadata = JSON.stringify({ name: filename, parents: [folderId] });
+    var form = new FormData();
+    form.append('metadata', new Blob([driveMetadata], { type: 'application/json' }));
+    form.append('file', file);
+    fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: form
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.id) {
+        toast('✓ Uploaded: ' + filename);
+        btn.textContent = '✓ Uploaded';
+        setTimeout(function() { btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; }, 3000);
+      } else {
+        toast('Error: ' + ((data.error && data.error.message) || 'Upload failed'));
+        btn.disabled = false; btn.textContent = '☁ Upload Signed PDF';
+      }
+    })
+    .catch(function(e) {
+      toast('Upload error: ' + (e.message || 'unknown'));
       btn.disabled = false; btn.textContent = '☁ Upload Signed PDF';
-    }
-  })
-  .catch(function(e) {
-    toast('Upload error: ' + (e.message || 'unknown'));
-    btn.disabled = false; btn.textContent = '☁ Upload Signed PDF';
-  });
+    });
+  }
+
+  if (filledBy) {
+    sbFetch('/rest/v1/profiles?select=drive_folder_id&name=eq.' + encodeURIComponent(filledBy) + '&limit=1')
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      var folderId = (rows && rows[0] && rows[0].drive_folder_id) || DRIVE_FOLDER_ID;
+      performUpload(folderId);
+    })
+    .catch(function() { performUpload(DRIVE_FOLDER_ID); });
+  } else {
+    performUpload(DRIVE_FOLDER_ID);
+  }
 }
 
 /* AUTO-RESTORE SESSION */
