@@ -694,6 +694,7 @@ function doUploadToDrive(file, filename, token, btn, rowId) {
       if (data.id) {
         toast('✓ Uploaded: ' + filename);
         btn.textContent = '✓ Uploaded';
+        var _acNow = new Date(); var _acDt = _acNow.toLocaleDateString('en-GB') + ' ' + _acNow.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); if (typeof emailjs !== 'undefined') { emailjs.init({publicKey: 'X8v7VjuJWZ9mNRo23'}); emailjs.send('service_a5nfqxx', 'template_6ba30km', {to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk', company: meta.company || '', contact: meta.ref || '', filled_by: filledBy || '', timestamp: _acDt, form_url: 'https://drive.google.com/file/d/' + data.id + '/view', message: 'A signed order form has been uploaded to Google Drive.'})['catch'](function(e){console.warn('Accounts email failed:',e);}); }
         setTimeout(function() { btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; }, 3000);
       } else {
         toast('Error: ' + ((data.error && data.error.message) || 'Upload failed'));
