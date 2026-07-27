@@ -3376,7 +3376,7 @@ function uploadToDrive(accessToken, btn) {
     if (storedFolderId && initials) folder = ' → ' + initials + '/ (direct)';
     if (data.id) {
       logDriveUpload(refNo, company, checklistFilename, 'Checklist');
-      addToHistory(); sendAccountsEmail(refNo, companyFull, user, orderFileId); // auto-save to history list on successful Drive upload
+      addToHistory(); // auto-save to history list on successful Drive upload
       alert('✅ Both files saved to Google Drive!' + folder + '\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename);
     } else {
       alert('Order saved but checklist upload failed: ' + JSON.stringify(data));
