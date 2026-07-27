@@ -2265,6 +2265,13 @@ function addToHistory() {
 }
 
 function doSaveHistory(user, fd) {
+  if (fd && (parseFloat(fd.discountPct) > 0 || parseFloat(fd.discountAmt) > 0)) {
+    sendAlertEmail(
+      'Discount applied on ' + (fd.ref || '(no ref)') + ' — ' + (fd.company || ''),
+      fd.company || '',
+      fd.filled_by || ''
+    );
+  }
   sbFetch('order_history', 'POST', {
     user_name:  user ? user.name : 'Unknown',
     ref:        fd.ref,
@@ -3024,6 +3031,7 @@ function tcUnlock() {
   icon.textContent  = '🔓';
   label.textContent = 'Lock T&Cs';
   TC_UNLOCKED = true;
+  sendAlertEmail('T\u0026Cs unlocked', '', (currentUser() && currentUser().name) || '');
 }
 function tcModalConfirm() {
   document.getElementById('tc-modal-overlay').style.display = 'none';
@@ -3289,6 +3297,17 @@ function sendAccountsEmail(refNo, companyFull, user, driveFileId) {
     .then(function() { console.log('Accounts email sent.'); })
     ['catch'](function(err) { console.warn('Accounts email failed:', err); });
 }
+function sendAlertEmail(subject, company, filledBy) {
+  if (!window.emailjs || !EMAILJS_CONFIG) return;
+  emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+    to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk',
+    company: company || '',
+    contact: subject,
+    filled_by: filledBy || '',
+    ref: ''
+  })['catch'](function() {});
+}
+
 
 
 function uploadToDrive(accessToken, btn) {
