@@ -2268,7 +2268,7 @@ function addToHistory() {
 function doSaveHistory(user, fd) {
   if (fd && (parseFloat(fd.discountPct) > 0 || parseFloat(fd.discountAmt) > 0)) {
     var _dMsg = parseFloat(fd.discountPct) > 0 ? 'Discount: ' + fd.discountPct + '%' : '£' + parseFloat(fd.discountAmt).toFixed(2) + ' discount';
-    sendAlertEmail('Discount Applied', (fd.ref || '') + ' - ' + (fd.company || ''), fd.filled_by || '', _dMsg);
+    sendAlertEmail('Discount Applied', (fd.ref || '') + ' - ' + (fd.company || ''), (user && user.name) || '', _dMsg);
   }
   sbFetch('order_history', 'POST', {
     user_name:  user ? user.name : 'Unknown',
@@ -3308,6 +3308,8 @@ function sendAlertEmail(subject, company, filledBy, msg) {
     contact: company || '',
     filled_by: filledBy || '',
     ref: '',
+    date_time: new Date().toLocaleString('en-GB'),
+    form_link: window.location.href,
     message: msg || ''
   })['catch'](function() {});
 }
