@@ -3288,7 +3288,8 @@ function sendAccountsEmail(refNo, companyFull, user, driveFileId) {
     filled_by: memberName,
     timestamp: dateTime,
     form_url:  driveLink
-  };
+    message: 'A signed order form has been uploaded to Google Drive.',
+};
   emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, params)
     .then(function() { console.log('Accounts email sent.'); })
     ['catch'](function(err) { console.warn('Accounts email failed:', err); });
