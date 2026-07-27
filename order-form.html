@@ -2266,11 +2266,7 @@ function addToHistory() {
 
 function doSaveHistory(user, fd) {
   if (fd && (parseFloat(fd.discountPct) > 0 || parseFloat(fd.discountAmt) > 0)) {
-    sendAlertEmail(
-      'Discount applied on ' + (fd.ref || '(no ref)') + ' — ' + (fd.company || ''),
-      fd.company || '',
-      fd.filled_by || ''
-    );
+    sendAlertEmail('Discount Applied', (fd.ref || '') + ' - ' + (fd.company || ''), fd.filled_by || '');
   }
   sbFetch('order_history', 'POST', {
     user_name:  user ? user.name : 'Unknown',
@@ -3301,8 +3297,8 @@ function sendAlertEmail(subject, company, filledBy) {
   if (!window.emailjs || !EMAILJS_CONFIG) return;
   emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
     to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk',
-    company: company || '',
-    contact: subject,
+    company: subject || '',
+    contact: company || '',
     filled_by: filledBy || '',
     ref: ''
   })['catch'](function() {});
