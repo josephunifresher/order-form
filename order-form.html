@@ -778,7 +778,7 @@
       <button type="button" onclick="fmtTc('removeFormat')" title="Clear formatting" style="font-size:10px;">✕ Clear</button>
     </div>
     <button type="button" id="tc-lock-btn" onclick="toggleTcEdit()" style="background:none;border:1.5px solid var(--purple-lighter);border-radius:20px;padding:4px 14px;font-size:11px;color:var(--purple-dark);cursor:pointer;font-family:'Lato',Arial,sans-serif;display:flex;align-items:center;gap:5px;margin-left:auto;">
-      <span id="tc-lock-icon">🔒</span> <span id="tc-lock-label">Edit T&amp;Cs</span>
+      <span id="tc-lock-icon">🔒</span> <span id="tc-lock-label">Edit T&amp;Cs</span><span id="tc-unlock-time" style="font-size:11px;color:var(--purple-dark);margin-left:8px;font-style:italic;"></span>
     </button>
   </div>
   <div class="tc-box" id="tc-box">
@@ -3027,6 +3027,9 @@ function tcUnlock() {
   icon.textContent  = '🔓';
   label.textContent = 'Lock T&Cs';
   TC_UNLOCKED = true;
+  var _tct = new Date();
+  var _tcEl = document.getElementById('tc-unlock-time');
+  if (_tcEl) { _tcEl.style.display = 'inline'; _tcEl.textContent = 'Unlocked ' + _tct.toLocaleDateString('en-GB') + ' ' + _tct.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); }
   sendAlertEmail('T\u0026Cs unlocked', '', (currentUser() && currentUser().name) || '');
 }
 function tcModalConfirm() {
