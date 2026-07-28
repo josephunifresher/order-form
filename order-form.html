@@ -3307,7 +3307,7 @@ function sendAlertEmail(subject, company, filledBy, msg) {
   if (!window.emailjs || !EMAILJS_CONFIG) return;
   emailjs.init({publicKey: EMAILJS_CONFIG.publicKey});
   emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
-    to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk',
+    to_email: EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk,'+EMAILJS_CONFIG.accountsEmail,
     company: subject || '',
     contact: company || '',
     filled_by: filledBy || '',
