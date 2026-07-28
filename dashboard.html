@@ -67,6 +67,13 @@ body { font-family: 'Lato', sans-serif; background: var(--grey-bg); color: var(-
 .admin-wrap { display: none; }
 .admin-toggle-label { display: flex; align-items: center; gap: 7px; background: var(--purple-lightest); border: 1.5px solid var(--purple-lighter); border-radius: 8px; padding: 5px 12px; cursor: pointer; font-size: .8rem; font-weight: 700; color: var(--purple-dark); user-select: none; }
 .admin-toggle-label input { cursor: pointer; accent-color: var(--purple); }
+.admin-only { display: none !important; }
+.admin-mode .admin-only { display: table-cell !important; }
+.bulk-bar { display: none; align-items: center; gap: 12px; padding: 8px 14px; background: var(--amber-bg); border: 1.5px solid var(--amber); border-radius: 8px; margin-bottom: 12px; }
+.bulk-bar.visible { display: flex; }
+.bulk-bar-count { font-size: .875rem; font-weight: 600; color: var(--black); flex: 1; }
+.btn-danger { background: var(--red); color: #fff; border: none; border-radius: 6px; padding: 6px 14px; font-size: .875rem; font-weight: 600; cursor: pointer; }
+.btn-danger:hover { opacity: .85; } .row-select { cursor: pointer; accent-color: var(--purple); width: 15px; height: 15px; }
 
 /* CARDS */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 22px; }
@@ -214,13 +221,13 @@ View all users
 <div class="card red"><div class="card-value" id="c-due">-</div><div class="card-label">Verification Due / Overdue</div></div>
 </div>
 
-<!-- Orders Table -->
+<!-- Orders Table --><div id="bulk-bar" class="bulk-bar"><span class="bulk-bar-count" id="bulk-count">0 selected</span><button class="btn-danger" onclick="deleteSelected()">Delete Selected</button><button onclick="clearSelection()" style="background:none;border:none;cursor:pointer;font-size:.875rem;color:var(--purple);text-decoration:underline;">Clear</button></div>
 <div class="table-wrap">
 <div id="tbl-loading" class="loading"><div class="spinner"></div>Loading...</div>
 <table id="orders-table" style="display:none">
 <thead>
 <tr>
-<th>Date</th>
+<th class="admin-only" style="width:32px;text-align:center;"><input type="checkbox" id="select-all-cb" onclick="toggleSelectAll(this)" class="row-select"></th><th>Date</th>
 <th>Ref</th>
 <th>Company</th>
 <th>Sales Person</th>
@@ -354,7 +361,7 @@ function onLoggedIn() {
   var name = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
   document.getElementById('user-label').textContent = name;
   if (_isAdmin) {
-    document.getElementById('admin-wrap').style.display = 'block';
+    document.getElementById('admin-wrap').style.display = 'block'; document.getElementById('app').classList.add('admin-mode');
     document.getElementById('home-btn').style.display = 'inline-block';
     buildMonthTabs();
   } else {
@@ -374,6 +381,7 @@ function doLogout() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('l-pw').value = '';
+  document.getElementById('app').classList.remove('admin-mode'); clearSelection();
 }
 
 /* MONTH TABS */
@@ -496,7 +504,7 @@ function renderTable(rows) {
       : '<span class="countdown waiting">Awaiting signature</span>';
 
     html +=
-      '<tr>' +
+      '<tr data-id="' + row.id + '">' + '<td class="admin-only" style="text-align:center;"><input type="checkbox" class="row-select" value="' + row.id + '" onchange="updateBulkBar()"></td>' +
       '<td>' + fmtDate(row.saved_at) + '</td>' +
       '<td><strong>' + escHtml(row.ref || '-') + '</strong></td>' +
       '<td>' + escHtml(row.company || '-') + '</td>' +
@@ -735,6 +743,32 @@ function doUploadToDrive(file, filename, token, btn, rowId) {
     }
   } catch(e) { try { localStorage.removeItem('uf_session'); } catch(e2) {} }
 })();
+function toggleSelectAll(cb) {
+  document.querySelectorAll('.row-select').forEach(function(c){ if(c.id!=='select-all-cb') c.checked=cb.checked; });
+  updateBulkBar();
+}
+function updateBulkBar() {
+  var ch=document.querySelectorAll('.row-select:checked:not(#select-all-cb)');
+  var bar=document.getElementById('bulk-bar');
+  var cnt=document.getElementById('bulk-count');
+  if(bar){if(ch.length>0)bar.classList.add('visible');else bar.classList.remove('visible');}
+  if(cnt)cnt.textContent=ch.length+' selected';
+}
+function clearSelection() {
+  document.querySelectorAll('.row-select').forEach(function(c){c.checked=false;});
+  var b=document.getElementById('bulk-bar');
+  if(b)b.classList.remove('visible');
+  var c=document.getElementById('bulk-count');
+  if(c)c.textContent='0 selected';
+}
+function deleteSelected() {
+  var ids=Array.from(document.querySelectorAll('.row-select:checked:not(#select-all-cb)')).map(function(c){return c.value;});
+  if(!ids.length)return;
+  if(!confirm('Delete '+ids.length+' order(s)? This cannot be undone.'))return;
+  sbFetch('/rest/v1/order_history?id=in.('+ids.join(',')+')',{method:'DELETE'})
+  .then(function(){clearSelection();loadOrders();toast('Deleted '+ids.length+' order(s).');})
+  .catch(function(){toast('Delete failed.');});
+}
 </script>
 </body>
 </html>
