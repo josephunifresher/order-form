@@ -739,6 +739,11 @@
           <span style="color:red;font-weight:bold">* Pay in Instalments *</span>
         </label>
         <span style="font-size:11px;color:#888;font-style:italic">Only if the Partner has requested</span>
+              <div id="pay-monthly-notes-row" style="display:none;margin-top:10px;">
+                        <label style="font-size:12px;font-weight:600;margin-bottom:4px;display:block;">Instalment Details <span style="color:#888;font-style:italic;font-weight:400;">(for Accounts)</span></label>
+                                <textarea id="pay-monthly-notes" rows="2" placeholder="e.g. Pay over 3 months, split into 2 payments..." style="width:100%;padding:6px 8px;border:1px solid #D8CCF0;border-radius:4px;font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box;"></textarea>
+              </div>
+              </div>
       </div>
 
       <div class="section-title">Sign-off</div>
@@ -2697,6 +2702,9 @@ function updateClProgress() {
       var checked = document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked;
       var clGroup = document.getElementById('pay-monthly-cl-group');
       if (clGroup) clGroup.style.display = checked ? 'block' : 'none';
+          var notesRow = document.getElementById('pay-monthly-notes-row');
+              if (notesRow) notesRow.style.display = checked ? 'block' : 'none';
+                  if (!checked) { var n = document.getElementById('pay-monthly-notes'); if(n) n.value=''; }
       updateClProgress();
       populatePrintLayout();
           if (checked) {
@@ -4154,9 +4162,10 @@ function sendPayMonthlyAlert(){
   var company=(document.getElementById('client-company')||{}).value||('(unknown)');
   var u=currentUser();var uniNo=(document.getElementById('ref-no')||{}).value||'';var filledBy=u?(u.name||u.initials||'Unknown'):'Unknown';
   var now=new Date().toLocaleString('en-GB');
+      var notes=(document.getElementById('pay-monthly-notes')||{}).value||'';
   function doSend(){
     emailjs.init({publicKey:EMAILJS_CONFIG.publicKey});
-    emailjs.send('service_a5nfqxx','template_6ba30km',{to_email:'joseph@unifresher.co.uk,accounts@unifresher.co.uk',company:company,contact:uniNo,filled_by:filledBy,timestamp:now,form_url:location.href,message:'Pay in Instalments confirmed on order.'});
+    emailjs.send('service_a5nfqxx','template_6ba30km',{to_email:'joseph@unifresher.co.uk,accounts@unifresher.co.uk',company:company,contact:uniNo,filled_by:filledBy,timestamp:now,form_url:location.href,message:'Pay in Instalments confirmed on order.'+(notes?'\nInstalment details: '+notes:'')});
   }
   if(typeof emailjs!=='undefined')doSend();
   else{var s=document.querySelector('script[src*="emailjs"]');if(s)s.addEventListener('load',doSend);else setTimeout(doSend,1500);}
