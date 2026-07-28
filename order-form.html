@@ -1450,7 +1450,7 @@ function validateForm() {
     var totalChecks  = _visCl.length;
     var tickedChecks = _visCl.filter(function(cb) { return cb.checked; }).length;
   var clBy = (document.getElementById('cl-by') || {}).value || '';
-  var clBad = tickedChecks < totalChecks || !clBy.trim();
+      var clBad = tickedChecks < totalChecks || (totalChecks > 0 && !clBy.trim());
   var clErr = document.getElementById('err-checklist');
   if (clErr) clErr.classList.toggle('show', clBad);
   if (clBad) valid = false;
