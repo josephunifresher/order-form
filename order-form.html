@@ -1515,7 +1515,7 @@ function clearForm() {
 
 function updateLastUpdated() {
   var now = new Date();
-  var str = no
+  var str = now.toLocaleString('en-GB')
   localStorage.setItem('orderFormLastUpdated', str);
 }
 
