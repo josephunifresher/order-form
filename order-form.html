@@ -1464,7 +1464,7 @@ function validateForm() {
   } else {
     var missing = document.querySelectorAll('.error').length;
     banner.style.cssText = 'background:#fff0f0;color:#7a1010;border:2px solid #e05252;font-weight:700;font-size:14px';
-    banner.textContent = '🚫 ' + missing + ' required field' + (missing !== 1 ? 's are' : ' is') + ' missing or incomplete — fields highlighted in red must be filled before you can print or save.';
+    banner.textContent = missing > 0 ? missing + ' required field' + (missing !== 1 ? 's are' : ' is') + ' missing or incomplete — fields highlighted in red must be filled before you can print or save.' : 'Please complete the credit limit checklist before you can print or save.';
     banner.classList.add('show');
     var first = document.querySelector('.error');
     if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
