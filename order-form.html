@@ -1362,7 +1362,7 @@ function validateForm() {
     var el = document.getElementById(id);
     var errEl = document.getElementById(errId);
     if (!el) return;
-    var bad = !el.value.trim() || (extraCheck && !extraCheck(el.value));
+    var bad = !el.value.trim() || !!(extraCheck && !extraCheck(el.value));
     el.classList.toggle('error', bad);
     if (errEl) errEl.classList.toggle('show', bad);
     if (bad) valid = false;
