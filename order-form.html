@@ -3312,8 +3312,8 @@ function sendAlertEmail(subject, company, filledBy, msg) {
     contact: company || '',
     filled_by: filledBy || '',
     ref: '',
-    date_time: new Date().toLocaleString('en-GB'),
-    form_link: window.location.href,
+    timestamp: new Date()().toLocaleString('en-GB'),
+    form_url: window.location.href,
     message: msg || ''
   })['catch'](function() {});
 }
