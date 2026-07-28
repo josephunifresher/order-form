@@ -19,7 +19,7 @@
     --grey-border: #D8CCF0;
     --grey-bg: #F7F4FD;
   }
-  body { font-family:'Lato',Arial,sans-serif; font-size:13px; background:var(--purple-lightest); color:var(--black); overflow-x:hidden; }
+  body { font-family:'Lato',Arial,sans-serif; font-size:13px; background:var(--purple-lightest); color:var(--black); }
 
   /* TOOLBAR */
   #toolbar {
@@ -43,7 +43,7 @@
   .btn-drive:disabled { background:#aaa; cursor:not-allowed; }
 
   /* PAGE */
-  .page-wrap { margin:70px auto 40px; max-width:880px; background:#fff; box-shadow:0 4px 24px rgba(112,45,215,.12); border-radius:12px; padding:40px 44px; }
+  .page-wrap { margin:70px auto 40px; max-width:880px; background:#fff; box-shadow:0 4px 24px rgba(112,45,215,.12); border-radius:12px; padding:40px 44px; overflow:hidden; }
 
   /* INPUTS */
   input[type=text],input[type=email],input[type=tel],input[type=number],input[type=date],textarea,select {
@@ -271,7 +271,7 @@
   .hist-row { display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;font-size:13px; }
   .hist-row:hover { background:var(--purple-lightest); }
   .hist-ref { font-weight:700;color:var(--purple);min-width:90px; }
-  .hist-co { flex:1;color:var(--black); overflow-x:hidden; }
+  .hist-co { flex:1;color:var(--black); }
   .hist-amt { font-weight:700;color:var(--purple-dark);min-width:80px;text-align:right; }
   .hist-user { font-size:11px;color:#aaa;min-width:60px;text-align:right; }
   .hist-date { font-size:11px;color:#aaa;min-width:80px;text-align:right; }
