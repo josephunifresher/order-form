@@ -2699,6 +2699,10 @@ function updateClProgress() {
       if (clGroup) clGroup.style.display = checked ? 'block' : 'none';
       updateClProgress();
       populatePrintLayout();
+          if (checked) {
+                var fd = captureFormData();
+                      sendAlertEmail('Pay in Instalments', (fd.ref || '') + ' - ' + (fd.company || ''), (currentUser() && currentUser().name) || '', 'Client requested payment by instalments');
+                              }
     }
 
 // ─── Populate checklist print page ───────────────────────────────────────────
