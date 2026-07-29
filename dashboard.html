@@ -1,254 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unifresher – Order Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Latoh:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
---purple: #702DD7;
---purple-dark: #4E1F97;
---purple-lighter: #C6ABEF;
---purple-lightest:#F1EAFB;
---black: #121212;
---grey-border: #D8CCF0;
---grey-bg: #F7F5FC;
---green: #1A7A4A;
---green-bg: #E6F4ED;
---amber: #B45309;
---amber-bg: #FEF3C7;
---red: #C0392B;
---red-bg: #FDECEA;
-}
-body { font-family: 'Lato', sans-serif; background: var(--grey-bg); color: var(--black); min-height: 100vh; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unifresher – Order Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple:         #702DD7;
+      --purple-dark:    #4E1F97;
+      --purple-lighter: #C6ABEF;
+      --purple-lightest:#F1EAFB;
+      --black:          #121212;
+      --grey-border:    #D8CCF0;
+      --grey-bg:        #F7F5FC;
+      --green:          #1A7A4A;
+      --green-bg:       #E6F4ED;
+      --amber:          #B45309;
+      --amber-bg:       #FEF3C7;
+      --red:            #C0392B;
+      --red-bg:         #FDECEA;
+    }
+    body { font-family: 'Lato', sans-serif; background: var(--grey-bg); color: var(--black); min-height: 100vh; }
 
-/* LOGIN */
-#login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--purple-dark); }
-.login-box { background: #fff; border-radius: 12px; padding: 40px 36px; width: 100%; max-width: 380px; box-shadow: 0 8px 32px rgba(0,0,0,.25); text-align: center; }
-.login-box h2 { font-family: 'Roboto', sans-serif; color: var(--purple-dark); margin-bottom: 6px; font-size: 1.5rem; }
-.login-box p { color: #666; font-size: .85rem; margin-bottom: 24px; }
-.form-group { margin-bottom: 14px; text-align: left; }
-.form-group label { display: block; font-size: .8rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 4px; }
-.form-group input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--grey-border); border-radius: 6px; font-size: .9rem; outline: none; transition: border-color .15s; font-family: 'Lato', sans-serif; }
-.form-group input:focus { border-color: var(--purple); }
-#login-error { color: var(--red); font-size: .82rem; margin-bottom: 10px; min-height: 1.2em; }
-#login-btn { width: 100%; padding: 12px; font-size: 1rem; font-weight: 700; background: var(--purple); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-family: 'Lato', sans-serif; transition: opacity .15s; }
-#login-btn:hover { opacity: .88; }
+    /* ── LOGIN ── */
+    #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--purple-dark); }
+    .login-box { background: #fff; border-radius: 12px; padding: 40px 36px; width: 100%; max-width: 380px; box-shadow: 0 8px 32px rgba(0,0,0,.25); text-align: center; }
+    .login-box h2 { font-family: 'Roboto', sans-serif; color: var(--purple-dark); margin-bottom: 6px; font-size: 1.5rem; }
+    .login-box p { color: #666; font-size: .85rem; margin-bottom: 24px; }
+    .form-group { margin-bottom: 14px; text-align: left; }
+    .form-group label { display: block; font-size: .8rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 4px; }
+    .form-group input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--grey-border); border-radius: 6px; font-size: .9rem; outline: none; transition: border-color .15s; font-family: 'Lato', sans-serif; }
+    .form-group input:focus { border-color: var(--purple); }
+    #login-error { color: var(--red); font-size: .82rem; margin-bottom: 10px; min-height: 1.2em; }
+    #login-btn { width: 100%; padding: 12px; font-size: 1rem; font-weight: 700; background: var(--purple); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-family: 'Lato', sans-serif; transition: opacity .15s; }
+    #login-btn:hover { opacity: .88; }
 
-/* HEADER */
-#app { display: none; }
-.header { background: var(--purple-dark); color: #fff; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.header h1 { font-family: 'Roboto', sans-serif; font-size: 1.2rem; font-weight: 700; }
-.header-sub { font-size: .78rem; opacity: .75; margin-top: 2px; }
-.header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border: none; border-radius: 6px; font-size: .82rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; transition: opacity .15s; text-decoration: none; }
-.btn:hover { opacity: .85; }
-.btn-white { background: #fff; color: var(--purple-dark); }
-.btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.55); }
+    /* ── HEADER ── */
+    #app { display: none; }
+    .header { background: var(--purple-dark); color: #fff; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .header h1 { font-family: 'Roboto', sans-serif; font-size: 1.2rem; font-weight: 700; }
+    .header-sub { font-size: .78rem; opacity: .75; margin-top: 2px; }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border: none; border-radius: 6px; font-size: .82rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; transition: opacity .15s; text-decoration: none; }
+    .btn:hover { opacity: .85; }
+    .btn-white { background: #fff; color: var(--purple-dark); }
+    .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.55); }
+    .btn-purple { background: var(--purple); color: #fff; }
 
-/* CONTAINER */
-.container { max-width: 1280px; margin: 0 auto; padding: 24px 20px; }
+    /* ── CONTAINER ── */
+    .container { max-width: 1280px; margin: 0 auto; padding: 24px 20px; }
 
-/* TOOLBAR */
-.toolbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
-.toolbar-label { font-size: .84rem; font-weight: 700; color: var(--purple-dark); }
-.month-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-.month-tab { padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--grey-border); background: #fff; font-size: .78rem; font-weight: 700; cursor: pointer; color: #666; transition: all .15s; font-family: 'Lato', sans-serif; }
-.month-tab:hover { border-color: var(--purple-lighter); color: var(--purple); }
-.month-tab.active { background: var(--purple); color: #fff; border-color: var(--purple); }
-.spacer { flex: 1; }
-.search-box { padding: 6px 14px; border: 1.5px solid var(--grey-border); border-radius: 20px; font-size: .82rem; outline: none; font-family: 'Lato', sans-serif; min-width: 220px; transition: border-color .15s; background: #fff; }
-.search-box:focus { border-color: var(--purple); }
-.admin-wrap { display: none; }
-.admin-toggle-label { display: flex; align-items: center; gap: 7px; background: var(--purple-lightest); border: 1.5px solid var(--purple-lighter); border-radius: 8px; padding: 5px 12px; cursor: pointer; font-size: .8rem; font-weight: 700; color: var(--purple-dark); user-select: none; }
-.admin-toggle-label input { cursor: pointer; accent-color: var(--purple); }
-.admin-only { display: none !important; }
-.admin-mode .admin-only { display: table-cell !important; }
-.bulk-bar { display: none; align-items: center; gap: 12px; padding: 8px 14px; background: var(--amber-bg); border: 1.5px solid var(--amber); border-radius: 8px; margin-bottom: 12px; }
-.bulk-bar.visible { display: flex; }
-.bulk-bar-count { font-size: .875rem; font-weight: 600; color: var(--black); flex: 1; }
-.btn-danger { background: var(--red); color: #fff; border: none; border-radius: 6px; padding: 6px 14px; font-size: .875rem; font-weight: 600; cursor: pointer; }
-.btn-danger:hover { opacity: .85; } .row-select { cursor: pointer; accent-color: var(--purple); width: 15px; height: 15px; }
+    /* ── TOOLBAR ── */
+    .toolbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+    .toolbar-label { font-size: .84rem; font-weight: 700; color: var(--purple-dark); }
+    .month-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .month-tab { padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--grey-border); background: #fff; font-size: .78rem; font-weight: 700; cursor: pointer; color: #666; transition: all .15s; font-family: 'Lato', sans-serif; }
+    .month-tab:hover { border-color: var(--purple-lighter); color: var(--purple); }
+    .month-tab.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+    .spacer { flex: 1; }
+    .admin-wrap { display: none; }
+    .admin-toggle-label { display: flex; align-items: center; gap: 7px; background: var(--purple-lightest); border: 1.5px solid var(--purple-lighter); border-radius: 8px; padding: 5px 12px; cursor: pointer; font-size: .8rem; font-weight: 700; color: var(--purple-dark); user-select: none; }
+    .admin-toggle-label input { cursor: pointer; accent-color: var(--purple); }
 
-/* CARDS */
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 22px; }
-.card { background: #fff; border-radius: 10px; padding: 16px 15px; border-left: 4px solid var(--purple); box-shadow: 0 1px 4px rgba(0,0,0,.07); }
-.card.green { border-color: var(--green); }
-.card.amber { border-color: var(--amber); }
-.card.red { border-color: var(--red); }
-.card-value { font-size: 1.75rem; font-weight: 700; font-family: 'Roboto', sans-serif; color: var(--purple-dark); line-height: 1; }
-.card.green .card-value { color: var(--green); }
-.card.amber .card-value { color: var(--amber); }
-.card.red .card-value { color: var(--red); }
-.card-label { font-size: .73rem; color: #777; margin-top: 5px; }
+    /* ── SUMMARY CARDS ── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
+    .card { background: #fff; border-radius: 10px; padding: 16px 15px; border-left: 4px solid var(--purple); box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+    .card.green { border-color: var(--green); }
+    .card.amber { border-color: var(--amber); }
+    .card.red   { border-color: var(--red); }
+    .card-value { font-size: 1.9rem; font-weight: 700; font-family: 'Roboto', sans-serif; color: var(--purple-dark); line-height: 1; }
+    .card.green .card-value { color: var(--green); }
+    .card.amber .card-value { color: var(--amber); }
+    .card.red   .card-value { color: var(--red); }
+    .card-label { font-size: .74rem; color: #777; margin-top: 5px; }
 
-/* TABLE */
-.table-wrap { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
-thead th { background: var(--purple-dark); color: #fff; padding: 11px 14px; text-align: left; white-space: nowrap; font-weight: 700; font-size: .78rem; letter-spacing: .03em; }
-thead th:first-child { border-radius: 10px 0 0 0; }
-thead th:last-child { border-radius: 0 10px 0 0; }
-tbody tr { border-bottom: 1px solid #f0edf8; transition: background .1s; }
-tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: var(--purple-lightest); }
-tbody td { padding: 11px 14px; vertical-align: middle; }
-.no-data { text-align: center; padding: 48px; color: #aaa; font-size: .9rem; }
-.loading { text-align: center; padding: 40px; color: var(--purple); }
-.spinner { width: 26px; height: 26px; border: 3px solid var(--purple-lighter); border-top-color: var(--purple); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 10px; }
-@keyframes spin { to { transform: rotate(360deg); } }
+    /* ── TABLE ── */
+    .table-wrap { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+    thead th { background: var(--purple-dark); color: #fff; padding: 11px 14px; text-align: left; white-space: nowrap; font-weight: 700; font-size: .78rem; letter-spacing: .03em; }
+    thead th:first-child { border-radius: 10px 0 0 0; }
+    thead th:last-child  { border-radius: 0 10px 0 0; }
+    tbody tr { border-bottom: 1px solid #f0edf8; transition: background .1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--purple-lightest); }
+    tbody td { padding: 11px 14px; vertical-align: middle; }
+    .no-data { text-align: center; padding: 48px; color: #aaa; font-size: .9rem; }
+    .loading { text-align: center; padding: 40px; color: var(--purple); }
+    .spinner { width: 26px; height: 26px; border: 3px solid var(--purple-lighter); border-top-color: var(--purple); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 10px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-/* STATUS BUTTONS (replaces raw checkboxes) */
-.check-cell { text-align: center; min-width: 130px; }
-.status-done {
-  display: inline-flex; flex-direction: column; align-items: center;
-  background: var(--green-bg); border: 1.5px solid var(--green);
-  border-radius: 8px; padding: 6px 12px; gap: 1px;
-}
-.status-done .s-icon { font-size: .85rem; font-weight: 700; color: var(--green); }
-.status-done .s-date { font-size: .65rem; color: var(--green); opacity: .8; }
-.status-btn {
-  display: inline-block; padding: 7px 14px; border: 1.5px solid var(--purple-lighter);
-  border-radius: 8px; background: var(--purple-lightest); color: var(--purple-dark);
-  font-size: .75rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif;
-  transition: all .15s; white-space: nowrap;
-}
-.status-btn:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
-.status-btn:disabled { opacity: .5; cursor: default; }
+    /* ── CHECKBOX CELLS ── */
+    .check-cell { text-align: center; min-width: 140px; }
+    .order-checkbox-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
+    .order-checkbox { width: 22px; height: 22px; cursor: pointer; accent-color: var(--green); border-radius: 4px; }
+    .order-checkbox:disabled { cursor: default; opacity: .7; }
+    .check-label { font-size: .68rem; color: #888; margin-top: 1px; }
+    .check-label.done { color: var(--green); font-weight: 700; }
+    .check-date { font-size: .68rem; color: #999; }
 
-/* DRIVE UPLOAD BUTTON */
-.upload-btn {
-  display: inline-block; margin-top: 6px; padding: 5px 11px;
-  border: 1.5px solid #1558b0; border-radius: 6px;
-  background: #e8f0fe; color: #1558b0;
-  font-size: .72rem; font-weight: 700; cursor: pointer;
-  font-family: 'Lato', sans-serif; transition: all .15s; white-space: nowrap;
-}
-.upload-btn:hover { background: #1a73e8; color: #fff; border-color: #1a73e8; }
-.upload-btn:disabled { opacity: .5; cursor: default; }
+    /* ── COUNTDOWN ── */
+    .countdown { display: inline-block; font-size: .74rem; font-weight: 700; padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
+    .countdown.overdue  { background: var(--red-bg);   color: var(--red); }
+    .countdown.due-soon { background: var(--amber-bg); color: var(--amber); }
+    .countdown.ok       { background: var(--green-bg); color: var(--green); }
+    .countdown.waiting  { background: #f0f0f0; color: #999; font-weight: 400; }
 
-/* COUNTDOWN */
-.countdown { display: inline-block; font-size: .74rem; font-weight: 700; padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
-.countdown.overdue { background: var(--red-bg); color: var(--red); }
-.countdown.due-soon { background: var(--amber-bg); color: var(--amber); }
-.countdown.ok { background: var(--green-bg); color: var(--green); }
-.countdown.waiting { background: #f0f0f0; color: #999; font-weight: 400; }
+    /* ── TOAST ── */
+    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: 9px 18px; border-radius: 8px; font-size: .83rem; z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none; }
+    #toast.show { opacity: 1; }
 
-/* PERSON BREAKDOWN */
-.section-title { font-family: 'Roboto', sans-serif; font-size: .95rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--purple-lighter); }
-.person-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
-.person-card { background: #fff; border-radius: 10px; padding: 18px 16px; border-left: 4px solid var(--purple); box-shadow: 0 1px 4px rgba(0,0,0,.07); }
-.person-name { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: .95rem; color: var(--purple-dark); margin-bottom: 10px; }
-.person-row { font-size: .81rem; line-height: 2.1; }
-.person-row .pr-orders { color: #555; }
-.person-row .pr-signed { color: var(--green); font-weight: 700; }
-.person-row .pr-pending { color: var(--amber); font-weight: 700; }
+    /* ── PERSON BREAKDOWN ── */
+    .breakdown-table { border-collapse: collapse; font-size: .84rem; width: 100%; max-width: 480px; }
+    .breakdown-table thead th { background: var(--purple-dark); color: #fff; padding: 8px 14px; font-size: .78rem; font-weight: 700; }
+    .breakdown-table thead th:first-child { border-radius: 8px 0 0 0; }
+    .breakdown-table thead th:last-child  { border-radius: 0 8px 0 0; }
+    .breakdown-table tbody tr { border-bottom: 1px solid #f0edf8; }
+    .breakdown-table tbody tr.total-row { background: var(--purple-lightest); font-weight: 700; }
+    .breakdown-table tbody td { padding: 9px 14px; }
 
-/* TOAST */
-#toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: 9px 18px; border-radius: 8px; font-size: .83rem; z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none; }
-#toast.show { opacity: 1; }
-
-@media (max-width: 640px) {
-.cards { grid-template-columns: 1fr 1fr; }
-.header { flex-direction: column; align-items: flex-start; }
-.search-box { min-width: 100%; }
-.person-cards { grid-template-columns: 1fr; }
-}
-</style>
+    @media (max-width: 640px) {
+      .cards { grid-template-columns: 1fr 1fr; }
+      .header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
-<div class="login-box">
-<h2>Unifresher</h2>
-<p>Order Dashboard — sign in to continue</p>
-<div class="form-group">
-<label>Email</label>
-<input type="email" id="l-email" placeholder="you@unifresher.co.uk" autocomplete="username">
-</div>
-<div class="form-group">
-<label>Password</label>
-<input type="password" id="l-pw" placeholder="••••••••" autocomplete="current-password">
-</div>
-<div id="login-error"></div>
-<button id="login-btn" onclick="doLogin()">Sign in</button>
-</div>
+  <div class="login-box">
+    <h2>Unifresher</h2>
+    <p>Order Dashboard — sign in to continue</p>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="l-email" placeholder="you@unifresher.co.uk" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="l-pw" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div id="login-error"></div>
+    <button id="login-btn" onclick="doLogin()">Sign in</button>
+  </div>
 </div>
 
 <!-- APP -->
 <div id="app">
-<div class="header">
-<div>
-<h1>Order Dashboard</h1>
-<div class="header-sub" id="user-label"></div>
-</div>
-<div class="header-right">
-<a href="order-form.html" class="btn btn-outline">+ New Order</a>
-<a href="order-form.html" class="btn btn-white" id="home-btn" style="display:none">&#x2302; Home</a>
-<button class="btn btn-white" onclick="doLogout()">Sign out</button>
-</div>
-</div>
+  <div class="header">
+    <div>
+      <h1>Order Dashboard</h1>
+      <div class="header-sub" id="user-label"></div>
+    </div>
+    <div class="header-right">
+      <a href="order-form.html" class="btn btn-outline">+ New Order</a>
+      <button class="btn btn-white" onclick="doLogout()">Sign out</button>
+    </div>
+  </div>
 
-<div class="container">
+  <div class="container">
 
-<!-- Toolbar -->
-<div class="toolbar">
-<span class="toolbar-label">Month:</span>
-<div class="month-tabs" id="month-tabs"></div>
-<div class="spacer"></div>
-<input type="text" id="search-box" class="search-box" placeholder="Search UNI no. or partner..." oninput="filterTable()">
-<div class="admin-wrap" id="admin-wrap">
-<label class="admin-toggle-label">
-<input type="checkbox" id="admin-toggle" onchange="buildMonthTabs()">
-View all users
-</label>
-</div>
-</div>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <span class="toolbar-label">Month:</span>
+      <div class="month-tabs" id="month-tabs"></div>
+      <div class="spacer"></div>
+      <div class="admin-wrap" id="admin-wrap">
+        <label class="admin-toggle-label">
+          <input type="checkbox" id="admin-toggle" onchange="buildMonthTabs()">
+          View all users
+        </label>
+      </div>
+    </div>
 
-<!-- Stats Cards -->
-<div class="cards">
-<div class="card"><div class="card-value" id="c-total">-</div><div class="card-label">Orders this period</div></div>
-<div class="card green"><div class="card-value" id="c-sent">-</div><div class="card-label">Form Sent</div></div>
-<div class="card green"><div class="card-value" id="c-signed">-</div><div class="card-label">Form Signed</div></div>
-<div class="card green"><div class="card-value" id="c-signed-val" style="font-size:1.25rem">-</div><div class="card-label">Value Signed</div></div>
-<div class="card amber"><div class="card-value" id="c-pending">-</div><div class="card-label">Awaiting Signature</div></div>
-<div class="card amber"><div class="card-value" id="c-pending-val" style="font-size:1.25rem">-</div><div class="card-label">Value Awaiting</div></div>
-<div class="card red"><div class="card-value" id="c-due">-</div><div class="card-label">Verification Due / Overdue</div></div>
-</div>
+    <!-- Cards -->
+    <div class="cards">
+      <div class="card"><div class="card-value" id="c-total">—</div><div class="card-label">Orders this period</div></div>
+      <div class="card green"><div class="card-value" id="c-sent">—</div><div class="card-label">Form Sent</div></div>
+      <div class="card green"><div class="card-value" id="c-signed">—</div><div class="card-label">Form Signed</div></div>
+      <div class="card amber"><div class="card-value" id="c-pending">—</div><div class="card-label">Awaiting Signature</div></div>
+      <div class="card red"><div class="card-value" id="c-due">—</div><div class="card-label">Verification Due / Overdue</div></div>
+    </div>
 
-<!-- Orders Table --><div id="bulk-bar" class="bulk-bar"><span class="bulk-bar-count" id="bulk-count">0 selected</span><button class="btn-danger" onclick="deleteSelected()">Delete Selected</button><button onclick="clearSelection()" style="background:none;border:none;cursor:pointer;font-size:.875rem;color:var(--purple);text-decoration:underline;">Clear</button></div>
-<div class="table-wrap">
-<div id="tbl-loading" class="loading"><div class="spinner"></div>Loading...</div>
-<table id="orders-table" style="display:none">
-<thead>
-<tr>
-<th class="admin-only" style="width:32px;text-align:center;"><input type="checkbox" id="select-all-cb" onclick="toggleSelectAll(this)" class="row-select"></th><th>Date</th>
-<th>Ref</th>
-<th>Company</th>
-<th>Sales Person</th>
-<th>Total</th>
-<th style="text-align:center">ORDER FORM<br>SENT</th>
-<th style="text-align:center">ORDER FORM<br>SIGNED</th>
-<th style="text-align:center">Partner Verification<br>Timer</th>
-</tr>
-</thead>
-<tbody id="orders-body"></tbody>
-</table>
-<div id="no-data" class="no-data" style="display:none">No orders found for this period.</div>
-</div>
+    <!-- Table -->
+    <div class="table-wrap">
+      <div id="tbl-loading" class="loading"><div class="spinner"></div>Loading…</div>
+      <table id="orders-table" style="display:none">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Ref</th>
+            <th>Company</th>
+            <th>Sales Person</th>
+            <th>Total</th>
+            <th style="text-align:center">ORDER FORM<br>SENT</th>
+            <th style="text-align:center">ORDER FORM<br>SIGNED</th>
+            <th style="text-align:center">Days to<br>Sign</th>
+            <th style="text-align:center">Partner Verification<br>Timer</th>
+          </tr>
+        </thead>
+        <tbody id="orders-body"></tbody>
+      </table>
+      <div id="no-data" class="no-data" style="display:none">No orders found for this period.</div>
+    </div>
 
-<!-- Per-person breakdown -->
-<div id="person-breakdown" style="display:none; margin-top:28px;">
-<div class="section-title">By Sales Person</div>
-<div class="person-cards" id="person-cards"></div>
-</div>
+    <!-- Admin Days-to-Sign Breakdown -->
+    <div id="person-breakdown" style="display:none;margin-top:20px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);padding:20px 24px;"></div>
 
-</div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -257,12 +218,9 @@ View all users
 var SB_URL = 'https://jyljjlaqogqpsdtvseqf.supabase.co';
 var SB_KEY = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
 
-var GOOGLE_CLIENT_ID = '978032756141-8ch9id7gvdhvp2qke5lqf0vts453vur2.apps.googleusercontent.com';
-var DRIVE_FOLDER_ID  = '1ZR9uhvtNc_6fMlR4SSGQv4FSPxQ8_fbe'; // same folder as order form PDFs
+var _session = null, _isAdmin = false, _activeMonth = null, _allMonths = [];
 
-var _session = null, _isAdmin = false, _activeMonth = null, _allMonths = [], _userFilter = null;
-var _rowMeta = {}; // keyed by row.id, stores { ref, company } for Drive upload
-
+/* ── SUPABASE FETCH ── */
 function sbFetch(url, opts) {
   opts = opts || {};
   opts.headers = Object.assign({
@@ -274,22 +232,19 @@ function sbFetch(url, opts) {
   return fetch(SB_URL + url, opts);
 }
 
+/* ── HELPERS ── */
 function toast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(function() { t.classList.remove('show'); }, 2800);
 }
 function fmtDate(iso) {
-  if (!iso) return '-';
+  if (!iso) return '—';
   return new Date(iso).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
 }
 function fmtDateShort(iso) {
   if (!iso) return '';
   return new Date(iso).toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
-}
-function fmtPound(val) {
-  if (!val && val !== 0) return '-';
-  return '£' + val.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 function addWorkingDays(date, days) {
   var d = new Date(date), added = 0;
@@ -297,18 +252,19 @@ function addWorkingDays(date, days) {
   return d;
 }
 function countdownTag(isoDate) {
-  if (!isoDate) return '<span class="countdown waiting">-</span>';
+  if (!isoDate) return '<span class="countdown waiting">—</span>';
   var due = new Date(isoDate), now = new Date();
   due.setHours(0,0,0,0); now.setHours(0,0,0,0);
   var diff = Math.round((due - now) / 86400000);
-  if (diff < 0) return '<span class="countdown overdue">! ' + Math.abs(diff) + 'd overdue</span>';
-  if (diff === 0) return '<span class="countdown overdue">! Due today</span>';
-  if (diff <= 2) return '<span class="countdown due-soon">Due in ' + diff + 'd</span>';
+  if (diff < 0)  return '<span class="countdown overdue">⚠ ' + Math.abs(diff) + 'd overdue</span>';
+  if (diff === 0) return '<span class="countdown overdue">⚠ Due today</span>';
+  if (diff <= 2)  return '<span class="countdown due-soon">Due in ' + diff + 'd</span>';
   return '<span class="countdown ok">Due ' + fmtDateShort(isoDate) + '</span>';
 }
 function monthLabel(ym) {
   var p = ym.split('-');
-  return new Date(parseInt(p[0]), parseInt(p[1])-1, 1).toLocaleDateString('en-GB', { month:'short', year:'numeric' });
+  return new Date(parseInt(p[0]), parseInt(p[1])-1, 1)
+    .toLocaleDateString('en-GB', { month:'short', year:'numeric' });
 }
 function currentYM() {
   var d = new Date();
@@ -318,20 +274,14 @@ function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function filterTable() {
-  var q = (document.getElementById('search-box').value || '').trim().toLowerCase();
-  document.getElementById('orders-body').querySelectorAll('tr').forEach(function(row) {
-    row.style.display = (!q || row.textContent.toLowerCase().indexOf(q) > -1) ? '' : 'none';
-  });
-}
-
-/* AUTH */
+/* ── AUTH ── */
 function doLogin() {
   var email = document.getElementById('l-email').value.trim();
-  var pw = document.getElementById('l-pw').value;
-  var err = document.getElementById('login-error');
-  var btn = document.getElementById('login-btn');
-  err.textContent = ''; btn.textContent = 'Signing in...'; btn.disabled = true;
+  var pw    = document.getElementById('l-pw').value;
+  var err   = document.getElementById('login-error');
+  var btn   = document.getElementById('login-btn');
+  err.textContent = ''; btn.textContent = 'Signing in…'; btn.disabled = true;
+
   fetch(SB_URL + '/auth/v1/token?grant_type=password', {
     method: 'POST',
     headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
@@ -360,19 +310,8 @@ function onLoggedIn() {
   document.getElementById('app').style.display = 'block';
   var name = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
   document.getElementById('user-label').textContent = name;
-  if (_isAdmin) {
-    document.getElementById('admin-wrap').style.display = 'block'; document.getElementById('app').classList.add('admin-mode');
-    document.getElementById('home-btn').style.display = 'inline-block';
-    buildMonthTabs();
-  } else {
-    sbFetch('/rest/v1/profiles?select=name&id=eq.' + encodeURIComponent(_session.user.id) + '&limit=1')
-    .then(function(r) { return r.json(); })
-    .then(function(rows) {
-      _userFilter = (rows && rows[0] && rows[0].name) || name;
-      buildMonthTabs();
-    })
-    .catch(function() { _userFilter = name; buildMonthTabs(); });
-  }
+  if (_isAdmin) document.getElementById('admin-wrap').style.display = 'block';
+  buildMonthTabs();
 }
 
 function doLogout() {
@@ -381,13 +320,13 @@ function doLogout() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('l-pw').value = '';
-  document.getElementById('app').classList.remove('admin-mode'); clearSelection();
 }
 
-/* MONTH TABS */
+/* ── MONTH TABS ── */
 function buildMonthTabs() {
-  var _uf = _userFilter ? '&filled_by=eq.' + encodeURIComponent(_userFilter) : '';
-  sbFetch('/rest/v1/order_history?select=saved_at&order=saved_at.desc' + _uf)
+  var qs = 'select=saved_at&order=saved_at.desc';
+
+  sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     var months = {};
@@ -398,6 +337,7 @@ function buildMonthTabs() {
     });
     months[currentYM()] = true;
     _allMonths = Object.keys(months).sort().reverse();
+
     var container = document.getElementById('month-tabs');
     container.innerHTML = '';
     _allMonths.forEach(function(ym) {
@@ -407,6 +347,7 @@ function buildMonthTabs() {
       tab.onclick = function() { selectMonth(ym); };
       container.appendChild(tab);
     });
+
     if (!_activeMonth) _activeMonth = currentYM();
     loadOrders();
   })
@@ -421,24 +362,22 @@ function selectMonth(ym) {
   loadOrders();
 }
 
-/* LOAD ORDERS */
+/* ── LOAD ORDERS ── */
 function loadOrders() {
   if (!_activeMonth) return;
   var parts = _activeMonth.split('-');
   var year = parseInt(parts[0]), month = parseInt(parts[1]);
   var start = new Date(year, month-1, 1).toISOString();
   var end   = new Date(year, month,   1).toISOString();
+  var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
 
   document.getElementById('tbl-loading').style.display = 'block';
   document.getElementById('orders-table').style.display = 'none';
   document.getElementById('no-data').style.display = 'none';
-  document.getElementById('person-breakdown').style.display = 'none';
-  document.getElementById('search-box').value = '';
 
   var qs = 'select=*&saved_at=gte.' + encodeURIComponent(start)
          + '&saved_at=lt.'          + encodeURIComponent(end)
-         + '&order=saved_at.desc'
-         + (_userFilter ? '&filled_by=eq.' + encodeURIComponent(_userFilter) : '');
+         + '&order=saved_at.desc';
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
@@ -446,138 +385,151 @@ function loadOrders() {
   .catch(function() { toast('Failed to load orders.'); document.getElementById('tbl-loading').style.display = 'none'; });
 }
 
-/* RENDER TABLE */
+/* ── RENDER ── */
 function renderTable(rows) {
   document.getElementById('tbl-loading').style.display = 'none';
   if (!rows || rows.length === 0) {
     document.getElementById('no-data').style.display = 'block';
-    updateCards(0,0,0,0,0,0,0); return;
+    document.getElementById('person-breakdown').style.display = 'none';
+    updateCards(0,0,0,0,0); return;
   }
 
-  var total=rows.length, sent=0, signed=0, pending=0, due=0, signedVal=0, pendingVal=0;
-  var byPerson = {};
+  var total=rows.length, sent=0, signed=0, pending=0, due=0;
+  var signData = []; // [{person, days}] collected for admin avg breakdown
   var now = new Date(); now.setHours(0,0,0,0);
   var html = '';
-  _rowMeta = {}; // reset metadata for this render
 
   rows.forEach(function(row) {
-    var fd = row.form_data || {};
+    var fd       = row.form_data || {};
     var isSent   = !!fd.sent_at;
     var isSigned = !!fd.signed_at;
     var followup = fd.partner_followup_date || null;
-    var amount = parseFloat((row.total || '').replace(/[^0-9.]/g, '')) || 0;
 
-    if (isSent) sent++;
-    if (isSigned) { signed++; signedVal += amount; }
-    else           { pending++; pendingVal += amount; }
+    if (isSent)   sent++;
+    if (isSigned) signed++;
+    else          pending++;
     if (followup) { var dd=new Date(followup); dd.setHours(0,0,0,0); if(dd<=now) due++; }
 
-    /* per-person tracking */
-    var pn = row.user_name || 'Unknown';
-    if (!byPerson[pn]) byPerson[pn] = { orders:0, signed:0, pending:0, signedVal:0, pendingVal:0 };
-    byPerson[pn].orders++;
-    if (isSigned) { byPerson[pn].signed++; byPerson[pn].signedVal += amount; }
-    else           { byPerson[pn].pending++; byPerson[pn].pendingVal += amount; }
+    var totalStr = row.total || '—';
 
-    /* store metadata for Drive upload */
-    _rowMeta[row.id] = { ref: row.ref || '', company: row.company || '', filled_by: row.filled_by || '' };
-
-    /* ORDER FORM SENT cell */
-    var sentCell;
-    if (isSent) {
-      sentCell = '<div class="status-done"><span class="s-icon">Order Form Sent</span><span class="s-date">' + fmtDateShort(fd.sent_at) + '</span></div>';
-    } else {
-      sentCell = '<button class="status-btn" onclick="markSent(\'' + row.id + '\', this)">Mark as Sent</button>';
+    // Days to sign: calendar days from order creation to signing
+    var daysToSign = '—';
+    var daysColor  = '#bbb';
+    if (isSigned && fd.signed_at && row.saved_at) {
+      var _d1 = new Date(row.saved_at), _d2 = new Date(fd.signed_at);
+      _d1.setHours(0,0,0,0); _d2.setHours(0,0,0,0);
+      var _days = Math.round((_d2 - _d1) / 86400000);
+      if (_days >= 0) {
+        daysToSign = _days + 'd';
+        daysColor  = 'var(--purple-dark)';
+        signData.push({ person: row.user_name || '—', days: _days });
+      }
     }
 
-    /* ORDER FORM SIGNED cell */
-    var uploadBtn = '<br><button class="upload-btn" onclick="uploadSignedForm(\'' + row.id + '\', this)">☁ Upload Signed PDF</button>';
-    var signedCell;
+    var sentChecked  = isSent  ? 'checked disabled' : '';
+    var sentLabel    = isSent  ? '<div class="check-label done">✓ Sent</div><div class="check-date">' + fmtDateShort(fd.sent_at) + '</div>' : '<div class="check-label">Mark sent</div>';
+
+    var signedChecked = isSigned ? 'checked disabled' : '';
+    var signedLabel   = isSigned ? '<div class="check-label done">✓ Signed</div><div class="check-date">' + fmtDateShort(fd.signed_at) + '</div>' : '<div class="check-label">Mark signed</div>';
+
+    var verifyCell = '—';
     if (isSigned) {
-      signedCell = '<div class="status-done"><span class="s-icon">Order Form Signed</span><span class="s-date">' + fmtDateShort(fd.signed_at) + '</span></div>' + uploadBtn;
+      verifyCell = followup ? countdownTag(followup) : '<span class="countdown waiting">No timer set</span>';
     } else {
-      signedCell = '<button class="status-btn" onclick="markSigned(\'' + row.id + '\', this)">Mark as Signed</button>' + uploadBtn;
+      verifyCell = '<span class="countdown waiting">Awaiting signature</span>';
     }
-
-    var verifyCell = isSigned
-      ? (followup ? countdownTag(followup) : '<span class="countdown waiting">No timer set</span>')
-      : '<span class="countdown waiting">Awaiting signature</span>';
 
     html +=
-      '<tr data-id="' + row.id + '">' + '<td class="admin-only" style="text-align:center;"><input type="checkbox" class="row-select" value="' + row.id + '" onchange="updateBulkBar()"></td>' +
-      '<td>' + fmtDate(row.saved_at) + '</td>' +
-      '<td><strong>' + escHtml(row.ref || '-') + '</strong></td>' +
-      '<td>' + escHtml(row.company || '-') + '</td>' +
-      '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name || '-') + '</td>' +
-      '<td><strong>' + escHtml(row.total || '-') + '</strong></td>' +
-      '<td class="check-cell">' + sentCell + '</td>' +
-      '<td class="check-cell">' + signedCell + '</td>' +
-      '<td class="check-cell">' + verifyCell + '</td>' +
+      '<tr>' +
+        '<td>' + fmtDate(row.saved_at) + '</td>' +
+        '<td><strong>' + escHtml(row.ref || '—') + '</strong></td>' +
+        '<td>' + escHtml(row.company || '—') + '</td>' +
+        '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name || '—') + '</td>' +
+        '<td>' + totalStr + '</td>' +
+        '<td class="check-cell">' +
+          '<div class="order-checkbox-wrap">' +
+            '<input type="checkbox" class="order-checkbox" ' + sentChecked +
+              ' onchange="markSent(\'' + row.id + '\', this)">' +
+            sentLabel +
+          '</div>' +
+        '</td>' +
+        '<td class="check-cell">' +
+          '<div class="order-checkbox-wrap">' +
+            '<input type="checkbox" class="order-checkbox" ' + signedChecked +
+              ' onchange="markSigned(\'' + row.id + '\', this)">' +
+            signedLabel +
+          '</div>' +
+        '</td>' +
+        '<td style="text-align:center;font-weight:700;color:' + daysColor + '">' + daysToSign + '</td>' +
+        '<td class="check-cell">' + verifyCell + '</td>' +
       '</tr>';
   });
 
   document.getElementById('orders-body').innerHTML = html;
   document.getElementById('orders-table').style.display = 'table';
-  updateCards(total, sent, signed, pending, due, signedVal, pendingVal);
-  renderPersonBreakdown(byPerson);
+  updateCards(total, sent, signed, pending, due);
+  renderPersonBreakdown(signData);
 }
 
-function updateCards(total, sent, signed, pending, due, signedVal, pendingVal) {
+function updateCards(total, sent, signed, pending, due) {
   document.getElementById('c-total').textContent   = total;
   document.getElementById('c-sent').textContent    = sent;
   document.getElementById('c-signed').textContent  = signed;
   document.getElementById('c-pending').textContent = pending;
   document.getElementById('c-due').textContent     = due;
-  document.getElementById('c-signed-val').textContent  = fmtPound(signedVal);
-  document.getElementById('c-pending-val').textContent = fmtPound(pendingVal);
 }
 
-function renderPersonBreakdown(byPerson) {
-  var section   = document.getElementById('person-breakdown');
-  var container = document.getElementById('person-cards');
-  var people = Object.keys(byPerson).sort();
-  if (people.length === 0) { section.style.display = 'none'; return; }
-  section.style.display = 'block';
-  container.innerHTML = people.map(function(name) {
-    var p = byPerson[name];
-    return '<div class="person-card">' +
-      '<div class="person-name">' + escHtml(name) + '</div>' +
-      '<div class="person-row">' +
-        '<div class="pr-orders">' + p.orders + ' order' + (p.orders !== 1 ? 's' : '') + ' this period</div>' +
-        '<div class="pr-signed">Signed: ' + p.signed + '  (' + fmtPound(p.signedVal) + ')</div>' +
-        '<div class="pr-pending">Awaiting: ' + p.pending + '  (' + fmtPound(p.pendingVal) + ')</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+/* ── PERSON BREAKDOWN (Admin — "View all users" mode only) ── */
+function renderPersonBreakdown(signData) {
+  var el = document.getElementById('person-breakdown');
+  var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
+  if (!_isAdmin || !showAll || signData.length === 0) { el.style.display = 'none'; return; }
+
+  // Group by salesperson
+  var byPerson = {};
+  signData.forEach(function(d) {
+    if (!byPerson[d.person]) byPerson[d.person] = [];
+    byPerson[d.person].push(d.days);
+  });
+
+  // Overall average (1 decimal place)
+  var allDays = signData.map(function(d) { return d.days; });
+  var overallAvg = Math.round(allDays.reduce(function(a,b){return a+b;},0) / allDays.length * 10) / 10;
+
+  var html = '<h3 style="font-family:Roboto,sans-serif;color:var(--purple-dark);font-size:.95rem;font-weight:700;margin-bottom:14px;letter-spacing:.01em">AVG. DAYS TO SIGN</h3>';
+  html += '<table class="breakdown-table">';
+  html += '<thead><tr>' +
+    '<th style="text-align:left">Sales Person</th>' +
+    '<th style="text-align:center">Signed Orders</th>' +
+    '<th style="text-align:center">Avg Days to Sign</th>' +
+  '</tr></thead><tbody>';
+
+  Object.keys(byPerson).sort().forEach(function(person) {
+    var days = byPerson[person];
+    var avg = Math.round(days.reduce(function(a,b){return a+b;},0) / days.length * 10) / 10;
+    html += '<tr>' +
+      '<td>' + escHtml(person) + '</td>' +
+      '<td style="text-align:center">' + days.length + '</td>' +
+      '<td style="text-align:center;font-weight:700;color:var(--purple-dark)">' + avg + 'd</td>' +
+    '</tr>';
+  });
+
+  html += '<tr class="total-row">' +
+    '<td>Overall</td>' +
+    '<td style="text-align:center">' + allDays.length + '</td>' +
+    '<td style="text-align:center;color:var(--purple-dark)">' + overallAvg + 'd</td>' +
+  '</tr>';
+  html += '</tbody></table>';
+
+  el.innerHTML = html;
+  el.style.display = 'block';
 }
 
-/* SEND EMAILS ON SIGN */
-function sendSignedEmails(company, contact, signedBy, payMonthly) {
-  try {
-    if (typeof emailjs === 'undefined') return;
-    emailjs.init({ publicKey: 'X8v7VjuJWZ9mNRo23' });
-    var params = {
-      company:   company   || '(unknown)',
-      contact:   contact   || '',
-      filled_by: signedBy  || '(unknown)',
-      timestamp: new Date().toLocaleString('en-GB'),
-      form_url:  'https://josephunifresher.github.io/order-form/order-form.html'
-    };
-    emailjs.send('service_a5nfqxx', 'template_6ba30km',
-      Object.assign({}, params, { to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk' })
-    );
-    if (payMonthly) {
-      emailjs.send('service_a5nfqxx', 'template_6ba30km',
-        Object.assign({}, params, { to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk', company: '[PAY IN INSTALMENTS] ' + (company || '(unknown)') })
-      );
-    }
-  } catch(e) { console.error('Email send error:', e); }
-}
-
-/* MARK SENT */
-function markSent(id, btn) {
-  btn.disabled = true; btn.textContent = 'Saving...';
+/* ── MARK SENT ── */
+function markSent(id, checkbox) {
+  checkbox.disabled = true;
   var by = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
+
   sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data')
   .then(function(r) { return r.json(); })
   .then(function(rows) {
@@ -590,29 +542,24 @@ function markSent(id, btn) {
   })
   .then(function(r) {
     if (!r.ok) throw new Error('patch failed');
-    toast('Order form marked as sent');
+    toast('Order form marked as sent ✓');
     loadOrders();
   })
-  .catch(function(e) {
-    toast('Error: ' + (e.message || 'Could not update.'));
-    btn.disabled = false; btn.textContent = 'Mark as Sent';
-  });
+  .catch(function(e) { toast('Error: ' + (e.message || 'Could not update.')); checkbox.disabled = false; checkbox.checked = false; });
 }
 
-/* MARK SIGNED */
-function markSigned(id, btn) {
-  btn.disabled = true; btn.textContent = 'Saving...';
+/* ── MARK SIGNED ── */
+function markSigned(id, checkbox) {
+  checkbox.disabled = true;
   var by = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
   var at = new Date().toISOString();
-  var _company = '', _contact = '', _payMonthly = false;
-  sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data,company')
+
+  sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data')
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     var fd = (rows[0] && rows[0].form_data) || {};
-    _company    = (rows[0] && rows[0].company) || '';
-    _contact    = fd.clBy || '';
-    _payMonthly = !!(fd.payMonthly || fd['pay-monthly']);
-    fd.signed_at = at; fd.signed_by = by;
+    fd.signed_at = at;
+    fd.signed_by = by;
     if (!fd.sent_at) { fd.sent_at = at; fd.sent_by = by; }
     fd.partner_followup_date = addWorkingDays(new Date(), 5).toISOString().split('T')[0];
     return sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id), {
@@ -621,114 +568,12 @@ function markSigned(id, btn) {
   })
   .then(function(r) {
     if (!r.ok) throw new Error('patch failed');
-    toast('Signed - partner verification timer set for 5 working days');
+    toast('Signed ✓ — partner verification timer set for 5 working days');
     loadOrders();
   })
-  .catch(function(e) {
-    toast('Error: ' + (e.message || 'Could not update.'));
-    btn.disabled = false; btn.textContent = 'Mark as Signed';
-  });
+  .catch(function(e) { toast('Error: ' + (e.message || 'Could not update.')); checkbox.disabled = false; checkbox.checked = false; });
 }
-
-/* UPLOAD SIGNED FORM TO GOOGLE DRIVE */
-// Two-click approach — both operations need a direct user gesture:
-// Click 1: opens file picker (synchronous from button click ✓)
-// Click 2: button changes to "Click to send to Drive" → OAuth popup (synchronous ✓) → upload
-var _pendingUploads = {};
-
-function uploadSignedForm(rowId, btn) {
-  var meta = _rowMeta[rowId];
-  if (!meta) { toast('Row data not found — please reload.'); return; }
-
-  // If a file is already selected, this click does the Google auth + upload
-  if (_pendingUploads[rowId]) {
-    var pending = _pendingUploads[rowId];
-    if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
-      toast('Google library not loaded yet — please try again.'); return;
-    }
-    btn.disabled = true;
-    btn.textContent = 'Connecting...';
-    var tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: GOOGLE_CLIENT_ID,
-      scope: 'https://www.googleapis.com/auth/drive.file',
-      callback: function(resp) {
-        if (resp.error) {
-          toast('Google auth error: ' + resp.error);
-          btn.disabled = false; btn.textContent = '🔐 Click to send to Drive'; return;
-        }
-        btn.textContent = 'Uploading...';
-        doUploadToDrive(pending.file, pending.filename, resp.access_token, btn, rowId);
-      }
-    });
-    tokenClient.requestAccessToken();
-    return;
-  }
-
-  // First click: open file picker immediately (must be synchronous)
-  var ref = meta.ref || 'UNI';
-  var company = meta.company || 'Order';
-  var filename = ref + ' ' + company + ' Signed.pdf';
-  var input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'application/pdf';
-  input.onchange = function() {
-    var file = input.files[0];
-    if (!file) return;
-    _pendingUploads[rowId] = { file: file, filename: filename };
-    btn.textContent = '🔐 Click to send to Drive';
-    btn.style.cssText = 'background:#e8f5e9;border-color:#2e7d32;color:#2e7d32';
-  };
-  input.click();
-}
-
-function doUploadToDrive(file, filename, token, btn, rowId) {
-  delete _pendingUploads[rowId];
-  btn.style.cssText = '';
-  var meta = _rowMeta[rowId] || {};
-  var filledBy = meta.filled_by || '';
-
-  function performUpload(folderId) {
-    var driveMetadata = JSON.stringify({ name: filename, parents: [folderId] });
-    var form = new FormData();
-    form.append('metadata', new Blob([driveMetadata], { type: 'application/json' }));
-    form.append('file', file);
-    fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + token },
-      body: form
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.id) {
-        toast('✓ Uploaded: ' + filename);
-        btn.textContent = '✓ Uploaded';
-        var _acNow = new Date(); var _acDt = _acNow.toLocaleDateString('en-GB') + ' ' + _acNow.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); if (typeof emailjs !== 'undefined') { emailjs.init({publicKey: 'X8v7VjuJWZ9mNRo23'}); emailjs.send('service_a5nfqxx', 'template_6ba30km', {to_email: 'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk', company: meta.company || '', contact: meta.ref || '', filled_by: filledBy || '', timestamp: _acDt, form_url: 'https://drive.google.com/file/d/' + data.id + '/view', message: 'A signed order form has been uploaded to Google Drive.'})['catch'](function(e){console.warn('Accounts email failed:',e);}); }
-        setTimeout(function() { btn.disabled = false; btn.textContent = '☁ Upload Signed PDF'; }, 3000);
-      } else {
-        toast('Error: ' + ((data.error && data.error.message) || 'Upload failed'));
-        btn.disabled = false; btn.textContent = '☁ Upload Signed PDF';
-      }
-    })
-    .catch(function(e) {
-      toast('Upload error: ' + (e.message || 'unknown'));
-      btn.disabled = false; btn.textContent = '☁ Upload Signed PDF';
-    });
-  }
-
-  if (filledBy) {
-    sbFetch('/rest/v1/profiles?select=drive_folder_id&name=eq.' + encodeURIComponent(filledBy) + '&limit=1')
-    .then(function(r) { return r.json(); })
-    .then(function(rows) {
-      var folderId = (rows && rows[0] && rows[0].drive_folder_id) || DRIVE_FOLDER_ID;
-      performUpload(folderId);
-    })
-    .catch(function() { performUpload(DRIVE_FOLDER_ID); });
-  } else {
-    performUpload(DRIVE_FOLDER_ID);
-  }
-}
-
-/* AUTO-RESTORE SESSION */
+// ── AUTO-RESTORE SESSION ──
 (function() {
   try {
     var saved = localStorage.getItem('uf_session');
@@ -739,36 +584,12 @@ function doUploadToDrive(file, filename, token, btn, rowId) {
         _session = sess;
         _isAdmin = !!(sess.user && sess.user.user_metadata && sess.user.user_metadata.is_admin);
         onLoggedIn();
-      } else { localStorage.removeItem('uf_session'); }
+      } else {
+        localStorage.removeItem('uf_session');
+      }
     }
   } catch(e) { try { localStorage.removeItem('uf_session'); } catch(e2) {} }
 })();
-function toggleSelectAll(cb) {
-  document.querySelectorAll('.row-select').forEach(function(c){ if(c.id!=='select-all-cb') c.checked=cb.checked; });
-  updateBulkBar();
-}
-function updateBulkBar() {
-  var ch=document.querySelectorAll('.row-select:checked:not(#select-all-cb)');
-  var bar=document.getElementById('bulk-bar');
-  var cnt=document.getElementById('bulk-count');
-  if(bar){if(ch.length>0)bar.classList.add('visible');else bar.classList.remove('visible');}
-  if(cnt)cnt.textContent=ch.length+' selected';
-}
-function clearSelection() {
-  document.querySelectorAll('.row-select').forEach(function(c){c.checked=false;});
-  var b=document.getElementById('bulk-bar');
-  if(b)b.classList.remove('visible');
-  var c=document.getElementById('bulk-count');
-  if(c)c.textContent='0 selected';
-}
-function deleteSelected() {
-  var ids=Array.from(document.querySelectorAll('.row-select:checked:not(#select-all-cb)')).map(function(c){return c.value;});
-  if(!ids.length)return;
-  if(!confirm('Delete '+ids.length+' order(s)? This cannot be undone.'))return;
-  sbFetch('/rest/v1/order_history?id=in.('+ids.join(',')+')',{method:'DELETE'})
-  .then(function(){clearSelection();loadOrders();toast('Deleted '+ids.length+' order(s).');})
-  .catch(function(){toast('Delete failed.');});
-}
 </script>
 </body>
 </html>
