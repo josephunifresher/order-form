@@ -234,10 +234,10 @@
   #pl-camp-dates-wrap { page-break-inside:avoid; }
   .pl-signoff-wrap { page-break-inside:avoid; break-inside:avoid; }
   .pl-tc-section { }
-  .pl-tc-title { font-weight:bold; font-size:9pt; padding-bottom:3pt; margin-bottom:5pt; border-bottom:1pt solid #000; }
-  .pl-tc-cols { display:flex; gap:16pt; }
-  .pl-tc-col { flex:1; font-size:5.5pt; line-height:1.3; color:#222; }
-  .pl-tc-col p { margin-bottom:2.5pt; }
+  .pl-tc-title { font-weight:bold; font-size:9pt; padding-bottom:2pt; margin-bottom:3pt; border-bottom:1pt solid #000; }
+  .pl-tc-cols { display:flex; gap:10pt; }
+  .pl-tc-col { flex:1; font-size:5.5pt; line-height:1.2; color:#222; }
+  .pl-tc-col p { margin-bottom:1.5pt; }
   .pl-bank { font-size:5.5pt; color:#444; border-top:0.5pt solid #ccc; padding-top:3pt; margin-top:4pt; line-height:1.4; }
 
   .last-updated-bar { display:flex; align-items:center; justify-content:flex-end; gap:14px; font-size:10px; color:#aaa; padding:10px 0 0; border-top:1px solid var(--grey-border); margin-top:20px; }
@@ -1105,7 +1105,8 @@ function updatePaymentTerms() {
       if (sel) sel.value = '30';
       return;
     }
-    sendAlertEmail('Non-Standard Payment Terms', '', (currentUser()&&currentUser().name)||'');
+    var _pts=document.getElementById('payment-terms');var _ptTxt=_pts&&_pts.selectedIndex>=0?_pts.options[_pts.selectedIndex].text:'';
+    sendAlertEmail('Non-Standard Payment Terms', document.getElementById('client-company')&&document.getElementById('client-company').value||'', (currentUser()&&currentUser().name)||'', 'Payment terms changed to: '+_ptTxt);
   }
   var isReceipt = (days === 'receipt');
     document.querySelectorAll('.tc-pay-phrase').forEach(function(el) {
