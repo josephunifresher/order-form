@@ -904,7 +904,7 @@
   <div class="pl-notes-label">Notes:</div>
   <div id="pl-notes" class="pl-notes-body"></div>
           <div id="pl-accred-wrap" style="display:none;margin-top:6pt;padding:5pt 10pt;background:#f0fff4;border-left:3pt solid #27ae60;font-size:9pt;line-height:1.5;"><strong>Accreditation Scheme:</strong> <span id="pl-accred-text"></span></div>
-          <div id="pl-pay-monthly-wrap" style="display:none;margin-top:4pt;font-size:10pt;font-weight:bold;color:#cc0000;">* Pay in Instalments *</div>
+          <div id="pl-pay-monthly-wrap" style="display:none;margin-top:4pt;"><div style="font-size:10pt;font-weight:bold;color:#cc0000;">* Pay in Instalments *</div><div id="pl-pay-monthly-notes-text" style="font-size:9pt;color:#333;margin-top:2pt;white-space:pre-wrap;"></div></div>
 
   <div id="pl-camp-dates-wrap" style="display:none;margin-top:6pt;">
     <div style="font-weight:bold;font-size:9.5pt;margin-bottom:3pt;">Campaign Dates:</div>
@@ -1307,6 +1307,8 @@ function populatePrintLayout() {
   if (plPmWrap) {
     var pmChecked = document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked;
     plPmWrap.style.display = pmChecked ? 'block' : 'none';
+    var plPmNotes = document.getElementById('pl-pay-monthly-notes-text');
+    if (plPmNotes) plPmNotes.textContent = (document.getElementById('pay-monthly-notes')||{}).value||'';
   }
   populateChecklistPrint();
 
@@ -2709,10 +2711,6 @@ function updateClProgress() {
                   if (!checked) { var n = document.getElementById('pay-monthly-notes'); if(n) n.value=''; }
       updateClProgress();
       populatePrintLayout();
-          if (checked) {
-                var fd = captureFormData();
-                      sendAlertEmail('Pay in Instalments', (fd.ref || '') + ' - ' + (fd.company || ''), (currentUser() && currentUser().name) || '', 'Client requested payment by instalments');
-                              }
     }
 
 // ─── Populate checklist print page ───────────────────────────────────────────
