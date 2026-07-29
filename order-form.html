@@ -3299,13 +3299,14 @@ function sendAccountsEmail(refNo, companyFull, user, driveFileId) {
   var dateTime = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
   emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
   var params = {
+    subject:   'New Order Form - ' + companyFull,
     to_email:  EMAILJS_CONFIG.ownerEmail + ',' + EMAILJS_CONFIG.accountsEmail,
     company:   companyFull,
     contact:   refNo,
     filled_by: memberName,
     date_time: dateTime,
     form_url:  driveLink,
-    message: 'A signed order form has been uploaded to Google Drive.',
+    message: 'A new order has been submitted and uploaded to Google Drive.',
 };
   emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, params)
     .then(function() { console.log('Accounts email sent.'); })
