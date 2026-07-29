@@ -466,7 +466,7 @@ function renderTable(rows) {
         '</td>' +
         '<td style="text-align:center;font-weight:700;color:' + daysColor + '">' + daysToSign + '</td>' +
         '<td class="check-cell">' + verifyCell + '</td>' +
-        '<td class="del-cell"><button class="del-btn" onclick="deleteOrder(\'' + row.id + '\')" title="Delete order">✕</button></td>' +
+        '<td class="del-cell">' + (_isAdmin ? '<button class="del-btn" onclick="deleteOrder(\'' + row.id + '\')" title="Delete order">✕</button>' : '') + '</td>' +
       '</tr>';
   });
 
