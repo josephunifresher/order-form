@@ -3301,7 +3301,7 @@ function sendAccountsEmail(refNo, companyFull, user, driveFileId) {
   emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
   var params = {
     subject:   'New Order Form - ' + companyFull,
-    to_email:  EMAILJS_CONFIG.ownerEmail + ',felicity@unifresher.co.uk,' + EMAILJS_CONFIG.accountsEmail,
+    to_email:  EMAILJS_CONFIG.ownerEmail + ',' + EMAILJS_CONFIG.accountsEmail,
     company:   companyFull,
     contact:   refNo,
     filled_by: memberName,
@@ -4172,7 +4172,7 @@ function sendPayMonthlyAlert(){
       var notes=(document.getElementById('pay-monthly-notes')||{}).value||'';
   function doSend(){
     emailjs.init({publicKey:EMAILJS_CONFIG.publicKey});
-    emailjs.send('service_a5nfqxx','template_8h5woef',{subject:'Pay in Instalments - '+company,to_email:'joseph@unifresher.co.uk,felicity@unifresher.co.uk,accounts@unifresher.co.uk',company:company,contact:uniNo,filled_by:filledBy,date_time:now,form_url:location.href,message:'Pay in Instalments confirmed on order.'+(notes?'\nInstalment details: '+notes:'')});
+    emailjs.send('service_a5nfqxx','template_8h5woef',{subject:'Pay in Instalments - '+company,to_email:'joseph@unifresher.co.uk,accounts@unifresher.co.uk',company:company,contact:uniNo,filled_by:filledBy,date_time:now,form_url:location.href,message:'Pay in Instalments confirmed on order.'+(notes?'\nInstalment details: '+notes:'')});
   }
   if(typeof emailjs!=='undefined')doSend();
   else{var s=document.querySelector('script[src*="emailjs"]');if(s)s.addEventListener('load',doSend);else setTimeout(doSend,1500);}
