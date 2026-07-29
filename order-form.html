@@ -3322,7 +3322,7 @@ function sendAlertEmail(subject, company, filledBy, msg) {
     contact: company || '',
     filled_by: filledBy || '',
     ref: '',
-    timestamp: new Date()().toLocaleString('en-GB'),
+    timestamp: new Date().toLocaleString('en-GB'),
     form_url: window.location.href,
     message: msg || ''
   })['catch'](function() {});
