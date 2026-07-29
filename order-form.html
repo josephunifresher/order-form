@@ -4157,6 +4157,11 @@ function cl17Changed(){
   if(!document.getElementById('cl17').checked)return;
   if(document.getElementById('pay-monthly')&&document.getElementById('pay-monthly').checked)sendPayMonthlyAlert();
 }
+
+// Wire cl checklist checkboxes to update progress banner
+document.addEventListener('change', function(e) {
+  if (e.target.matches && /^cl\d+$/.test(e.target.id)) updateClProgress();
+});
 function sendPayMonthlyAlert(){
   if(_pmAlertSent)return;
   _pmAlertSent=true;
