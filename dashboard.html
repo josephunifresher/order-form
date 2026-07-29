@@ -94,6 +94,9 @@
 
     /* ── CHECKBOX CELLS ── */
     .check-cell { text-align: center; min-width: 140px; }
+    .del-cell { text-align:center; width:32px; }
+    .del-btn { background:none; border:none; color:#c0392b; cursor:pointer; font-size:13px; padding:2px 6px; border-radius:3px; opacity:0.6; }
+    .del-btn:hover { opacity:1; background:#fdecea; }
     .order-checkbox-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
     .order-checkbox { width: 22px; height: 22px; cursor: pointer; accent-color: var(--green); border-radius: 4px; }
     .order-checkbox:disabled { cursor: default; opacity: .7; }
@@ -199,6 +202,7 @@
             <th style="text-align:center">ORDER FORM<br>SIGNED</th>
             <th style="text-align:center">Days to<br>Sign</th>
             <th style="text-align:center">Partner Verification<br>Timer</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="orders-body"></tbody>
@@ -462,6 +466,7 @@ function renderTable(rows) {
         '</td>' +
         '<td style="text-align:center;font-weight:700;color:' + daysColor + '">' + daysToSign + '</td>' +
         '<td class="check-cell">' + verifyCell + '</td>' +
+        '<td class="del-cell"><button class="del-btn" onclick="deleteOrder(\'' + row.id + '\')" title="Delete order">✕</button></td>' +
       '</tr>';
   });
 
@@ -526,6 +531,13 @@ function renderPersonBreakdown(signData) {
 }
 
 /* ── MARK SENT ── */
+function deleteOrder(id) {
+  if (!confirm('Delete this order? This cannot be undone.')) return;
+  sbFetch('order_history?id=eq.' + id, 'DELETE', null, {'Prefer':''})
+    .then(function() { loadOrders(); })
+    ['catch'](function() { alert('Could not delete — please try again.'); });
+}
+
 function markSent(id, checkbox) {
   checkbox.disabled = true;
   var by = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
