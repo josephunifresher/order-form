@@ -97,6 +97,10 @@
     .del-cell { text-align:center; width:32px; }
     .del-btn { background:none; border:none; color:#c0392b; cursor:pointer; font-size:13px; padding:2px 6px; border-radius:3px; opacity:0.6; }
     .del-btn:hover { opacity:1; background:#fdecea; }
+    /* ── ACCREDITATION VIEW ── */
+    .wm-check { display:inline-flex; align-items:center; gap:5px; cursor:pointer; font-size:.8rem; }
+    .wm-label { color:#888; }
+    .wm-check input:checked ~ .wm-label { color:var(--green); font-weight:700; }
     .order-checkbox-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
     .order-checkbox { width: 22px; height: 22px; cursor: pointer; accent-color: var(--green); border-radius: 4px; }
     .order-checkbox:disabled { cursor: default; opacity: .7; }
@@ -175,9 +179,11 @@
           <input type="checkbox" id="admin-toggle" onchange="loadOrders()">
           View all users
         </label>
+        <button class="btn btn-outline" onclick="showAccredView()" style="font-size:.78rem;padding:5px 12px">🎓 Accreditation</button>
       </div>
     </div>
 
+    <div id="orders-view">
     <!-- Cards -->
     <div class="cards">
       <div class="card"><div class="card-value" id="c-total">—</div><div class="card-label">Orders this period</div></div>
@@ -212,6 +218,29 @@
 
     <!-- Admin Days-to-Sign Breakdown -->
     <div id="person-breakdown" style="display:none;margin-top:20px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);padding:20px 24px;"></div>
+    </div><!-- /orders-view -->
+
+    <!-- Accreditation Follow-up View (Admin only) -->
+    <div id="accred-view" style="display:none;margin-top:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div>
+          <h2 style="font-size:1.05rem;font-weight:700;color:var(--purple-dark);margin-bottom:4px;">🎓 Accreditation Follow-up</h2>
+          <p style="font-size:.82rem;color:#888;">Orders where Accreditation Scheme is pending and the 5-day window has passed.</p>
+        </div>
+        <button class="btn btn-outline" onclick="showOrdersView()" style="font-size:.8rem">← Orders</button>
+      </div>
+      <div class="table-wrap">
+        <div id="accred-loading" class="loading"><div class="spinner"></div>Loading…</div>
+        <div id="accred-no-data" class="no-data" style="display:none">No overdue accreditation follow-ups found.</div>
+        <table id="accred-table" style="display:none">
+          <thead><tr>
+            <th>Date</th><th>Ref</th><th>Company</th><th>Sales Person</th><th>Days Pending</th>
+            <th style="text-align:center">Offered</th><th style="text-align:center">Watermark Sent</th>
+          </tr></thead>
+          <tbody id="accred-body"></tbody>
+        </table>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -602,6 +631,63 @@ function markSigned(id, checkbox) {
     }
   } catch(e) { try { localStorage.removeItem('uf_session'); } catch(e2) {} }
 })();
+
+/* ── ACCREDITATION FOLLOW-UP VIEW ── */
+function showAccredView(){
+  document.getElementById('orders-view').style.display='none';
+  document.getElementById('accred-view').style.display='';
+  loadAccredOrders();
+}
+function showOrdersView(){
+  document.getElementById('accred-view').style.display='none';
+  document.getElementById('orders-view').style.display='';
+}
+function loadAccredOrders(){
+  document.getElementById('accred-loading').style.display='flex';
+  document.getElementById('accred-table').style.display='none';
+  document.getElementById('accred-no-data').style.display='none';
+  sbFetch('/rest/v1/order_history?select=id,saved_at,user_name,form_data&form_data->>accredPending=eq.yes&order=saved_at.desc&limit=500')
+    .then(function(r){return r.json();})
+    .then(renderAccredTable)
+    .catch(function(){document.getElementById('accred-loading').style.display='none';});
+}
+function renderAccredTable(rows){
+  document.getElementById('accred-loading').style.display='none';
+  var now=new Date(), tbody=document.getElementById('accred-body');
+  tbody.innerHTML='';
+  var overdue=(rows||[]).filter(function(row){
+    return row.saved_at && Math.floor((now-new Date(row.saved_at))/86400000)>=5;
+  });
+  if(!overdue.length){document.getElementById('accred-no-data').style.display='block';return;}
+  overdue.forEach(function(row){
+    var fd=row.form_data||{}, d=new Date(row.saved_at);
+    var days=Math.floor((now-d)/86400000);
+    var offered=fd.accredAnswer==='yes', wm=!!fd.accredWatermarkSent;
+    var tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td>'+d.toLocaleDateString('en-GB')+'</td>'+
+      '<td>'+(fd.ref||'—')+'</td>'+
+      '<td>'+(fd.company||'—')+'</td>'+
+      '<td>'+(row.user_name||'—')+'</td>'+
+      '<td style="font-weight:700;color:'+(days>7?'#c0392b':'#e67e22')+'">'+days+'d</td>'+
+      '<td style="text-align:center">'+(offered?'<span style="color:var(--green);font-size:15px">✓</span>':'<span style="color:#c0392b;font-size:15px">✗</span>')+'</td>'+
+      '<td style="text-align:center"><label class="wm-check"><input type="checkbox"'+(wm?' checked':'')+' onchange="toggleWatermark(\''+ row.id+'\',this)"><span class="wm-label">'+(wm?'Sent':'Not sent')+'</span></label></td>';
+    tbody.appendChild(tr);
+  });
+  document.getElementById('accred-table').style.display='';
+}
+function toggleWatermark(id,el){
+  var val=el.checked; el.disabled=true;
+  sbFetch('/rest/v1/order_history?id=eq.'+encodeURIComponent(id)+'&select=form_data')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var fd=(data&&data[0]&&data[0].form_data)||{};
+      fd.accredWatermarkSent=val;
+      return sbFetch('/rest/v1/order_history?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({form_data:fd})});
+    })
+    .then(function(){el.disabled=false;var sp=el.nextElementSibling;if(sp)sp.textContent=val?'Sent':'Not sent';})
+    .catch(function(){el.disabled=false;el.checked=!val;});
+}
 </script>
 </body>
 </html>
