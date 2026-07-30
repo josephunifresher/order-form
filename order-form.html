@@ -152,6 +152,8 @@
   .bottom-box .box-title { font-family:'Roboto',Arial,sans-serif; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.8px; color:var(--purple-dark); margin-bottom:12px; }
   .partner-badge { display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; background:var(--purple-lightest); color:var(--purple-dark); border:1.5px solid var(--purple-lighter); border-radius:20px; padding:3px 10px; margin-bottom:10px; text-transform:uppercase; letter-spacing:.3px; }
   .partner-badge::before { content:"✍"; font-size:12px; }
+  .adobe-sign-link { display:inline-block; margin-top:6px; font-size:11px; font-weight:700; color:var(--purple); background:var(--purple-lightest); border:1.5px solid var(--purple-lighter); border-radius:6px; padding:4px 10px; text-decoration:none; letter-spacing:.2px; }
+  .adobe-sign-link:hover { background:var(--purple-lighter); color:#fff; }
   .bottom-box.partner-box { background:#fdfcff; }
   .bottom-box.partner-box input { color:#999; border-bottom-color:#e0d5f5; }
   .field-row { margin-bottom:12px; }
@@ -758,6 +760,7 @@
     <div class="bottom-box partner-box">
       <div class="box-title">Campaign Contact Information</div>
       <div class="partner-badge">Partner completes via Adobe Sign</div>
+      <a href="https://acrobat.adobe.com/?promoid=LQLZSXQR&locale=en-US&mv=other&mv2=tab" target="_blank" rel="noopener" class="adobe-sign-link">✍ Open Adobe Sign ↗</a>
       <div class="field-row"><label>Signed For and On Behalf Of</label><input type="text" id="signed-for" placeholder="Left blank for partner"></div>
       <div class="field-row"><label>Job Title</label><input type="text" id="job-title" placeholder="Left blank for partner"></div>
       <div class="field-row"><label>Print Name</label><input type="text" id="print-name" placeholder="Left blank for partner"></div>
