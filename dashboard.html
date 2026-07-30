@@ -669,7 +669,7 @@ function renderAccredTable(rows){
       '<td>'+(fd.ref||'—')+'</td>'+
       '<td>'+(fd.company||'—')+'</td>'+
       '<td>'+(row.user_name||'—')+'</td>'+
-      '<td style="font-weight:700;color:'+(days>7?'#c0392b':'#e67e22')+'">'+days+'d</td>'+
+      '<td style="font-weight:700;color:'+(days>5?'#c0392b':'#e67e22')+'">'+days+'d  <span style="font-size:.75em;padding:1px 5px;border-radius:3px;background:'+(days===5?'#fff3cd':'#fde8e8')+';">'+(days===5?'⚠️ DUE TODAY':'🔴 OVERDUE')+'</span></td>'+
       '<td style="text-align:center">'+(offered?'<span style="color:var(--green);font-size:15px">✓</span>':'<span style="color:#c0392b;font-size:15px">✗</span>')+'</td>'+
       '<td style="text-align:center"><label class="wm-check"><input type="checkbox"'+(wm?' checked':'')+' onchange="toggleWatermark(\''+ row.id+'\',this)"><span class="wm-label">'+(wm?'Sent':'Not sent')+'</span></label></td>';
     tbody.appendChild(tr);
