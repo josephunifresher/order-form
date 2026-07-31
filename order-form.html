@@ -709,7 +709,7 @@
         </div>
         <div id="accred-yes-panel" class="accred-panel" style="display:none">
           <div class="accred-fields">
-            <div class="accred-field-row"><label for="accred-city">City</label><input type="text" id="accred-city" placeholder="e.g. Manchester" oninput="populatePrintLayout()"></div>
+            <div class="accred-field-row"><label for="accred-city">City</label><div style="display:flex;align-items:center;gap:6px;"><input type="text" id="accred-city" placeholder="e.g. Manchester" oninput="populatePrintLayout()" style="flex:1;"><button type="button" onclick="document.getElementById('accred-city').value='National';populatePrintLayout();" style="background:var(--purple-lighter);border:none;border-radius:6px;padding:3px 8px;color:var(--purple-dark);font-weight:700;cursor:pointer;font-size:11px;white-space:nowrap;">National</button></div></div>
             <div class="accred-field-row"><label for="accred-category">Category</label><input type="text" id="accred-category" placeholder="e.g. Things to do" oninput="populatePrintLayout()"></div>
           </div>
         </div>
@@ -2643,6 +2643,22 @@ function updateClProgress() {
         ['accred-pend-yes-btn','accred-pend-no-btn'].forEach(function(id){var el=document.getElementById(id);if(el)el.className='accred-btn';});
         var rPanel = document.getElementById('accred-reason-panel');
         if (rPanel) rPanel.style.display = 'none';
+      }
+      if (val === 'yes') {
+        var cityInp = document.getElementById('accred-city');
+        if (cityInp && !cityInp.value) {
+          var firstDesc = document.querySelector('#items-body .item-desc');
+          if (firstDesc) {
+            var boldEl = firstDesc.querySelector('[style*="font-weight:bold"],[style*="font-weight: bold"],b,strong');
+            var city = boldEl ? boldEl.textContent.trim() : '';
+            if (!city || city === 'CITY NAME' || city === 'CITY') {
+              var t = firstDesc.textContent;
+              var di = Math.max(t.lastIndexOf('–'), t.lastIndexOf('—'), t.lastIndexOf('-'));
+              if (di !== -1) city = t.slice(di+1).trim();
+            }
+            if (city && city !== 'CITY NAME' && city !== 'CITY') cityInp.value = city;
+          }
+        }
       }
       updateAccredChecklist();
       populatePrintLayout();
