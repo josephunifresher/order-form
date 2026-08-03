@@ -3326,7 +3326,7 @@ function sendAccountsEmail(refNo, companyFull, user, driveFileId) {
   var dateTime = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
   emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
   var params = {
-    subject:   'New Order Form - ' + companyFull,
+    subject:   (refNo ? refNo + ' – ' : '') + 'New Order Form - ' + companyFull,
     to_email:  EMAILJS_CONFIG.ownerEmail + ',' + EMAILJS_CONFIG.accountsEmail,
     company:   companyFull,
     contact:   refNo,
@@ -3341,10 +3341,11 @@ function sendAccountsEmail(refNo, companyFull, user, driveFileId) {
 }
 function sendAlertEmail(subject, company, filledBy, msg, toEmail) {
   if (!window.emailjs || !EMAILJS_CONFIG) return;
+  var _ref = (document.getElementById('ref-no') || {}).value || '';
   emailjs.init({publicKey: EMAILJS_CONFIG.publicKey});
   emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
     to_email: toEmail || (EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk,'+EMAILJS_CONFIG.accountsEmail),
-    subject: subject || '',
+    subject: (_ref ? _ref + ' – ' : '') + (subject || ''),
     company: subject || '',
     contact: company || '',
     filled_by: filledBy || '',
@@ -4199,7 +4200,7 @@ function sendPayMonthlyAlert(){
       var notes=(document.getElementById('pay-monthly-notes')||{}).value||'';
   function doSend(){
     emailjs.init({publicKey:EMAILJS_CONFIG.publicKey});
-    emailjs.send('service_a5nfqxx','template_8h5woef',{subject:'Pay in Instalments - '+company,to_email:'joseph@unifresher.co.uk,accounts@unifresher.co.uk',company:company,contact:uniNo,filled_by:filledBy,date_time:now,form_url:location.href,message:'Pay in Instalments confirmed on order.'+(notes?'\nInstalment details: '+notes:'')});
+    emailjs.send('service_a5nfqxx','template_8h5woef',{subject:(uniNo ? uniNo + ' – ' : '') + 'Pay in Instalments - '+company,to_email:'joseph@unifresher.co.uk,accounts@unifresher.co.uk',company:company,contact:uniNo,filled_by:filledBy,date_time:now,form_url:location.href,message:'Pay in Instalments confirmed on order.'+(notes?'\nInstalment details: '+notes:'')});
   }
   if(typeof emailjs!=='undefined')doSend();
   else{var s=document.querySelector('script[src*="emailjs"]');if(s)s.addEventListener('load',doSend);else setTimeout(doSend,1500);}
