@@ -709,66 +709,87 @@ function driveUploadBlob(blob, fname, tok, fid) {
   }).then(function(r) { return r.json(); });
 }
 var _sigCtx = null;
+var _sigToken = null;
 function uploadSignedPdf(btn) {
-  // Direct click → open file picker immediately (native user gesture — no OAuth needed yet)
+  // OAuth fires DIRECTLY from button click — this is a trusted user gesture,
+  // so Chrome will never block the popup. File picker opens after auth completes.
   _sigCtx = { id: btn.getAttribute("data-id"), ref: btn.getAttribute("data-ref"), company: btn.getAttribute("data-company"), btn: btn };
-  document.getElementById("sig-file-input").value = "";
-  document.getElementById("sig-file-input").click();
-}
-function _doSignedUpload(input) {
-  // Called from file input onchange — this IS a user gesture, so OAuth popup is allowed
-  var file = input.files[0];
-  if (!file || !_sigCtx) return;
-  var ctx = _sigCtx;
-  var btn = ctx.btn;
-  function resetBtn(msg) {
-    if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
-    if (msg) alert(msg);
-  }
+  _sigToken = null;
   if (btn) { btn.textContent = "Authorising..."; btn.disabled = true; }
-  var _rt = setTimeout(function() { resetBtn("Upload timed out. Please try again."); }, 60000);
-  if (!window.google || !google.accounts) { clearTimeout(_rt); resetBtn("Google not loaded. Refresh the page."); return; }
+  var _rt = setTimeout(function() {
+    if (_sigCtx && _sigCtx.btn && document.contains(_sigCtx.btn)) { _sigCtx.btn.textContent = "Upload signed PDF"; _sigCtx.btn.disabled = false; }
+    alert("Upload timed out. Please try again.");
+  }, 60000);
+  if (!window.google || !google.accounts) {
+    clearTimeout(_rt);
+    if (btn) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+    alert("Google not loaded. Refresh the page."); return;
+  }
   try {
     google.accounts.oauth2.initTokenClient({
       client_id: GDASH.cId,
       scope: "https://www.googleapis.com/auth/drive",
       error_callback: function(err) {
         clearTimeout(_rt);
-        if (err.type === "popup_closed") resetBtn(null);
-        else resetBtn("Google sign-in blocked. Please allow the popup and try again.");
+        if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+        if (err.type !== "popup_closed") alert("Google sign-in failed. Please try again.");
       },
       callback: function(resp) {
         clearTimeout(_rt);
-        if (resp.error) { resetBtn("Google auth error: " + resp.error); return; }
-        if (btn) { btn.textContent = "Uploading..."; }
-        var folder = (_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.drive_folder_id) || GDASH.fId;
-        var fname = (ctx.ref || "Order") + " - " + (ctx.company || "") + " - Signed.pdf";
-        driveUploadBlob(file, fname, resp.access_token, folder)
-          .then(function(res) {
-            if (!res || !res.id) { resetBtn("Drive upload failed: " + JSON.stringify(res).slice(0,120)); return; }
-            if (btn) btn.textContent = "Saving...";
-            var at = new Date().toISOString();
-            var fu = addWorkingDays(new Date(), 5).toISOString().split("T")[0];
-            sbFetch("/rest/v1/order_history?id=eq." + encodeURIComponent(ctx.id) + "&select=form_data")
-              .then(function(r) { return r.json(); })
-              .then(function(rows) {
-                var fd = (rows[0] && rows[0].form_data) || {};
-                fd.signed_at = at; if (!fd.sent_at) fd.sent_at = at; fd.partner_followup_date = fu;
-                return sbFetch("/rest/v1/order_history?id=eq." + encodeURIComponent(ctx.id),
-                  { method: "PATCH", body: JSON.stringify({ form_data: fd }) });
-              })
-              .then(function(r) {
-                if (!r.ok) { resetBtn("File saved to Drive but dashboard update failed — refresh manually."); return; }
-                _sigCtx = null;
-                toast("Signed ✓ — uploaded to Drive and dashboard updated");
-                loadOrders();
-              })
-              .catch(function(e) { resetBtn("Dashboard error: " + (e.message || e)); });
-          })
-          .catch(function(e) { resetBtn("Upload error: " + (e.message || e)); });
+        if (resp.error) {
+          if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+          alert("Google auth error: " + resp.error); return;
+        }
+        // Store token then open file picker (file inputs can be clicked programmatically)
+        _sigToken = resp.access_token;
+        if (btn && document.contains(btn)) { btn.textContent = "Select file..."; }
+        var fi = document.getElementById("sig-file-input");
+        fi.value = ""; fi.click();
       }
     }).requestAccessToken();
-  } catch(e) { clearTimeout(_rt); resetBtn("Auth error: " + e.message); }
+  } catch(e) {
+    clearTimeout(_rt);
+    if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+    alert("Auth error: " + e.message);
+  }
+}
+function _doSignedUpload(input) {
+  var file = input.files[0];
+  if (!file || !_sigCtx || !_sigToken) return;
+  var ctx = _sigCtx;
+  var btn = ctx.btn;
+  var accessToken = _sigToken;
+  _sigToken = null;
+  function resetBtn(msg) {
+    if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+    if (msg) alert(msg);
+  }
+  if (btn) { btn.textContent = "Uploading..."; btn.disabled = true; }
+  var folder = (_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.drive_folder_id) || GDASH.fId;
+  var fname = (ctx.ref || "Order") + " - " + (ctx.company || "") + " - Signed.pdf";
+  driveUploadBlob(file, fname, accessToken, folder)
+    .then(function(res) {
+      if (!res || !res.id) { resetBtn("Drive upload failed: " + JSON.stringify(res).slice(0,120)); return; }
+      if (btn) btn.textContent = "Saving...";
+      var at = new Date().toISOString();
+      var fu = addWorkingDays(new Date(), 5).toISOString().split("T")[0];
+      sbFetch("/rest/v1/order_history?id=eq." + encodeURIComponent(ctx.id) + "&select=form_data")
+        .then(function(r) { return r.json(); })
+        .then(function(rows) {
+          var fd = (rows[0] && rows[0].form_data) || {};
+          fd.signed_at = at; if (!fd.sent_at) fd.sent_at = at; fd.partner_followup_date = fu;
+          return sbFetch("/rest/v1/order_history?id=eq." + encodeURIComponent(ctx.id),
+            { method: "PATCH", body: JSON.stringify({ form_data: fd }) });
+        })
+        .then(function(r) {
+          if (!r.ok) { resetBtn("File saved to Drive but dashboard update failed — refresh manually."); return; }
+          _sigCtx = null;
+          toast("Signed ✓ — uploaded to Drive and dashboard updated");
+          loadOrders();
+        })
+        .catch(function(e) { resetBtn("Dashboard error: " + (e.message || e)); });
+    })
+    .catch(function(e) { resetBtn("Upload error: " + (e.message || e)); });
 }
 </script>
 <input type="file" id="sig-file-input" accept=".pdf" style="display:none" onchange="_doSignedUpload(this)">
