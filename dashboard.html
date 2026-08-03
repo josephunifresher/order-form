@@ -711,44 +711,51 @@ function driveUploadBlob(blob, fname, tok, fid) {
 var _sigCtx = null;
 function uploadSignedPdf(btn) {
   _sigCtx = { id: btn.getAttribute("data-id"), ref: btn.getAttribute("data-ref"), company: btn.getAttribute("data-company"), btn: btn };
-  var fi = document.getElementById("sig-file-input");
-  fi.value = ""; fi.click();
+  if (!window.google || !google.accounts) { alert("Google not loaded. Refresh and try again."); return; }
+  btn.textContent = "Authorising..."; btn.disabled = true;
+  try {
+    google.accounts.oauth2.initTokenClient({
+      client_id: GDASH.cId,
+      scope: "https://www.googleapis.com/auth/drive",
+      callback: function(resp) {
+        if (resp.error) {
+          alert("Google auth error: " + resp.error);
+          btn.textContent = "Upload signed PDF"; btn.disabled = false;
+          return;
+        }
+        _sigCtx.token = resp.access_token;
+        btn.textContent = "Select PDF...";
+        btn.disabled = false;
+        var fi = document.getElementById("sig-file-input");
+        fi.value = ""; fi.click();
+      }
+    }).requestAccessToken();
+  } catch(e) {
+    alert("Auth error: " + e.message);
+    btn.textContent = "Upload signed PDF"; btn.disabled = false;
+  }
 }
 function _doSignedUpload(input) {
   var file = input.files[0]; if (!file || !_sigCtx) return;
-  var folder = (_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.drive_folder_id) || GDASH.fId;
   var ctx = _sigCtx;
+  if (!ctx.token) { alert("No auth token - please click the button again."); return; }
+  var btn = ctx.btn;
+  if (btn) { btn.textContent = "Uploading..."; btn.disabled = true; }
+  var folder = (_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.drive_folder_id) || GDASH.fId;
   var fname = (ctx.ref || "Order") + " - " + (ctx.company || "") + " - Signed.pdf";
-  var btn = _sigCtx.btn;
-  if (btn) { btn.textContent = "Uploading…"; btn.disabled = true; }
-  if (!window.google || !google.accounts) {
-    alert("Google auth not loaded. Please refresh.");
-    if (btn) { btn.textContent = "📎 Upload signed PDF"; btn.disabled = false; }
-    return;
-  }
-  google.accounts.oauth2.initTokenClient({
-    client_id: GDASH.cId,
-    scope: "https://www.googleapis.com/auth/drive",
-    callback: function(resp) {
-      if (resp.error) {
-        alert("Google auth error: " + resp.error);
-        if (btn) { btn.textContent = "📎 Upload signed PDF"; btn.disabled = false; }
-        return;
+  driveUploadBlob(file, fname, ctx.token, folder)
+    .then(function(res) {
+      if (res && res.id) {
+        markSigned(ctx.id, { checked: true });
+      } else {
+        var msg = res ? JSON.stringify(res) : "no response";
+        alert("Drive upload failed: " + msg);
+        if (btn) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
       }
-      driveUploadBlob(file, fname, resp.access_token, folder)
-        .then(function(res) {
-          if (res && res.id) {
-            markSigned(ctx.id, { checked: true });
-          } else {
-            alert("Drive upload failed. Check your folder access.");
-            if (btn) { btn.textContent = "📎 Upload signed PDF"; btn.disabled = false; }
-          }
-        }).catch(function(e) {
-          alert("Upload error: " + (e.message || e));
-          if (btn) { btn.textContent = "📎 Upload signed PDF"; btn.disabled = false; }
-        });
-    }
-  }).requestAccessToken();
+    }).catch(function(e) {
+      alert("Upload error: " + (e.message || e));
+      if (btn) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+    });
 }
 </script>
 <input type="file" id="sig-file-input" accept=".pdf" style="display:none" onchange="_doSignedUpload(this)">
