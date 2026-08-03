@@ -708,6 +708,18 @@ function driveUploadBlob(blob, fname, tok, fid) {
     method: "POST", headers: { Authorization: "Bearer " + tok }, body: form
   }).then(function(r) { return r.json(); });
 }
+function getOrCreateDriveFolder(name, parentId, tok) {
+  var q = encodeURIComponent('name="' + name + '" and mimeType="application/vnd.google-apps.folder" and "' + parentId + '" in parents and trashed=false');
+  return fetch('https://www.googleapis.com/drive/v3/files?q=' + q + '&fields=files(id,name)', { headers: { Authorization: 'Bearer ' + tok } })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.files && data.files.length > 0) return data.files[0].id;
+      return fetch('https://www.googleapis.com/drive/v3/files', {
+        method: 'POST', headers: { Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, mimeType: 'application/vnd.google-apps.folder', parents: [parentId] })
+      }).then(function(r) { return r.json(); }).then(function(d) { return d.id; });
+    });
+}
 var _sigCtx = null;
 var _gToken = null;
 var _gTokenExpiry = 0;
@@ -769,9 +781,14 @@ function _doSignedUpload(input) {
     if (msg) alert(msg);
   }
   if (btn) { btn.textContent = "Uploading..."; btn.disabled = true; }
-  var folder = (_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.drive_folder_id) || GDASH.fId;
+  var parentFolder = (_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.drive_folder_id) || GDASH.fId;
+  var userInitials = ((_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.initials) || '').toUpperCase().trim();
   var fname = (ctx.ref || "Order") + " - " + (ctx.company || "") + " - Signed.pdf";
-  driveUploadBlob(file, fname, accessToken, folder)
+  var folderPromise = userInitials
+    ? getOrCreateDriveFolder(userInitials, parentFolder, accessToken)
+    : Promise.resolve(parentFolder);
+  folderPromise.then(function(folder) {
+  return driveUploadBlob(file, fname, accessToken, folder)
     .then(function(res) {
       if (!res || !res.id) { resetBtn("Drive upload failed: " + JSON.stringify(res).slice(0,120)); return; }
       if (btn) btn.textContent = "Saving...";
@@ -796,6 +813,7 @@ function _doSignedUpload(input) {
         .catch(function(e) { resetBtn("Dashboard error: " + (e.message || e)); });
     })
     .catch(function(e) { resetBtn("Upload error: " + (e.message || e)); });
+  });
 }
 </script>
 <input type="file" id="sig-file-input" accept=".pdf" style="display:none" onchange="_doSignedUpload(this)">
