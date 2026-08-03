@@ -791,7 +791,8 @@ function _doSignedUpload(input) {
         .then(function(r) {
           if (!r.ok) { resetBtn("File saved to Drive but dashboard update failed — refresh manually."); return; }
           _sigCtx = null;
-          toast("Signed ✓ — uploaded to Drive and dashboard updated");
+          var driveFileUrl = "https://drive.google.com/file/d/" + res.id + "/view";
+          if (confirm("Signed ✓ — uploaded to Drive and dashboard updated.\n\nClick OK to open the file in Drive.")) { window.open(driveFileUrl, "_blank"); }
           loadOrders();
         })
         .catch(function(e) { resetBtn("Dashboard error: " + (e.message || e)); });
