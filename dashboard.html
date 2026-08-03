@@ -710,7 +710,15 @@ function driveUploadBlob(blob, fname, tok, fid) {
 }
 var _sigCtx = null;
 function uploadSignedPdf(btn) {
-  _sigCtx = { id: btn.getAttribute("data-id"), ref: btn.getAttribute("data-ref"), company: btn.getAttribute("data-company"), btn: btn };
+  var btnId = btn.getAttribute("data-id");
+  // Token already obtained for this row — go straight to file picker (direct user gesture)
+  if (_sigCtx && _sigCtx.token && _sigCtx.id === btnId) {
+    _sigCtx.btn = btn;
+    var fi2 = document.getElementById("sig-file-input");
+    fi2.value = ""; fi2.click();
+    return;
+  }
+  _sigCtx = { id: btnId, ref: btn.getAttribute("data-ref"), company: btn.getAttribute("data-company"), btn: btn };
   if (!window.google || !google.accounts) { alert("Google not loaded. Refresh and try again."); return; }
   btn.textContent = "Authorising..."; btn.disabled = true;
   try {
@@ -724,8 +732,9 @@ function uploadSignedPdf(btn) {
           return;
         }
         _sigCtx.token = resp.access_token;
-        btn.textContent = "Select PDF...";
+        btn.textContent = "Click to select PDF";
         btn.disabled = false;
+        // Attempt programmatic file open (works if browser allows it from this context)
         var fi = document.getElementById("sig-file-input");
         fi.value = ""; fi.click();
       }
@@ -735,6 +744,7 @@ function uploadSignedPdf(btn) {
     btn.textContent = "Upload signed PDF"; btn.disabled = false;
   }
 }
+
 function _doSignedUpload(input) {
   var file = input.files[0]; if (!file || !_sigCtx) return;
   var ctx = _sigCtx;
