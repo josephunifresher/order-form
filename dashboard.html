@@ -710,7 +710,7 @@ function driveUploadBlob(blob, fname, tok, fid) {
 }
 var _sigCtx = null;
 function uploadSignedPdf(btn) {
-  _sigCtx = { id: btn.getAttribute("data-id"), ref: btn.getAttribute("data-ref"), company: btn.getAttribute("data-company") };
+  _sigCtx = { id: btn.getAttribute("data-id"), ref: btn.getAttribute("data-ref"), company: btn.getAttribute("data-company"), btn: btn };
   var fi = document.getElementById("sig-file-input");
   fi.value = ""; fi.click();
 }
@@ -719,7 +719,7 @@ function _doSignedUpload(input) {
   var folder = (_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.drive_folder_id) || GDASH.fId;
   var ctx = _sigCtx;
   var fname = (ctx.ref || "Order") + " - " + (ctx.company || "") + " - Signed.pdf";
-  var btn = document.querySelector(".upload-sig-btn[data-id="" + ctx.id + ""]");
+  var btn = _sigCtx.btn;
   if (btn) { btn.textContent = "Uploading…"; btn.disabled = true; }
   if (!window.google || !google.accounts) {
     alert("Google auth not loaded. Please refresh.");
