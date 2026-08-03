@@ -781,12 +781,23 @@ function _doSignedUpload(input) {
     if (msg) alert(msg);
   }
   if (btn) { btn.textContent = "Uploading..."; btn.disabled = true; }
-  var parentFolder = (_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.drive_folder_id) || GDASH.fId;
-  var userInitials = ((_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.initials) || '').toUpperCase().trim();
   var fname = (ctx.ref || "Order") + " - " + (ctx.company || "") + " - Signed.pdf";
-  var folderPromise = userInitials
-    ? getOrCreateDriveFolder(userInitials, parentFolder, accessToken)
-    : Promise.resolve(parentFolder);
+  var uid = _session && _session.user && _session.user.id;
+  var folderPromise = uid
+    ? sbFetch('/rest/v1/profiles?id=eq.' + uid + '&select=drive_folder_id,initials')
+        .then(function(r) { return r.json(); })
+        .then(function(rows) {
+          var prof = rows && rows[0];
+          if (prof && prof.drive_folder_id) {
+            var m = prof.drive_folder_id.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+            return m ? m[1] : prof.drive_folder_id;
+          }
+          if (prof && prof.initials) {
+            return getOrCreateDriveFolder(prof.initials.toUpperCase(), GDASH.fId, accessToken);
+          }
+          return GDASH.fId;
+        })
+    : Promise.resolve(GDASH.fId);
   folderPromise.then(function(folder) {
   return driveUploadBlob(file, fname, accessToken, folder)
     .then(function(res) {
