@@ -709,21 +709,21 @@ function driveUploadBlob(blob, fname, tok, fid) {
   }).then(function(r) { return r.json(); });
 }
 var _sigCtx = null;
-var _sigToken = null;
+var _gToken = null;
+var _gTokenExpiry = 0;
+function _hasValidToken() { return _gToken && Date.now() < _gTokenExpiry - 30000; }
 function uploadSignedPdf(btn) {
-  // If token already obtained for this row, go straight to file picker (user gesture)
-  if (_sigToken && _sigCtx && _sigCtx.btn === btn) {
+  _sigCtx = { id: btn.getAttribute("data-id"), ref: btn.getAttribute("data-ref"), company: btn.getAttribute("data-company"), btn: btn };
+  // If we have a cached token (valid for ~1hr), go straight to file picker — single click
+  if (_hasValidToken()) {
     document.getElementById("sig-file-input").value = "";
     document.getElementById("sig-file-input").click();
     return;
   }
-  // First click: OAuth directly from button click (user gesture = popup never blocked)
-  _sigCtx = { id: btn.getAttribute("data-id"), ref: btn.getAttribute("data-ref"), company: btn.getAttribute("data-company"), btn: btn };
-  _sigToken = null;
+  // First time this session: OAuth from direct button click (popup never blocked)
   if (btn) { btn.textContent = "Authorising..."; btn.disabled = true; }
   var _rt = setTimeout(function() {
     if (_sigCtx && _sigCtx.btn && document.contains(_sigCtx.btn)) { _sigCtx.btn.textContent = "Upload signed PDF"; _sigCtx.btn.disabled = false; }
-    _sigCtx = null; _sigToken = null;
     alert("Upload timed out. Please try again.");
   }, 60000);
   if (!window.google || !google.accounts) {
@@ -738,35 +738,32 @@ function uploadSignedPdf(btn) {
       error_callback: function(err) {
         clearTimeout(_rt);
         if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
-        _sigCtx = null; _sigToken = null;
         if (err.type !== "popup_closed") alert("Google sign-in failed. Please try again.");
       },
       callback: function(resp) {
         clearTimeout(_rt);
         if (resp.error) {
           if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
-          _sigCtx = null; _sigToken = null;
           alert("Google auth error: " + resp.error); return;
         }
-        // Auth done — re-enable button with new label; next click goes straight to file picker
-        _sigToken = resp.access_token;
+        // Cache token for ~1 hour so subsequent uploads are single-click
+        _gToken = resp.access_token;
+        _gTokenExpiry = Date.now() + ((resp.expires_in || 3600) * 1000);
         if (btn && document.contains(btn)) { btn.textContent = "Select PDF →"; btn.disabled = false; }
       }
     }).requestAccessToken();
   } catch(e) {
     clearTimeout(_rt);
     if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
-    _sigCtx = null; _sigToken = null;
     alert("Auth error: " + e.message);
   }
 }
 function _doSignedUpload(input) {
   var file = input.files[0];
-  if (!file || !_sigCtx || !_sigToken) return;
+  if (!file || !_sigCtx || !_hasValidToken()) return;
   var ctx = _sigCtx;
   var btn = ctx.btn;
-  var accessToken = _sigToken;
-  _sigToken = null;
+  var accessToken = _gToken;
   function resetBtn(msg) {
     if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
     if (msg) alert(msg);
