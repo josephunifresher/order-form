@@ -711,13 +711,19 @@ function driveUploadBlob(blob, fname, tok, fid) {
 var _sigCtx = null;
 var _sigToken = null;
 function uploadSignedPdf(btn) {
-  // OAuth fires DIRECTLY from button click — this is a trusted user gesture,
-  // so Chrome will never block the popup. File picker opens after auth completes.
+  // If token already obtained for this row, go straight to file picker (user gesture)
+  if (_sigToken && _sigCtx && _sigCtx.btn === btn) {
+    document.getElementById("sig-file-input").value = "";
+    document.getElementById("sig-file-input").click();
+    return;
+  }
+  // First click: OAuth directly from button click (user gesture = popup never blocked)
   _sigCtx = { id: btn.getAttribute("data-id"), ref: btn.getAttribute("data-ref"), company: btn.getAttribute("data-company"), btn: btn };
   _sigToken = null;
   if (btn) { btn.textContent = "Authorising..."; btn.disabled = true; }
   var _rt = setTimeout(function() {
     if (_sigCtx && _sigCtx.btn && document.contains(_sigCtx.btn)) { _sigCtx.btn.textContent = "Upload signed PDF"; _sigCtx.btn.disabled = false; }
+    _sigCtx = null; _sigToken = null;
     alert("Upload timed out. Please try again.");
   }, 60000);
   if (!window.google || !google.accounts) {
@@ -732,24 +738,25 @@ function uploadSignedPdf(btn) {
       error_callback: function(err) {
         clearTimeout(_rt);
         if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+        _sigCtx = null; _sigToken = null;
         if (err.type !== "popup_closed") alert("Google sign-in failed. Please try again.");
       },
       callback: function(resp) {
         clearTimeout(_rt);
         if (resp.error) {
           if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+          _sigCtx = null; _sigToken = null;
           alert("Google auth error: " + resp.error); return;
         }
-        // Store token then open file picker (file inputs can be clicked programmatically)
+        // Auth done — re-enable button with new label; next click goes straight to file picker
         _sigToken = resp.access_token;
-        if (btn && document.contains(btn)) { btn.textContent = "Select file..."; }
-        var fi = document.getElementById("sig-file-input");
-        fi.value = ""; fi.click();
+        if (btn && document.contains(btn)) { btn.textContent = "Select PDF →"; btn.disabled = false; }
       }
     }).requestAccessToken();
   } catch(e) {
     clearTimeout(_rt);
     if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+    _sigCtx = null; _sigToken = null;
     alert("Auth error: " + e.message);
   }
 }
