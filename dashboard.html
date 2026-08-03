@@ -760,24 +760,45 @@ function uploadSignedPdf(btn) {
 function _doSignedUpload(input) {
   var file = input.files[0]; if (!file || !_sigCtx) return;
   var ctx = _sigCtx;
-  if (!ctx.token) { alert("No auth token - please click the button again."); return; }
+  if (!ctx.token) { alert("No auth token — click the button again."); return; }
   var btn = ctx.btn;
+  function resetBtn(msg) {
+    if (btn) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+    if (msg) alert(msg);
+  }
   if (btn) { btn.textContent = "Uploading..."; btn.disabled = true; }
   var folder = (_session && _session.user && _session.user.user_metadata && _session.user.user_metadata.drive_folder_id) || GDASH.fId;
   var fname = (ctx.ref || "Order") + " - " + (ctx.company || "") + " - Signed.pdf";
   driveUploadBlob(file, fname, ctx.token, folder)
     .then(function(res) {
-      if (res && res.id) {
-        markSigned(ctx.id, { checked: true });
-      } else {
-        var msg = res ? JSON.stringify(res) : "no response";
-        alert("Drive upload failed: " + msg);
-        if (btn) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
+      if (!res || !res.id) {
+        resetBtn("Drive upload failed: " + JSON.stringify(res));
+        return;
       }
-    }).catch(function(e) {
-      alert("Upload error: " + (e.message || e));
-      if (btn) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
-    });
+      // Drive upload OK — now patch Supabase directly
+      if (btn) btn.textContent = "Saving...";
+      var at = new Date().toISOString();
+      var followup = addWorkingDays(new Date(), 5).toISOString().split("T")[0];
+      sbFetch("/rest/v1/order_history?id=eq." + encodeURIComponent(ctx.id) + "&select=form_data")
+        .then(function(r) { return r.json(); })
+        .then(function(rows) {
+          var fd = (rows[0] && rows[0].form_data) || {};
+          fd.signed_at = at;
+          if (!fd.sent_at) fd.sent_at = at;
+          fd.partner_followup_date = followup;
+          return sbFetch("/rest/v1/order_history?id=eq." + encodeURIComponent(ctx.id), {
+            method: "PATCH", body: JSON.stringify({ form_data: fd })
+          });
+        })
+        .then(function(r) {
+          if (!r.ok) { resetBtn("Signed in Drive but failed to update dashboard. Refresh manually."); return; }
+          _sigCtx = null;
+          toast("Signed ✓ — uploaded to Drive & dashboard updated");
+          loadOrders();
+        })
+        .catch(function(e) { resetBtn("Dashboard update failed: " + (e.message || e)); });
+    })
+    .catch(function(e) { resetBtn("Upload error: " + (e.message || e)); });
 }
 </script>
 <input type="file" id="sig-file-input" accept=".pdf" style="display:none" onchange="_doSignedUpload(this)">
