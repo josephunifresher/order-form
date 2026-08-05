@@ -743,12 +743,10 @@
           <span style="color:red;font-weight:bold">* Pay in Instalments *</span>
         </label>
         <span style="font-size:11px;color:#888;font-style:italic">Only if the Partner has requested</span>
-        <div id="sales-sheet-reminder" style="display:none;margin-top:8px;padding:8px 12px;background:#fff8e1;border-left:4px solid #f59e0b;border-radius:4px;font-size:12px;color:#92400e;">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;">
-            <input type="checkbox" id="sales-sheet-col-s" style="width:16px;height:16px;accent-color:#f59e0b;cursor:pointer;">
-            ⚠️ Have you ticked the box on the Sales Sheet? <strong>Column S</strong>
-          </label>
-        </div>
+        <label id="sales-sheet-reminder" style="display:none;align-items:center;gap:10px;font-size:13px;font-weight:600;cursor:pointer;color:#b45309;margin-top:6px;">
+          <input type="checkbox" id="sales-sheet-col-s" style="width:18px;height:18px;accent-color:#f59e0b;cursor:pointer;">
+          ⚠️ Ticked Sales Sheet Column S?
+        </label>
               <div id="pay-monthly-notes-row" style="display:none;margin-top:10px;">
                         <label style="font-size:12px;font-weight:600;margin-bottom:4px;display:block;">Instalment Details <span style="color:#888;font-style:italic;font-weight:400;">(for Accounts)</span></label>
                                 <textarea id="pay-monthly-notes" rows="2" placeholder="e.g. Pay over 3 months, split into 2 payments..." style="width:100%;padding:6px 8px;border:1px solid #D8CCF0;border-radius:4px;font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box;"></textarea>
@@ -2744,8 +2742,8 @@ function updateClProgress() {
               if (notesRow) notesRow.style.display = checked ? 'block' : 'none';
                   if (!checked) { var n = document.getElementById('pay-monthly-notes'); if(n) n.value=''; }
       updateClProgress();
-      var rem = document.getElementById('sales-sheet-reminder'); if (rem) rem.style.display = checked ? 'block' : 'none';
-      var clRow = document.getElementById('cl-sales-col-s-row'); if (clRow) { clRow.style.display = checked ? '' : 'none'; if (!checked) { var cb = document.getElementById('cl-sales-col-s'); if(cb) cb.checked = false; } }
+      var rem = document.getElementById('sales-sheet-reminder'); if (rem) rem.style.display = checked ? 'flex' : 'none';
+      var clRow = document.getElementById('cl-sales-col-s-row'); if (clRow) { clRow.style.display = checked ? 'flex' : 'none'; if (!checked) { var cl2 = document.getElementById('cl-sales-col-s'); if(cl2) cl2.checked = false; } }
       populatePrintLayout();
     }
 
