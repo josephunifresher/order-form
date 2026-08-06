@@ -331,7 +331,7 @@ function doLogin() {
       btn.textContent = 'Sign in'; btn.disabled = false; return;
     }
     _session = data;
-        _isAdmin = !!(data.user && data.user.user_metadata && data.user.user_metadata.is_admin) || data.user.email === 'joseph@unifresher.co.uk';
+    _isAdmin = !!(data.user && data.user.user_metadata && data.user.user_metadata.is_admin) || data.user.email === 'joseph@unifresher.co.uk';
     
     try { localStorage.setItem('uf_session', JSON.stringify(data)); } catch(e) {}
     onLoggedIn();
