@@ -420,9 +420,7 @@
 </script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <!-- EmailJS SDK -->
 </head>
 <body>
 
@@ -3079,7 +3077,7 @@ function tcUnlock() {
   var _tct = new Date();
   var _tcEl = document.getElementById('tc-unlock-time');
   if (_tcEl) { _tcEl.style.display = 'inline'; _tcEl.textContent = 'Unlocked ' + _tct.toLocaleDateString('en-GB') + ' ' + _tct.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); }
-  sendAlertEmail('T\u0026Cs unlocked', '', (currentUser() && currentUser().name) || '', '', EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk');
+
 }
 function tcModalConfirm() {
   document.getElementById('tc-modal-overlay').style.display = 'none';
@@ -3087,10 +3085,12 @@ function tcModalConfirm() {
   if (user && user.role === 'admin') {
     // Admins skip the password — go straight in
     tcUnlock();
+      sendAlertEmail('T\u0026Cs unlocked', '', (user && user.name) || '', '', EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk');
   } else {
     var pw = prompt('Enter password to edit T&Cs:');
     if (pw === 'Unifresher2026!') {
       tcUnlock();
+        sendAlertEmail('T\u0026Cs unlocked', '', (user && user.name) || '', '', EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk');
     } else if (pw !== null) {
       alert('Incorrect password.');
     }
