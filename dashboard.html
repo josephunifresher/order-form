@@ -331,7 +331,7 @@ function doLogin() {
       btn.textContent = 'Sign in'; btn.disabled = false; return;
     }
     _session = data;
-    _isAdmin = !!(data.user.user_metadata && data.user.user_metadata.is_admin);
+    
     try { localStorage.setItem('uf_session', JSON.stringify(data)); } catch(e) {}
     onLoggedIn();
   })
@@ -628,7 +628,7 @@ function markSigned(id, checkbox) {
       var exp = sess.expires_at || 0;
       if (exp > Math.floor(Date.now() / 1000) + 60) {
         _session = sess;
-        _isAdmin = !!(sess.user && sess.user.user_metadata && sess.user.user_metadata.is_admin);
+        _isAdmin = !!(data.user.user_metadata && data.user.user_metadata.is_admin) || data.user.email === 'joseph@unifresher.co.uk';
         onLoggedIn();
       } else {
         localStorage.removeItem('uf_session');
