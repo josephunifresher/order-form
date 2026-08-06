@@ -2744,6 +2744,7 @@ function updateClProgress() {
       updateClProgress();
       var rem = document.getElementById('sales-sheet-reminder'); if (rem) rem.style.display = checked ? 'flex' : 'none';
       var clRow = document.getElementById('cl-sales-col-s-row'); if (clRow) { clRow.style.display = checked ? 'flex' : 'none'; if (!checked) { var cl2 = document.getElementById('cl-sales-col-s'); if(cl2) cl2.checked = false; } }
+    updateClProgress();
       populatePrintLayout();
     }
 
