@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unifresher – Order Dashboard</title>
+  <title>Unifresher â Order Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -25,7 +25,7 @@
     }
     body { font-family: 'Lato', sans-serif; background: var(--grey-bg); color: var(--black); min-height: 100vh; }
 
-    /* ── LOGIN ── */
+    /* ââ LOGIN ââ */
     #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--purple-dark); }
     .login-box { background: #fff; border-radius: 12px; padding: 40px 36px; width: 100%; max-width: 380px; box-shadow: 0 8px 32px rgba(0,0,0,.25); text-align: center; }
     .login-box h2 { font-family: 'Roboto', sans-serif; color: var(--purple-dark); margin-bottom: 6px; font-size: 1.5rem; }
@@ -38,7 +38,7 @@
     #login-btn { width: 100%; padding: 12px; font-size: 1rem; font-weight: 700; background: var(--purple); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-family: 'Lato', sans-serif; transition: opacity .15s; }
     #login-btn:hover { opacity: .88; }
 
-    /* ── HEADER ── */
+    /* ââ HEADER ââ */
     #app { display: none; }
     .header { background: var(--purple-dark); color: #fff; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .header h1 { font-family: 'Roboto', sans-serif; font-size: 1.2rem; font-weight: 700; }
@@ -46,14 +46,20 @@
     .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border: none; border-radius: 6px; font-size: .82rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; transition: opacity .15s; text-decoration: none; }
     .btn:hover { opacity: .85; }
-    .btn-white { background: #fff; color: var(--purple-dark); }
+    .btn-white  { background: #fff; color: var(--purple-dark); }
     .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.55); }
-    .btn-purple { background: var(--purple); color: #fff; }
 
-    /* ── CONTAINER ── */
-    .container { max-width: 1280px; margin: 0 auto; padding: 24px 20px; }
+    /* ââ TAB NAV ââ */
+    .view-nav { background: #fff; border-bottom: 2px solid var(--grey-border); display: flex; align-items: center; gap: 0; padding: 0 24px; overflow-x: auto; }
+    .view-tab { padding: 13px 20px; border: none; background: none; font-family: 'Lato', sans-serif; font-size: .86rem; font-weight: 700; color: #888; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: color .15s, border-color .15s; }
+    .view-tab:hover { color: var(--purple); }
+    .view-tab.active { color: var(--purple-dark); border-bottom-color: var(--purple); }
+    .view-tab.admin-only { display: none; }
 
-    /* ── TOOLBAR ── */
+    /* ââ CONTAINER ââ */
+    .container { max-width: 1300px; margin: 0 auto; padding: 24px 20px; }
+
+    /* ââ TOOLBAR ââ */
     .toolbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
     .toolbar-label { font-size: .84rem; font-weight: 700; color: var(--purple-dark); }
     .month-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -61,11 +67,11 @@
     .month-tab:hover { border-color: var(--purple-lighter); color: var(--purple); }
     .month-tab.active { background: var(--purple); color: #fff; border-color: var(--purple); }
     .spacer { flex: 1; }
-    .admin-wrap { display: none; flex-wrap:wrap; gap:8px; }
+    .admin-wrap { display: none; }
     .admin-toggle-label { display: flex; align-items: center; gap: 7px; background: var(--purple-lightest); border: 1.5px solid var(--purple-lighter); border-radius: 8px; padding: 5px 12px; cursor: pointer; font-size: .8rem; font-weight: 700; color: var(--purple-dark); user-select: none; }
     .admin-toggle-label input { cursor: pointer; accent-color: var(--purple); }
 
-    /* ── SUMMARY CARDS ── */
+    /* ââ SUMMARY CARDS ââ */
     .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
     .card { background: #fff; border-radius: 10px; padding: 16px 15px; border-left: 4px solid var(--purple); box-shadow: 0 1px 4px rgba(0,0,0,.07); }
     .card.green { border-color: var(--green); }
@@ -76,31 +82,25 @@
     .card.amber .card-value { color: var(--amber); }
     .card.red   .card-value { color: var(--red); }
     .card-label { font-size: .74rem; color: #777; margin-top: 5px; }
+    .card-sub   { font-size: .72rem; color: #aaa; margin-top: 3px; }
 
-    /* ── TABLE ── */
+    /* ââ TABLE ââ */
     .table-wrap { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: .84rem; }
-    thead th { background: var(--purple-dark); color: #fff; padding: 11px 14px; text-align: left; white-space: nowrap; font-family: 'Roboto', Arial, sans-serif; font-weight: 700; font-size: .78rem; letter-spacing: .03em; }
+    thead th { background: var(--purple-dark); color: #fff; padding: 11px 14px; text-align: left; white-space: nowrap; font-weight: 700; font-size: .78rem; letter-spacing: .03em; }
     thead th:first-child { border-radius: 10px 0 0 0; }
     thead th:last-child  { border-radius: 0 10px 0 0; }
     tbody tr { border-bottom: 1px solid #f0edf8; transition: background .1s; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: var(--purple-lightest); }
     tbody td { padding: 11px 14px; vertical-align: middle; }
-    .no-data { text-align: center; padding: 48px; color: #aaa; font-size: .9rem; }
-    .loading { text-align: center; padding: 40px; color: var(--purple); }
-    .spinner { width: 26px; height: 26px; border: 3px solid var(--purple-lighter); border-top-color: var(--purple); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 10px; }
+    .no-data  { text-align: center; padding: 48px; color: #aaa; font-size: .9rem; }
+    .loading  { text-align: center; padding: 40px; color: var(--purple); }
+    .spinner  { width: 26px; height: 26px; border: 3px solid var(--purple-lighter); border-top-color: var(--purple); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 10px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── CHECKBOX CELLS ── */
+    /* ââ CHECKBOX CELLS ââ */
     .check-cell { text-align: center; min-width: 140px; }
-    .del-cell { text-align:center; width:32px; }
-    .del-btn { background:none; border:none; color:#c0392b; cursor:pointer; font-size:13px; padding:2px 6px; border-radius:3px; opacity:0.6; }
-    .del-btn:hover { opacity:1; background:#fdecea; }
-    /* ── ACCREDITATION VIEW ── */
-    .wm-check { display:inline-flex; align-items:center; gap:5px; cursor:pointer; font-size:.8rem; }
-    .wm-label { color:#888; }
-    .wm-check input:checked ~ .wm-label { color:var(--green); font-weight:700; }
     .order-checkbox-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
     .order-checkbox { width: 22px; height: 22px; cursor: pointer; accent-color: var(--green); border-radius: 4px; }
     .order-checkbox:disabled { cursor: default; opacity: .7; }
@@ -108,35 +108,82 @@
     .check-label.done { color: var(--green); font-weight: 700; }
     .check-date { font-size: .68rem; color: #999; }
 
-    /* ── COUNTDOWN ── */
+    /* ââ COUNTDOWN ââ */
     .countdown { display: inline-block; font-size: .74rem; font-weight: 700; padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
     .countdown.overdue  { background: var(--red-bg);   color: var(--red); }
     .countdown.due-soon { background: var(--amber-bg); color: var(--amber); }
     .countdown.ok       { background: var(--green-bg); color: var(--green); }
     .countdown.waiting  { background: #f0f0f0; color: #999; font-weight: 400; }
 
-    /* ── TOAST ── */
+    /* ââ SECTION HEADERS ââ */
+    .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; margin-top: 28px; }
+    .section-head:first-child { margin-top: 0; }
+    .section-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 1rem; color: var(--purple-dark); }
+    .section-sub { font-size: .78rem; color: #999; margin-top: 2px; }
+
+    /* ââ REVENUE CHART ââ */
+    .chart-wrap { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); padding: 20px 24px 16px; margin-bottom: 20px; }
+    .chart-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: .9rem; color: var(--purple-dark); margin-bottom: 16px; }
+    .bar-chart { display: flex; align-items: flex-end; justify-content: center; gap: 6px; height: 180px; padding-bottom: 22px; padding-top: 22px; position: relative; overflow: visible; }
+    .bar-chart::after { content: ''; position: absolute; bottom: 22px; left: 0; right: 0; height: 1px; background: var(--grey-border); }
+    .bar-col { flex: 1; max-width: 60px; display: flex; flex-direction: column; align-items: center; position: relative; min-width: 24px; }
+    .bar { width: 80%; transition: height .35s ease; }
+    .bar.signed-bar  { background: var(--green); border-radius: 0; min-height: 2px; }
+    .bar.pipeline-bar { background: var(--purple-lighter); border-radius: 4px 4px 0 0; }
+    .bar-col:hover .bar { opacity: .8; cursor: pointer; }
+    .bar-label { font-size: .62rem; color: #888; text-align: center; margin-top: 5px; width: 100%; white-space: nowrap; }
+    .bar-val { font-size: .62rem; font-weight: 700; color: var(--purple-dark); position: absolute; top: -18px; width: 100%; text-align: center; white-space: nowrap; pointer-events: none; }
+    .chart-legend { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: .75rem; color: #666; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+    /* ââ TEAM TABLE ââ */
+    .rank-badge { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: var(--purple-lightest); color: var(--purple-dark); font-size: .72rem; font-weight: 700; text-align: center; line-height: 22px; }
+    .rank-badge.gold   { background: #FEF3C7; color: #92400E; }
+    .rank-badge.silver { background: #F1F5F9; color: #475569; }
+    .rank-badge.bronze { background: #FEF0E7; color: #9A3412; }
+    .progress-bar-wrap { background: var(--purple-lightest); border-radius: 99px; height: 7px; width: 80px; overflow: hidden; display: inline-block; vertical-align: middle; }
+    .progress-bar-fill { height: 100%; border-radius: 99px; background: var(--purple); }
+    .progress-bar-fill.green { background: var(--green); }
+
+    /* ââ CAMPAIGN CARDS ââ */
+    .campaign-card { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); padding: 14px 16px; margin-bottom: 10px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; cursor: default; transition: background .1s; }
+    .campaign-card:hover { background: var(--purple-lightest); }
+    .campaign-badge { font-size: .7rem; font-weight: 700; padding: 3px 9px; border-radius: 99px; white-space: nowrap; }
+    .campaign-badge.active   { background: var(--amber-bg); color: var(--amber); }
+    .campaign-badge.upcoming { background: var(--green-bg); color: var(--green); }
+    .campaign-badge.past     { background: #f0f0f0; color: #888; }
+    .campaign-info { min-width: 0; }
+    .campaign-company { font-weight: 700; font-size: .9rem; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .campaign-ref { font-size: .76rem; color: #999; margin-top: 1px; }
+    .campaign-dates { font-size: .8rem; color: var(--purple-dark); margin-top: 4px; font-weight: 700; }
+    .campaign-dur { font-size: .74rem; color: #888; margin-top: 1px; }
+    .campaign-right { text-align: right; min-width: 80px; }
+    .campaign-total { font-family: 'Roboto', sans-serif; font-weight: 700; color: var(--purple-dark); font-size: .95rem; }
+    .campaign-user { font-size: .72rem; color: #999; margin-top: 2px; }
+    .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-pill { padding: 4px 12px; border-radius: 20px; border: 1.5px solid var(--grey-border); background: #fff; font-size: .76rem; font-weight: 700; cursor: pointer; color: #666; font-family: 'Lato', sans-serif; transition: all .15s; }
+    .filter-pill.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+
+    /* ââ PERIOD PILLS ââ */
+    .period-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .period-pill { padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--grey-border); background: #fff; font-size: .78rem; font-weight: 700; cursor: pointer; color: #666; font-family: 'Lato', sans-serif; transition: all .15s; }
+    .period-pill.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+
+    /* ââ TOAST ââ */
     #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: 9px 18px; border-radius: 8px; font-size: .83rem; z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none; }
     #toast.show { opacity: 1; }
 
-    /* ── PERSON BREAKDOWN ── */
-    .breakdown-table { border-collapse: collapse; font-size: .84rem; width: 100%; max-width: 480px; }
-    .breakdown-table thead th { background: var(--purple-dark); color: #fff; padding: 8px 14px; font-size: .78rem; font-weight: 700; }
-    .breakdown-table thead th:first-child { border-radius: 8px 0 0 0; }
-    .breakdown-table thead th:last-child  { border-radius: 0 8px 0 0; }
-    .breakdown-table tbody tr { border-bottom: 1px solid #f0edf8; }
-    .breakdown-table tbody tr.total-row { background: var(--purple-lightest); font-weight: 700; }
-    .breakdown-table tbody td { padding: 9px 14px; }
+    /* ââ VIEWS ââ */
+    .view { display: none; }
+    .view.active { display: block; }
 
     @media (max-width: 640px) {
       .cards { grid-template-columns: 1fr 1fr; }
       .header { flex-direction: column; align-items: flex-start; }
+      .campaign-card { grid-template-columns: 1fr; }
     }
-    .upload-sig-btn { margin-top:5px; font-size:.72rem; padding:3px 9px; background:var(--purple); color:#fff; border:none; border-radius:4px; cursor:pointer; display:block; width:100%; }
-    .upload-sig-btn:hover { opacity:.85; }
-    .upload-sig-btn:disabled { opacity:.5; cursor:not-allowed; }
   </style>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -144,14 +191,14 @@
 <div id="login-screen">
   <div class="login-box">
     <h2>Unifresher</h2>
-    <p>Order Dashboard — sign in to continue</p>
+    <p>Order Dashboard â sign in to continue</p>
     <div class="form-group">
       <label>Email</label>
       <input type="email" id="l-email" placeholder="you@unifresher.co.uk" autocomplete="username">
     </div>
     <div class="form-group">
       <label>Password</label>
-      <input type="password" id="l-pw" placeholder="••••••••" autocomplete="current-password">
+      <input type="password" id="l-pw" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" autocomplete="current-password">
     </div>
     <div id="login-error"></div>
     <button id="login-btn" onclick="doLogin()">Sign in</button>
@@ -171,83 +218,191 @@
     </div>
   </div>
 
+  <!-- TAB NAV -->
+  <nav class="view-nav">
+    <button class="view-tab active"    onclick="switchView('overview')">ð Overview</button>
+    <button class="view-tab"           onclick="switchView('revenue')">ð° Revenue</button>
+    <button class="view-tab admin-only" id="team-tab-btn" onclick="switchView('team')">ð¥ Team</button>
+    <button class="view-tab"           onclick="switchView('campaigns')">ð Campaigns</button>
+    <button class="view-tab"           onclick="switchView('accred')">ð Accreditation</button>
+  </nav>
+
+  <!-- UNSIGNED REMINDER BANNER -->
+  <div id="unsigned-reminder" style="display:none; margin: 12px 24px 0; background:#fff8ed; border:1.5px solid #f5a623; border-radius:10px; padding:14px 18px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+      <strong style="font-family:'Roboto',sans-serif; color:#b36200; font-size:.9rem;">â ï¸ Awaiting Signature â Sent 5+ Days Ago</strong>
+      <button onclick="document.getElementById('unsigned-reminder').style.display='none'" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#b36200;line-height:1;">â</button>
+    </div>
+    <div id="unsigned-reminder-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+  </div>
+
   <div class="container">
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <span class="toolbar-label">Month:</span>
-      <div class="month-tabs" id="month-tabs"></div>
-      <div class="spacer"></div>
-      <div class="admin-wrap" id="admin-wrap">
-        <label class="admin-toggle-label">
-          <input type="checkbox" id="admin-toggle" onchange="loadOrders()">
-          View all users
-        </label>
-        <button class="admin-toggle-label" onclick="showAccredView()" style="border:none;cursor:pointer;">🎓 Accreditation Follow-up</button>
-      </div>
-    </div>
-
-    <div id="orders-view">
-    <!-- Cards -->
-    <div class="cards">
-      <div class="card"><div class="card-value" id="c-total">—</div><div class="card-label">Orders this period</div></div>
-      <div class="card green"><div class="card-value" id="c-sent">—</div><div class="card-label">Form Sent</div></div>
-      <div class="card green"><div class="card-value" id="c-signed">—</div><div class="card-label">Form Signed</div></div>
-      <div class="card amber"><div class="card-value" id="c-pending">—</div><div class="card-label">Awaiting Signature</div></div>
-      <div class="card red"><div class="card-value" id="c-due">—</div><div class="card-label">Verification Due / Overdue</div></div>
-    </div>
-
-    <!-- Table -->
-    <div class="table-wrap">
-      <div id="tbl-loading" class="loading"><div class="spinner"></div>Loading…</div>
-      <table id="orders-table" style="display:none">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Ref</th>
-            <th>Company</th>
-            <th>Sales Person</th>
-            <th>Total</th>
-            <th style="text-align:center">ORDER FORM<br>SENT</th>
-            <th style="text-align:center">ORDER FORM<br>SIGNED</th>
-            <th style="text-align:center">Days to<br>Sign</th>
-            <th style="text-align:center">Partner Verification<br>Timer</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="orders-body"></tbody>
-      </table>
-      <div id="no-data" class="no-data" style="display:none">No orders found for this period.</div>
-    </div>
-
-    <!-- Admin Days-to-Sign Breakdown -->
-    <div id="person-breakdown" style="display:none;margin-top:20px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);padding:20px 24px;"></div>
-    </div><!-- /orders-view -->
-
-    <!-- Accreditation Follow-up View (Admin only) -->
-    <div id="accred-view" style="display:none;margin-top:16px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-        <div>
-          <h2 style="font-size:1.05rem;font-weight:700;color:var(--purple-dark);margin-bottom:4px;">🎓 Accreditation Follow-up</h2>
-          <p style="font-size:.82rem;color:#888;">Orders where Accreditation Scheme is pending and the 5-day window has passed.</p>
+    <!-- ââââââââââââââââââ OVERVIEW ââââââââââââââââââ -->
+    <div id="view-overview" class="view active">
+      <div class="toolbar">
+        <span class="toolbar-label">Month:</span>
+        <div class="month-tabs" id="month-tabs"></div>
+        <div class="spacer"></div>
+        <div class="admin-wrap" id="admin-wrap">
+          <label class="admin-toggle-label">
+            <input type="checkbox" id="admin-toggle" onchange="buildMonthTabs()">
+            View all users
+          </label>
         </div>
-        <button class="btn btn-outline" onclick="showOrdersView()" style="font-size:.8rem">← Orders</button>
+      </div>
+      <div class="cards">
+        <div class="card">         <div class="card-value" id="c-total">â</div>  <div class="card-label">Orders this period</div></div>
+        <div class="card green">   <div class="card-value" id="c-sent">â</div>   <div class="card-label">Form Sent</div></div>
+        <div class="card green">   <div class="card-value" id="c-signed">â</div> <div class="card-label">Form Signed</div></div>
+        <div class="card amber">   <div class="card-value" id="c-pending">â</div><div class="card-label">Awaiting Signature</div></div>
+        <div class="card red">     <div class="card-value" id="c-due">â</div>    <div class="card-label">Verification Due / Overdue</div></div>
       </div>
       <div class="table-wrap">
-        <div id="accred-loading" class="loading"><div class="spinner"></div>Loading…</div>
-        <div id="accred-no-data" class="no-data" style="display:none">No overdue accreditation follow-ups found.</div>
+        <div id="tbl-loading" class="loading"><div class="spinner"></div>Loadingâ¦</div>
+        <table id="orders-table" style="display:none">
+          <thead><tr>
+            <th>Date</th><th>Ref</th><th>Company</th><th>Sales Person</th><th>Total</th>
+            <th style="text-align:center">ORDER FORM<br>SENT</th>
+            <th style="text-align:center">ORDER FORM<br>SIGNED</th>
+            <th style="text-align:center">Partner Verification<br>Timer</th>
+          </tr></thead>
+          <tbody id="orders-body"></tbody>
+        </table>
+        <div id="no-data" class="no-data" style="display:none">No orders found for this period.</div>
+      </div>
+    </div>
+
+    <!-- ââââââââââââââââââ REVENUE ââââââââââââââââââ -->
+    <div id="view-revenue" class="view">
+      <div class="toolbar">
+        <span class="toolbar-label">Period:</span>
+        <div class="period-pills" id="rev-period-pills">
+          <button class="period-pill"        onclick="setRevPeriod('month')">This Month</button>
+          <button class="period-pill active" onclick="setRevPeriod('year')">This Year</button>
+          <button class="period-pill"        onclick="setRevPeriod('all')">All Time</button>
+        </div>
+        <div class="spacer"></div>
+        <div class="admin-wrap rev-admin-wrap">
+          <label class="admin-toggle-label">
+            <input type="checkbox" id="rev-admin-toggle" onchange="loadRevenue()">
+            View all users
+          </label>
+        </div>
+      </div>
+
+      <div class="cards" style="grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));">
+        <div class="card">       <div class="card-value" id="rev-total" style="font-size:1.5rem">â</div>    <div class="card-label">Total Contracted</div></div>
+        <div class="card green"> <div class="card-value" id="rev-signed" style="font-size:1.5rem">â</div>   <div class="card-label">Signed Value</div><div class="card-sub" id="rev-signed-pct"></div></div>
+        <div class="card amber"> <div class="card-value" id="rev-pipeline" style="font-size:1.5rem">â</div> <div class="card-label">Pipeline (Unsigned)</div></div>
+        <div class="card">       <div class="card-value" id="rev-avg" style="font-size:1.5rem">â</div>      <div class="card-label">Avg Deal Size</div></div>
+        <div class="card">       <div class="card-value" id="rev-count">â</div>                              <div class="card-label">Total Orders</div></div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-title">Monthly Revenue Breakdown</div>
+        <div id="rev-chart" class="bar-chart"></div>
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Signed</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--purple-lighter)"></div> Pipeline (unsigned)</div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div><div class="section-title">Top Deals</div><div class="section-sub">Sorted by contract value</div></div>
+      </div>
+      <div class="table-wrap">
+        <div id="rev-loading" class="loading"><div class="spinner"></div>Loadingâ¦</div>
+        <table id="rev-table" style="display:none">
+          <thead><tr>
+            <th>#</th><th>Date</th><th>Ref</th><th>Company</th>
+            <th>Sales Person</th><th>Total</th><th>Status</th>
+          </tr></thead>
+          <tbody id="rev-body"></tbody>
+        </table>
+        <div id="rev-no-data" class="no-data" style="display:none">No orders found.</div>
+      </div>
+    </div>
+
+    <!-- ââââââââââââââââââ TEAM ââââââââââââââââââ -->
+    <div id="view-team" class="view">
+      <div class="toolbar">
+        <span class="toolbar-label">Period:</span>
+        <div class="period-pills" id="team-period-pills">
+          <button class="period-pill"        onclick="setTeamPeriod('month')">This Month</button>
+          <button class="period-pill active" onclick="setTeamPeriod('year')">This Year</button>
+          <button class="period-pill"        onclick="setTeamPeriod('all')">All Time</button>
+        </div>
+      </div>
+      <div class="section-head">
+        <div><div class="section-title">Team Performance</div><div class="section-sub" id="team-period-label">Year to date</div></div>
+      </div>
+      <div class="table-wrap">
+        <div id="team-loading" class="loading"><div class="spinner"></div>Loadingâ¦</div>
+        <table id="team-table" style="display:none">
+          <thead><tr>
+            <th>#</th><th>Sales Person</th><th>Orders</th><th>Revenue</th>
+            <th>Signed Value</th><th>Signature Rate</th><th>Avg Days to Sign</th><th>Fastest Sign</th>
+          </tr></thead>
+          <tbody id="team-body"></tbody>
+        </table>
+        <div id="team-no-data" class="no-data" style="display:none">No data found.</div>
+      </div>
+    </div>
+
+    <!-- ââââââââââââââââââ CAMPAIGNS ââââââââââââââââââ -->
+    <div id="view-campaigns" class="view">
+      <div class="toolbar">
+        <span class="toolbar-label">Filter:</span>
+        <div class="filter-pills" id="camp-filter-pills">
+          <button class="filter-pill active" onclick="setCampFilter('all')">All</button>
+          <button class="filter-pill"        onclick="setCampFilter('active')">ð¡ Active</button>
+          <button class="filter-pill"        onclick="setCampFilter('upcoming')">ð¢ Upcoming</button>
+          <button class="filter-pill"        onclick="setCampFilter('past')">â« Past</button>
+        </div>
+        <div class="spacer"></div>
+        <div class="admin-wrap camp-admin-wrap">
+          <label class="admin-toggle-label">
+            <input type="checkbox" id="camp-admin-toggle" onchange="loadCampaigns()">
+            View all users
+          </label>
+        </div>
+      </div>
+
+      <div class="cards" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); margin-bottom: 20px;">
+        <div class="card amber"><div class="card-value" id="camp-active">â</div>  <div class="card-label">Active Now</div></div>
+        <div class="card green"><div class="card-value" id="camp-upcoming">â</div><div class="card-label">Upcoming (30 days)</div></div>
+        <div class="card">     <div class="card-value" id="camp-total">â</div>    <div class="card-label">Total Campaigns</div></div>
+      </div>
+
+      <div id="camp-loading" class="loading"><div class="spinner"></div>Loadingâ¦</div>
+      <div id="camp-list"></div>
+      <div id="camp-no-data" class="no-data" style="display:none">No campaigns found.</div>
+    </div>
+
+    <!-- ââââââââââââââââââ ACCREDITATION ââââââââââââââââââ -->
+    <div id="view-accred" class="view">
+      <div class="section-head" style="margin-bottom:18px">
+        <div>
+          <div class="section-title">ð Accreditation Follow-up</div>
+          <div class="section-sub">Partners pending accreditation verification</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div id="accred-loading" class="loading"><div class="spinner"></div>Loadingâ¦</div>
         <table id="accred-table" style="display:none">
           <thead><tr>
-            <th>Date</th><th>Ref</th><th>Company</th><th>Sales Person</th><th>Days Pending</th>
-            <th style="text-align:center">Offered</th><th style="text-align:center">Watermark Sent</th>
+            <th>Date</th><th>Ref</th><th>Company</th><th>City</th>
+            <th>Category</th><th>Sales Person</th><th>Status</th><th>Due</th>
           </tr></thead>
           <tbody id="accred-body"></tbody>
         </table>
+        <div id="accred-no-data" class="no-data" style="display:none">No accreditation follow-ups needed.</div>
       </div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /container -->
+</div><!-- /app -->
 
 <div id="toast"></div>
 
@@ -255,28 +410,32 @@
 var SB_URL = 'https://jyljjlaqogqpsdtvseqf.supabase.co';
 var SB_KEY = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
 
-var _session = null, _isAdmin = false, _activeMonth = null, _allMonths = [];
+var _session = null, _isAdmin = false;
+var _activeMonth = null, _allMonths = [];
+var _revPeriod = 'year', _teamPeriod = 'year', _campFilter = 'all';
 
-/* ── SUPABASE FETCH ── */
-function sbFetch(url, opts) {
+/* ââ SUPABASE FETCH ââ */
+function sbFetch(path, opts) {
   opts = opts || {};
   opts.headers = Object.assign({
     'apikey': SB_KEY,
     'Content-Type': 'application/json',
     'Prefer': 'return=representation'
   }, opts.headers || {});
-  if (_session) opts.headers['Authorization'] = 'Bearer ' + _session.access_token;
-  return fetch(SB_URL + url, opts);
+  if (_session && _session.access_token) {
+    opts.headers['Authorization'] = 'Bearer ' + _session.access_token;
+  }
+  return fetch(SB_URL + path, opts);
 }
 
-/* ── HELPERS ── */
+/* ââ HELPERS ââ */
 function toast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(function() { t.classList.remove('show'); }, 2800);
 }
 function fmtDate(iso) {
-  if (!iso) return '—';
+  if (!iso) return 'â';
   return new Date(iso).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
 }
 function fmtDateShort(iso) {
@@ -289,12 +448,12 @@ function addWorkingDays(date, days) {
   return d;
 }
 function countdownTag(isoDate) {
-  if (!isoDate) return '<span class="countdown waiting">—</span>';
+  if (!isoDate) return '<span class="countdown waiting">â</span>';
   var due = new Date(isoDate), now = new Date();
   due.setHours(0,0,0,0); now.setHours(0,0,0,0);
   var diff = Math.round((due - now) / 86400000);
-  if (diff < 0)  return '<span class="countdown overdue">⚠ ' + Math.abs(diff) + 'd overdue</span>';
-  if (diff === 0) return '<span class="countdown overdue">⚠ Due today</span>';
+  if (diff < 0)  return '<span class="countdown overdue">â  ' + Math.abs(diff) + 'd overdue</span>';
+  if (diff === 0) return '<span class="countdown overdue">â  Due today</span>';
   if (diff <= 2)  return '<span class="countdown due-soon">Due in ' + diff + 'd</span>';
   return '<span class="countdown ok">Due ' + fmtDateShort(isoDate) + '</span>';
 }
@@ -310,14 +469,95 @@ function currentYM() {
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+function parseAmount(s) {
+  if (!s) return 0;
+  var n = parseFloat(String(s).replace(/[^0-9.]/g, ''));
+  return isNaN(n) ? 0 : n;
+}
+function fmtMoney(n) {
+  if (n >= 1000000) return 'Â£' + (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000)    return 'Â£' + (n/1000).toFixed(1) + 'k';
+  return 'Â£' + Math.round(n);
+}
+function fmtMoneyFull(n) {
+  return 'Â£' + Math.round(n).toLocaleString('en-GB');
+}
+function getPeriodRange(period) {
+  var now = new Date();
+  var start, end;
+  if (period === 'month') {
+    start = new Date(now.getFullYear(), now.getMonth(), 1);
+    end   = new Date(now.getFullYear(), now.getMonth()+1, 1);
+  } else if (period === 'year') {
+    start = new Date(now.getFullYear(), 0, 1);
+    end   = new Date(now.getFullYear()+1, 0, 1);
+  } else {
+    start = new Date('2020-01-01');
+    end   = new Date('2099-01-01');
+  }
+  return { start: start.toISOString(), end: end.toISOString() };
+}
+function getCampaignPhases(fd) {
+  if (!fd) return [];
+  var keys = ['phases','campaign_phases','campaignPhases','campaign_dates','dates','campaignDates'];
+  for (var i = 0; i < keys.length; i++) {
+    var v = fd[keys[i]];
+    if (Array.isArray(v) && v.length > 0) return v;
+  }
+  // Fallback: find any array of objects with date-like fields
+  for (var key in fd) {
+    var val = fd[key];
+    if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object') {
+      var item = val[0];
+      if (item && (item.start || item.start_date || item.from || item.startDate)) return val;
+    }
+  }
+  return [];
+}
+function getPhaseStart(p) { return p.start || p.start_date || p.from || p.startDate || ''; }
+function getPhaseEnd(p)   { return p.end || p.end_date || p.to || p.endDate || ''; }
+function phaseDuration(p) {
+  var s = getPhaseStart(p), e = getPhaseEnd(p);
+  if (!s || !e) return '';
+  var days = Math.round((new Date(e) - new Date(s)) / 86400000);
+  if (days <= 0) return '';
+  if (days < 7) return days + ' days';
+  var w = Math.round(days/7);
+  return w + (w===1?' week':' weeks');
+}
+function phaseStatus(p) {
+  var s = getPhaseStart(p), e = getPhaseEnd(p);
+  if (!s) return 'unknown';
+  var now   = new Date(); now.setHours(0,0,0,0);
+  var start = new Date(s); start.setHours(0,0,0,0);
+  var end   = e ? new Date(e) : null;
+  if (end) end.setHours(0,0,0,0);
+  if (now < start)          return 'upcoming';
+  if (end && now > end)     return 'past';
+  return 'active';
+}
 
-/* ── AUTH ── */
+/* ââ VIEW SWITCHING ââ */
+function switchView(view) {
+  ['overview','revenue','team','campaigns','accred'].forEach(function(v) {
+    document.getElementById('view-' + v).classList.toggle('active', v === view);
+  });
+  document.querySelectorAll('.view-tab').forEach(function(btn) {
+    btn.classList.toggle('active', (btn.getAttribute('onclick')||'').indexOf("'" + view + "'") !== -1);
+  });
+  if (view === 'revenue')   loadRevenue();
+  if (view === 'team')      loadTeam();
+  if (view === 'campaigns') loadCampaigns();
+  if (view === 'accred')    loadAccred();
+}
+
+/* ââ AUTH ââ */
 function doLogin() {
   var email = document.getElementById('l-email').value.trim();
   var pw    = document.getElementById('l-pw').value;
   var err   = document.getElementById('login-error');
   var btn   = document.getElementById('login-btn');
-  err.textContent = ''; btn.textContent = 'Signing in…'; btn.disabled = true;
+  err.textContent = ''; btn.textContent = 'Signing inâ¦'; btn.disabled = true;
 
   fetch(SB_URL + '/auth/v1/token?grant_type=password', {
     method: 'POST',
@@ -331,12 +571,14 @@ function doLogin() {
       btn.textContent = 'Sign in'; btn.disabled = false; return;
     }
     _session = data;
-    _isAdmin = !!(data.user && data.user.user_metadata && data.user.user_metadata.is_admin) || data.user.email === 'joseph@unifresher.co.uk';
-    
+    _isAdmin = !!(data.user && data.user.user_metadata && data.user.user_metadata.is_admin);
     try { localStorage.setItem('uf_session', JSON.stringify(data)); } catch(e) {}
     onLoggedIn();
   })
-  .catch(function() { err.textContent = 'Network error.'; btn.textContent = 'Sign in'; btn.disabled = false; });
+  .catch(function() {
+    err.textContent = 'Network error.';
+    btn.textContent = 'Sign in'; btn.disabled = false;
+  });
 }
 
 document.addEventListener('keydown', function(e) {
@@ -346,10 +588,56 @@ document.addEventListener('keydown', function(e) {
 function onLoggedIn() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  var name = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
+  var meta = _session.user && _session.user.user_metadata;
+  var name = (meta && meta.full_name) || (_session.user && _session.user.email) || 'User';
   document.getElementById('user-label').textContent = name;
-  if (_isAdmin) document.getElementById('admin-wrap').style.display = 'block';
+  if (_isAdmin) {
+    document.getElementById('admin-wrap').style.display = 'block';
+    document.getElementById('team-tab-btn').style.display = 'block';
+    document.querySelectorAll('.rev-admin-wrap, .camp-admin-wrap').forEach(function(el) {
+      el.style.display = 'block';
+    });
+  }
   buildMonthTabs();
+  loadUnsignedReminder();
+}
+
+function loadUnsignedReminder() {
+  var cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 5);
+  var cutoffISO = cutoff.toISOString();
+
+  sbFetch('/rest/v1/order_history?select=*&order=saved_at.desc')
+  .then(function(r) { return r.json(); })
+  .then(function(rows) {
+    rows = rows || [];
+    // Filter: sent_at exists, signed_at missing, sent_at >= 5 days ago
+    var overdue = rows.filter(function(row) {
+      var fd = row.form_data || {};
+      if (!fd.sent_at || fd.signed_at) return false;
+      return new Date(fd.sent_at) <= cutoff;
+    });
+    // If not admin, filter to own rows only
+    if (!_isAdmin && _session && _session.user) {
+      var myName = (_session.user.user_metadata || {}).full_name || '';
+      if (myName) overdue = overdue.filter(function(r) { return r.user_name === myName; });
+    }
+    if (!overdue.length) return;
+    var html = overdue.map(function(row) {
+      var fd = row.form_data || {};
+      var daysAgo = Math.floor((Date.now() - new Date(fd.sent_at)) / 86400000);
+      return '<div style="display:flex;align-items:center;gap:10px;font-size:.82rem;flex-wrap:wrap;">' +
+        '<span style="font-weight:700;color:#333">' + escHtml(row.company||'â') + '</span>' +
+        '<span style="color:#666">' + escHtml(row.ref||'') + '</span>' +
+        '<span style="color:#666">' + escHtml(row.total||'') + '</span>' +
+        '<span style="color:#b36200">Sent ' + daysAgo + ' day' + (daysAgo===1?'':'s') + ' ago</span>' +
+        '<span style="color:#888;font-size:.75rem">(' + escHtml(row.user_name||'') + ')</span>' +
+      '</div>';
+    }).join('');
+    document.getElementById('unsigned-reminder-list').innerHTML = html;
+    document.getElementById('unsigned-reminder').style.display = 'block';
+  })
+  .catch(function() {}); // silent fail â reminder is non-critical
 }
 
 function doLogout() {
@@ -360,11 +648,9 @@ function doLogout() {
   document.getElementById('l-pw').value = '';
 }
 
-/* ── MONTH TABS ── */
+/* ââ MONTH TABS ââ */
 function buildMonthTabs() {
-  var qs = 'select=saved_at&order=saved_at.desc';
-
-  sbFetch('/rest/v1/order_history?' + qs)
+  sbFetch('/rest/v1/order_history?select=saved_at&order=saved_at.desc')
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     var months = {};
@@ -375,39 +661,38 @@ function buildMonthTabs() {
     });
     months[currentYM()] = true;
     _allMonths = Object.keys(months).sort().reverse();
-
     var container = document.getElementById('month-tabs');
     container.innerHTML = '';
     _allMonths.forEach(function(ym) {
       var tab = document.createElement('button');
+      var label = monthLabel(ym);
       tab.className = 'month-tab' + (ym === (_activeMonth || currentYM()) ? ' active' : '');
-      tab.textContent = monthLabel(ym);
+      tab.textContent = label;
+      tab.setAttribute('data-ym', ym);
       tab.onclick = function() { selectMonth(ym); };
       container.appendChild(tab);
     });
-
     if (!_activeMonth) _activeMonth = currentYM();
     loadOrders();
   })
-  .catch(function() { toast('Could not load month list.'); });
+  .catch(function() { toast('Could not load months.'); });
 }
 
 function selectMonth(ym) {
   _activeMonth = ym;
   document.querySelectorAll('.month-tab').forEach(function(t) {
-    t.classList.toggle('active', t.textContent === monthLabel(ym));
+    t.classList.toggle('active', t.getAttribute('data-ym') === ym);
   });
   loadOrders();
 }
 
-/* ── LOAD ORDERS ── */
+/* ââ LOAD OVERVIEW ORDERS ââ */
 function loadOrders() {
   if (!_activeMonth) return;
   var parts = _activeMonth.split('-');
   var year = parseInt(parts[0]), month = parseInt(parts[1]);
   var start = new Date(year, month-1, 1).toISOString();
   var end   = new Date(year, month,   1).toISOString();
-  var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
 
   document.getElementById('tbl-loading').style.display = 'block';
   document.getElementById('orders-table').style.display = 'none';
@@ -420,20 +705,20 @@ function loadOrders() {
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
   .then(renderTable)
-  .catch(function() { toast('Failed to load orders.'); document.getElementById('tbl-loading').style.display = 'none'; });
+  .catch(function() {
+    toast('Failed to load orders.');
+    document.getElementById('tbl-loading').style.display = 'none';
+  });
 }
 
-/* ── RENDER ── */
 function renderTable(rows) {
   document.getElementById('tbl-loading').style.display = 'none';
   if (!rows || rows.length === 0) {
     document.getElementById('no-data').style.display = 'block';
-    document.getElementById('person-breakdown').style.display = 'none';
     updateCards(0,0,0,0,0); return;
   }
 
-  var total=rows.length, sent=0, signed=0, pending=0, due=0;
-  var signData = []; // [{person, days}] collected for admin avg breakdown
+  var total = rows.length, sent = 0, signed = 0, pending = 0, due = 0;
   var now = new Date(); now.setHours(0,0,0,0);
   var html = '';
 
@@ -446,69 +731,40 @@ function renderTable(rows) {
     if (isSent)   sent++;
     if (isSigned) signed++;
     else          pending++;
-    if (followup) { var dd=new Date(followup); dd.setHours(0,0,0,0); if(dd<=now) due++; }
+    if (followup) { var dd = new Date(followup); dd.setHours(0,0,0,0); if (dd <= now) due++; }
 
-    var totalStr = row.total || '—';
-
-    // Days to sign: calendar days from order creation to signing
-    var daysToSign = '—';
-    var daysColor  = '#bbb';
-    if (isSigned && fd.signed_at && row.saved_at) {
-      var _d1 = new Date(row.saved_at), _d2 = new Date(fd.signed_at);
-      _d1.setHours(0,0,0,0); _d2.setHours(0,0,0,0);
-      var _days = Math.round((_d2 - _d1) / 86400000);
-      if (_days >= 0) {
-        daysToSign = _days + 'd';
-        daysColor  = 'var(--purple-dark)';
-        signData.push({ person: row.user_name || '—', days: _days });
-      }
-    }
-
-    var sentChecked  = isSent  ? 'checked disabled' : '';
-    var sentLabel    = isSent  ? '<div class="check-label done">✓ Sent</div><div class="check-date">' + fmtDateShort(fd.sent_at) + '</div>' : '<div class="check-label">Mark sent</div>';
-
+    var sentChecked   = isSent   ? 'checked disabled' : '';
     var signedChecked = isSigned ? 'checked disabled' : '';
-    var signedLabel   = isSigned ? '<div class="check-label done">✓ Signed</div><div class="check-date">' + fmtDateShort(fd.signed_at) + '</div>' : '<div class="check-label">Mark signed</div>';
+    var sentLbl = isSent
+      ? '<div class="check-label done">â Sent</div><div class="check-date">' + fmtDateShort(fd.sent_at) + '</div>'
+      : '<div class="check-label">Mark sent</div>';
+    var signedLbl = isSigned
+      ? '<div class="check-label done">â Signed</div><div class="check-date">' + fmtDateShort(fd.signed_at) + '</div>'
+      : '<div class="check-label">Mark signed</div>';
 
-    var verifyCell = '—';
-    if (isSigned) {
-      verifyCell = followup ? countdownTag(followup) : '<span class="countdown waiting">No timer set</span>';
-    } else {
-      verifyCell = '<span class="countdown waiting">Awaiting signature</span>';
-    }
+    var verifyCell = isSigned
+      ? (followup ? countdownTag(followup) : '<span class="countdown waiting">No timer set</span>')
+      : '<span class="countdown waiting">Awaiting signature</span>';
 
-    html +=
-      '<tr>' +
-        '<td>' + fmtDate(row.saved_at) + '</td>' +
-        '<td><strong>' + escHtml(row.ref || '—') + '</strong></td>' +
-        '<td>' + escHtml(row.company || '—') + '</td>' +
-        '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name || '—') + '</td>' +
-        '<td>' + totalStr + '</td>' +
-        '<td class="check-cell">' +
-          '<div class="order-checkbox-wrap">' +
-            '<input type="checkbox" class="order-checkbox" ' + sentChecked +
-              ' onchange="markSent(\'' + row.id + '\', this)">' +
-            sentLabel +
-          '</div>' +
-        '</td>' +
-        '<td class="check-cell">' +
-          '<div class="order-checkbox-wrap">' +
-            '<input type="checkbox" class="order-checkbox" ' + signedChecked +
-              ' onchange="markSigned(\'' + row.id + '\', this)">' +
-            signedLabel +
-          '</div>' +
-          '<button class="upload-sig-btn" data-id="' + escHtml(row.id||'') + '" data-ref="' + escHtml(row.ref||'') + '" data-company="' + escHtml(row.company||'') + '" onclick="uploadSignedPdf(this)">📎 Upload signed PDF</button>' +
-        '</td>' +
-        '<td style="text-align:center;font-weight:700;color:' + daysColor + '">' + daysToSign + '</td>' +
-        '<td class="check-cell">' + verifyCell + '</td>' +
-        '<td class="del-cell">' + (_isAdmin ? '<button class="del-btn" onclick="deleteOrder(\'' + row.id + '\')" title="Delete order">✕</button>' : '') + '</td>' +
-      '</tr>';
+    html += '<tr>' +
+      '<td>' + fmtDate(row.saved_at) + '</td>' +
+      '<td><strong>' + escHtml(row.ref||'â') + '</strong></td>' +
+      '<td>' + escHtml(row.company||'â') + '</td>' +
+      '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'â') + '</td>' +
+      '<td><strong>' + escHtml(row.total||'â') + '</strong></td>' +
+      '<td class="check-cell"><div class="order-checkbox-wrap">' +
+        '<input type="checkbox" class="order-checkbox" ' + sentChecked + ' onchange="markSent(\'' + row.id + '\',this)">' +
+        sentLbl + '</div></td>' +
+      '<td class="check-cell"><div class="order-checkbox-wrap">' +
+        '<input type="checkbox" class="order-checkbox" ' + signedChecked + ' onchange="markSigned(\'' + row.id + '\',this)">' +
+        signedLbl + '</div></td>' +
+      '<td class="check-cell">' + verifyCell + '</td>' +
+    '</tr>';
   });
 
   document.getElementById('orders-body').innerHTML = html;
   document.getElementById('orders-table').style.display = 'table';
   updateCards(total, sent, signed, pending, due);
-  renderPersonBreakdown(signData);
 }
 
 function updateCards(total, sent, signed, pending, due) {
@@ -519,94 +775,36 @@ function updateCards(total, sent, signed, pending, due) {
   document.getElementById('c-due').textContent     = due;
 }
 
-/* ── PERSON BREAKDOWN (Admin — "View all users" mode only) ── */
-function renderPersonBreakdown(signData) {
-  var el = document.getElementById('person-breakdown');
-  var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
-  if (!_isAdmin || !showAll || signData.length === 0) { el.style.display = 'none'; return; }
-
-  // Group by salesperson
-  var byPerson = {};
-  signData.forEach(function(d) {
-    if (!byPerson[d.person]) byPerson[d.person] = [];
-    byPerson[d.person].push(d.days);
-  });
-
-  // Overall average (1 decimal place)
-  var allDays = signData.map(function(d) { return d.days; });
-  var overallAvg = Math.round(allDays.reduce(function(a,b){return a+b;},0) / allDays.length * 10) / 10;
-
-  var html = '<h3 style="font-family:Roboto,sans-serif;color:var(--purple-dark);font-size:.95rem;font-weight:700;margin-bottom:14px;letter-spacing:.01em">AVG. DAYS TO SIGN</h3>';
-  html += '<table class="breakdown-table">';
-  html += '<thead><tr>' +
-    '<th style="text-align:left">Sales Person</th>' +
-    '<th style="text-align:center">Signed Orders</th>' +
-    '<th style="text-align:center">Avg Days to Sign</th>' +
-  '</tr></thead><tbody>';
-
-  Object.keys(byPerson).sort().forEach(function(person) {
-    var days = byPerson[person];
-    var avg = Math.round(days.reduce(function(a,b){return a+b;},0) / days.length * 10) / 10;
-    html += '<tr>' +
-      '<td>' + escHtml(person) + '</td>' +
-      '<td style="text-align:center">' + days.length + '</td>' +
-      '<td style="text-align:center;font-weight:700;color:var(--purple-dark)">' + avg + 'd</td>' +
-    '</tr>';
-  });
-
-  html += '<tr class="total-row">' +
-    '<td>Overall</td>' +
-    '<td style="text-align:center">' + allDays.length + '</td>' +
-    '<td style="text-align:center;color:var(--purple-dark)">' + overallAvg + 'd</td>' +
-  '</tr>';
-  html += '</tbody></table>';
-
-  el.innerHTML = html;
-  el.style.display = 'block';
-}
-
-/* ── MARK SENT ── */
-function deleteOrder(id) {
-  if (!confirm('Delete this order? This cannot be undone.')) return;
-  sbFetch('/rest/v1/order_history?id=eq.' + id, { method: 'DELETE', headers: { 'Prefer': '' } })
-    .then(function() { loadOrders(); })
-    ['catch'](function() { alert('Could not delete — please try again.'); });
-}
-
-function markSent(id, checkbox) {
-  checkbox.disabled = true;
-  var by = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
-
+/* ââ MARK SENT / SIGNED ââ */
+function markSent(id, cb) {
+  cb.disabled = true;
+  var by = ((_session.user||{}).user_metadata||{}).full_name || ((_session.user||{}).email) || '';
   sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data')
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     var fd = (rows[0] && rows[0].form_data) || {};
-    fd.sent_at = new Date().toISOString();
-    fd.sent_by = by;
+    fd.sent_at = new Date().toISOString(); fd.sent_by = by;
     return sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id), {
       method: 'PATCH', body: JSON.stringify({ form_data: fd })
     });
   })
   .then(function(r) {
     if (!r.ok) throw new Error('patch failed');
-    toast('Order form marked as sent ✓');
+    toast('Order form marked as sent â');
     loadOrders();
   })
-  .catch(function(e) { toast('Error: ' + (e.message || 'Could not update.')); checkbox.disabled = false; checkbox.checked = false; });
+  .catch(function(e) { toast('Error: ' + (e.message||'Could not update.')); cb.disabled = false; cb.checked = false; });
 }
 
-/* ── MARK SIGNED ── */
-function markSigned(id, checkbox) {
-  checkbox.disabled = true;
-  var by = (_session.user.user_metadata && _session.user.user_metadata.full_name) || _session.user.email;
+function markSigned(id, cb) {
+  cb.disabled = true;
+  var by = ((_session.user||{}).user_metadata||{}).full_name || ((_session.user||{}).email) || '';
   var at = new Date().toISOString();
-
   sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data')
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     var fd = (rows[0] && rows[0].form_data) || {};
-    fd.signed_at = at;
-    fd.signed_by = by;
+    fd.signed_at = at; fd.signed_by = by;
     if (!fd.sent_at) { fd.sent_at = at; fd.sent_by = by; }
     fd.partner_followup_date = addWorkingDays(new Date(), 5).toISOString().split('T')[0];
     return sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id), {
@@ -615,219 +813,406 @@ function markSigned(id, checkbox) {
   })
   .then(function(r) {
     if (!r.ok) throw new Error('patch failed');
-    toast('Signed ✓ — partner verification timer set for 5 working days');
+    toast('Signed â â partner verification timer set for 5 working days');
     loadOrders();
   })
-  .catch(function(e) { toast('Error: ' + (e.message || 'Could not update.')); checkbox.disabled = false; checkbox.checked = false; });
+  .catch(function(e) { toast('Error: ' + (e.message||'Could not update.')); cb.disabled = false; cb.checked = false; });
 }
-// ── AUTO-RESTORE SESSION ──
+
+/* ââââââââââââââââââââââ REVENUE TAB ââââââââââââââââââââââ */
+function setRevPeriod(p) {
+  _revPeriod = p;
+  document.querySelectorAll('#rev-period-pills .period-pill').forEach(function(b) {
+    b.classList.toggle('active', (b.getAttribute('onclick')||'').indexOf("'" + p + "'") !== -1);
+  });
+  loadRevenue();
+}
+
+function loadRevenue() {
+  var range = getPeriodRange(_revPeriod);
+  var showAll = _isAdmin && document.getElementById('rev-admin-toggle').checked;
+
+  document.getElementById('rev-loading').style.display = 'block';
+  document.getElementById('rev-table').style.display = 'none';
+  document.getElementById('rev-no-data').style.display = 'none';
+
+  var qs = 'select=*&saved_at=gte.' + encodeURIComponent(range.start)
+         + '&saved_at=lt.'          + encodeURIComponent(range.end)
+         + '&order=saved_at.desc';
+
+  sbFetch('/rest/v1/order_history?' + qs)
+  .then(function(r) { return r.json(); })
+  .then(function(rows) {
+    rows = rows || [];
+    if (!showAll && _session && _session.user) {
+      var meta = _session.user.user_metadata || {};
+      var myName = meta.full_name || '';
+      if (myName) rows = rows.filter(function(r) { return r.user_name === myName; });
+    }
+    renderRevenue(rows);
+  })
+  .catch(function() {
+    toast('Failed to load revenue.');
+    document.getElementById('rev-loading').style.display = 'none';
+  });
+}
+
+function renderRevenue(rows) {
+  document.getElementById('rev-loading').style.display = 'none';
+
+  var totalVal = 0, signedVal = 0, pipelineVal = 0, count = rows.length;
+  rows.forEach(function(row) {
+    var amt = parseAmount(row.total);
+    var isSigned = !!(row.form_data && row.form_data.signed_at);
+    totalVal += amt;
+    if (isSigned) signedVal += amt;
+    else          pipelineVal += amt;
+  });
+
+  var avgVal = count > 0 ? totalVal / count : 0;
+  var signedPct = totalVal > 0 ? Math.round(signedVal / totalVal * 100) : 0;
+
+  document.getElementById('rev-total').textContent    = fmtMoneyFull(totalVal);
+  document.getElementById('rev-signed').textContent   = fmtMoneyFull(signedVal);
+  document.getElementById('rev-signed-pct').textContent = signedPct + '% of total';
+  document.getElementById('rev-pipeline').textContent = fmtMoneyFull(pipelineVal);
+  document.getElementById('rev-avg').textContent      = fmtMoneyFull(avgVal);
+  document.getElementById('rev-count').textContent    = count;
+
+  // Build monthly chart data
+  var monthMap = {};
+  rows.forEach(function(row) {
+    var d = new Date(row.saved_at);
+    var ym = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    if (!monthMap[ym]) monthMap[ym] = { signed: 0, pipeline: 0,
+      label: new Date(d.getFullYear(), d.getMonth(), 1).toLocaleDateString('en-GB', {month:'short'}) };
+    var amt = parseAmount(row.total);
+    if (row.form_data && row.form_data.signed_at) monthMap[ym].signed += amt;
+    else monthMap[ym].pipeline += amt;
+  });
+
+  var sortedM = Object.keys(monthMap).sort();
+  if (sortedM.length > 12) sortedM = sortedM.slice(sortedM.length - 12);
+  var curYM = currentYM();
+  if (monthMap[curYM] === undefined && _revPeriod !== 'all') {
+    monthMap[curYM] = { signed: 0, pipeline: 0,
+      label: new Date().toLocaleDateString('en-GB', {month:'short'}) };
+    sortedM.push(curYM); sortedM.sort();
+  }
+
+  var maxVal = 0;
+  sortedM.forEach(function(ym) {
+    var v = monthMap[ym].signed + monthMap[ym].pipeline;
+    if (v > maxVal) maxVal = v;
+  });
+
+  var chartHtml = '';
+  sortedM.forEach(function(ym) {
+    var m = monthMap[ym];
+    var total = m.signed + m.pipeline;
+    var maxH = 116; // px available for bars (180 - 22 padding-top - 22 padding-bottom - 20 label)
+    var signedH = maxVal > 0 ? Math.round((m.signed   / maxVal) * maxH) : 0;
+    var pipeH   = maxVal > 0 ? Math.round((m.pipeline / maxVal) * maxH) : 0;
+    var isCur = ym === currentYM();
+    var valLabel = total > 0 ? '<div class="bar-val">' + fmtMoney(total) + '</div>' : '<div class="bar-val"></div>';
+    chartHtml +=
+      '<div class="bar-col">' +
+        valLabel +
+        (pipeH > 0 ? '<div class="bar pipeline-bar" style="height:' + pipeH + 'px"></div>' : '') +
+        (signedH > 0 ? '<div class="bar signed-bar" style="height:' + signedH + 'px"></div>' : '') +
+        (signedH === 0 && pipeH === 0 ? '<div class="bar signed-bar" style="height:2px;opacity:.3"></div>' : '') +
+        '<div class="bar-label" style="' + (isCur?'color:var(--purple);font-weight:700':'') + '">' + m.label + '</div>' +
+      '</div>';
+  });
+  document.getElementById('rev-chart').innerHTML = chartHtml ||
+    '<div style="color:#aaa;font-size:.85rem;padding:20px 0">No data for this period</div>';
+
+  // Top deals table
+  if (!rows.length) { document.getElementById('rev-no-data').style.display = 'block'; return; }
+  var sorted = rows.slice().sort(function(a,b){ return parseAmount(b.total)-parseAmount(a.total); });
+  var tHtml = '';
+  sorted.forEach(function(row, i) {
+    var isSigned = !!(row.form_data && row.form_data.signed_at);
+    var badge = isSigned
+      ? '<span class="countdown ok" style="font-size:.72rem">â Signed</span>'
+      : '<span class="countdown waiting" style="font-size:.72rem">Unsigned</span>';
+    tHtml +=
+      '<tr>' +
+        '<td>' + (i+1) + '</td>' +
+        '<td>' + fmtDate(row.saved_at) + '</td>' +
+        '<td><strong>' + escHtml(row.ref||'â') + '</strong></td>' +
+        '<td>' + escHtml(row.company||'â') + '</td>' +
+        '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'â') + '</td>' +
+        '<td><strong>' + escHtml(row.total||'â') + '</strong></td>' +
+        '<td>' + badge + '</td>' +
+      '</tr>';
+  });
+  document.getElementById('rev-body').innerHTML = tHtml;
+  document.getElementById('rev-table').style.display = 'table';
+}
+
+/* ââââââââââââââââââââââ TEAM TAB ââââââââââââââââââââââ */
+function setTeamPeriod(p) {
+  _teamPeriod = p;
+  document.querySelectorAll('#team-period-pills .period-pill').forEach(function(b) {
+    b.classList.toggle('active', (b.getAttribute('onclick')||'').indexOf("'" + p + "'") !== -1);
+  });
+  var labels = { month: 'This month', year: 'Year to date', all: 'All time' };
+  document.getElementById('team-period-label').textContent = labels[p] || '';
+  loadTeam();
+}
+
+function loadTeam() {
+  if (!_isAdmin) return;
+  var range = getPeriodRange(_teamPeriod);
+  document.getElementById('team-loading').style.display = 'block';
+  document.getElementById('team-table').style.display = 'none';
+  document.getElementById('team-no-data').style.display = 'none';
+
+  var qs = 'select=*&saved_at=gte.' + encodeURIComponent(range.start)
+         + '&saved_at=lt.'          + encodeURIComponent(range.end)
+         + '&order=saved_at.desc';
+
+  sbFetch('/rest/v1/order_history?' + qs)
+  .then(function(r) { return r.json(); })
+  .then(renderTeam)
+  .catch(function() {
+    toast('Failed to load team data.');
+    document.getElementById('team-loading').style.display = 'none';
+  });
+}
+
+function renderTeam(rows) {
+  document.getElementById('team-loading').style.display = 'none';
+  rows = rows || [];
+  if (!rows.length) { document.getElementById('team-no-data').style.display = 'block'; return; }
+
+  var users = {};
+  rows.forEach(function(row) {
+    var name = row.user_name || 'Unknown';
+    if (!users[name]) users[name] = { name: name, orders: 0, revenue: 0, signed: 0, signedVal: 0, daysToSign: [], fastest: Infinity };
+    var u = users[name];
+    u.orders++;
+    u.revenue += parseAmount(row.total);
+    var fd = row.form_data || {};
+    if (fd.signed_at) {
+      u.signed++;
+      u.signedVal += parseAmount(row.total);
+      var days = Math.round((new Date(fd.signed_at) - new Date(row.saved_at)) / 86400000);
+      if (days >= 0) { u.daysToSign.push(days); if (days < u.fastest) u.fastest = days; }
+    }
+  });
+
+  var sorted = Object.values(users).sort(function(a,b){ return b.revenue - a.revenue; });
+  var maxRev = sorted[0] ? sorted[0].revenue : 1;
+  var html = '';
+  sorted.forEach(function(u, i) {
+    var signPct = u.orders > 0 ? Math.round(u.signed / u.orders * 100) : 0;
+    var avgDays = u.daysToSign.length > 0
+      ? Math.round(u.daysToSign.reduce(function(a,b){return a+b;},0) / u.daysToSign.length)
+      : null;
+    var fastest = u.fastest < Infinity ? u.fastest + 'd' : 'â';
+    var rankCls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    var revBarW = maxRev > 0 ? Math.round(u.revenue / maxRev * 100) : 0;
+    var signColor = signPct >= 70 ? 'var(--green)' : signPct >= 40 ? 'var(--amber)' : 'var(--red)';
+    html +=
+      '<tr>' +
+        '<td><span class="rank-badge ' + rankCls + '">' + (i+1) + '</span></td>' +
+        '<td><strong>' + escHtml(u.name) + '</strong></td>' +
+        '<td>' + u.orders + '</td>' +
+        '<td>' +
+          '<span style="font-weight:700">' + fmtMoneyFull(u.revenue) + '</span><br>' +
+          '<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:' + revBarW + '%"></div></div>' +
+        '</td>' +
+        '<td>' + fmtMoneyFull(u.signedVal) + '</td>' +
+        '<td>' +
+          '<span style="font-weight:700;color:' + signColor + '">' + signPct + '%</span>' +
+          ' <div class="progress-bar-wrap" style="width:60px"><div class="progress-bar-fill green" style="width:' + signPct + '%"></div></div>' +
+        '</td>' +
+        '<td>' + (avgDays !== null ? avgDays + ' days' : 'â') + '</td>' +
+        '<td>' + fastest + '</td>' +
+      '</tr>';
+  });
+
+  document.getElementById('team-body').innerHTML = html;
+  document.getElementById('team-table').style.display = 'table';
+}
+
+/* ââââââââââââââââââââââ CAMPAIGNS TAB ââââââââââââââââââââââ */
+function setCampFilter(filter) {
+  _campFilter = filter;
+  document.querySelectorAll('#camp-filter-pills .filter-pill').forEach(function(b) {
+    b.classList.toggle('active', (b.getAttribute('onclick')||'').indexOf("'" + filter + "'") !== -1);
+  });
+  loadCampaigns();
+}
+
+function loadCampaigns() {
+  var showAll = _isAdmin && document.getElementById('camp-admin-toggle').checked;
+  document.getElementById('camp-loading').style.display = 'block';
+  document.getElementById('camp-list').innerHTML = '';
+  document.getElementById('camp-no-data').style.display = 'none';
+
+  sbFetch('/rest/v1/order_history?select=*&order=saved_at.desc')
+  .then(function(r) { return r.json(); })
+  .then(function(rows) {
+    rows = rows || [];
+    if (!showAll && _session && _session.user) {
+      var meta = _session.user.user_metadata || {};
+      var myName = meta.full_name || '';
+      if (myName) rows = rows.filter(function(r){ return r.user_name === myName; });
+    }
+    renderCampaigns(rows);
+  })
+  .catch(function() {
+    toast('Failed to load campaigns.');
+    document.getElementById('camp-loading').style.display = 'none';
+  });
+}
+
+function renderCampaigns(rows) {
+  document.getElementById('camp-loading').style.display = 'none';
+  var now = new Date(); now.setHours(0,0,0,0);
+  var in30 = new Date(now); in30.setDate(in30.getDate()+30);
+
+  var campaigns = [];
+  rows.forEach(function(row) {
+    var phases = getCampaignPhases(row.form_data || {});
+    if (phases.length === 0) {
+      campaigns.push({ row: row, phase: null, status: 'unknown', start: null, end: null });
+    } else {
+      phases.forEach(function(p) {
+        campaigns.push({ row: row, phase: p, status: phaseStatus(p), start: getPhaseStart(p), end: getPhaseEnd(p) });
+      });
+    }
+  });
+
+  var activeCount = 0, upcomingCount = 0;
+  campaigns.forEach(function(c) {
+    if (c.status === 'active') activeCount++;
+    if (c.status === 'upcoming' && c.start && new Date(c.start) <= in30) upcomingCount++;
+  });
+  document.getElementById('camp-active').textContent   = activeCount;
+  document.getElementById('camp-upcoming').textContent = upcomingCount;
+  document.getElementById('camp-total').textContent    = campaigns.length;
+
+  var filtered = _campFilter === 'all' ? campaigns
+    : campaigns.filter(function(c){ return c.status === _campFilter; });
+
+  filtered.sort(function(a,b) {
+    var o = { active:0, upcoming:1, past:2, unknown:3 };
+    if (o[a.status] !== o[b.status]) return o[a.status] - o[b.status];
+    if (a.start && b.start) return new Date(a.start) - new Date(b.start);
+    return 0;
+  });
+
+  if (!filtered.length) { document.getElementById('camp-no-data').style.display = 'block'; return; }
+
+  var html = '';
+  filtered.forEach(function(c) {
+    var badgeText, badgeCls;
+    if (c.status === 'active')   { badgeText = 'ð¡ Active';    badgeCls = 'active'; }
+    else if (c.status === 'upcoming') { badgeText = 'ð¢ Upcoming'; badgeCls = 'upcoming'; }
+    else if (c.status === 'past')     { badgeText = 'â« Past';      badgeCls = 'past'; }
+    else                              { badgeText = 'No dates';     badgeCls = 'past'; }
+
+    var dateStr = 'â', durStr = '';
+    if (c.start && c.end) {
+      dateStr = fmtDateShort(c.start) + ' â ' + fmtDateShort(c.end);
+      if (c.phase) durStr = phaseDuration(c.phase);
+    } else if (c.start) {
+      dateStr = 'From ' + fmtDateShort(c.start);
+    }
+    var notes = c.phase ? (c.phase.notes || c.phase.note || '') : '';
+
+    html +=
+      '<div class="campaign-card">' +
+        '<div><span class="campaign-badge ' + badgeCls + '">' + badgeText + '</span></div>' +
+        '<div class="campaign-info">' +
+          '<div class="campaign-company">' + escHtml(c.row.company||'â') + '</div>' +
+          '<div class="campaign-ref">' + escHtml(c.row.ref||'') + (notes ? ' Â· ' + escHtml(notes) : '') + '</div>' +
+          '<div class="campaign-dates">' + dateStr + '</div>' +
+          (durStr ? '<div class="campaign-dur">' + durStr + '</div>' : '') +
+        '</div>' +
+        '<div class="campaign-right">' +
+          '<div class="campaign-total">' + escHtml(c.row.total||'â') + '</div>' +
+          '<div class="campaign-user">' + escHtml(c.row.user_name||'') + '</div>' +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('camp-list').innerHTML = html;
+}
+
+/* ââââââââââââââââââââââ ACCREDITATION TAB ââââââââââââââââââââââ */
+function loadAccred() {
+  document.getElementById('accred-loading').style.display = 'block';
+  document.getElementById('accred-table').style.display = 'none';
+  document.getElementById('accred-no-data').style.display = 'none';
+
+  sbFetch('/rest/v1/order_history?select=*&order=saved_at.desc')
+  .then(function(r) { return r.json(); })
+  .then(renderAccred)
+  .catch(function() {
+    toast('Failed to load accreditation data.');
+    document.getElementById('accred-loading').style.display = 'none';
+  });
+}
+
+function renderAccred(rows) {
+  document.getElementById('accred-loading').style.display = 'none';
+  rows = rows || [];
+
+  var accredRows = rows.filter(function(row) {
+    var fd = row.form_data || {};
+    return fd.accreditation_status === 'pending' ||
+           fd.accred_status === 'pending' ||
+           fd.accredPending === true ||
+           (fd.accreditation && fd.accreditation.pending === true) ||
+           (fd.accred && fd.accred.pending === true);
+  });
+
+  if (!accredRows.length) { document.getElementById('accred-no-data').style.display = 'block'; return; }
+
+  var html = '';
+  accredRows.forEach(function(row) {
+    var fd = row.form_data || {};
+    var city     = fd.accred_city || fd.accredCity || (fd.accreditation && fd.accreditation.city) || 'â';
+    var category = fd.accred_category || fd.accredCategory || (fd.accreditation && fd.accreditation.category) || 'â';
+    var due      = fd.accreditation_due || fd.accred_due || fd.partner_followup_date || null;
+    var status   = fd.accreditation_status || fd.accred_status || 'pending';
+
+    html +=
+      '<tr>' +
+        '<td>' + fmtDate(row.saved_at) + '</td>' +
+        '<td><strong>' + escHtml(row.ref||'â') + '</strong></td>' +
+        '<td>' + escHtml(row.company||'â') + '</td>' +
+        '<td>' + escHtml(city) + '</td>' +
+        '<td>' + escHtml(category) + '</td>' +
+        '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'â') + '</td>' +
+        '<td><span class="countdown due-soon">' + escHtml(status) + '</span></td>' +
+        '<td>' + (due ? countdownTag(due) : 'â') + '</td>' +
+      '</tr>';
+  });
+  document.getElementById('accred-body').innerHTML = html;
+  document.getElementById('accred-table').style.display = 'table';
+}
+
+/* ââ AUTO-RESTORE SESSION ââ */
 (function() {
   try {
-    var saved = localStorage.getItem('uf_session');
-    if (saved) {
-      var sess = JSON.parse(saved);
-      var exp = sess.expires_at || 0;
-      if (exp > Math.floor(Date.now() / 1000) + 60) {
-        _session = sess;
-        _isAdmin = !!(sess.user && sess.user.user_metadata && sess.user.user_metadata.is_admin) || sess.user.email === 'joseph@unifresher.co.uk';
-        onLoggedIn();
-      } else {
-        localStorage.removeItem('uf_session');
-      }
+    var raw = localStorage.getItem('uf_session');
+    if (!raw) return;
+    var sess = JSON.parse(raw);
+    var exp = sess.expires_at || 0;
+    if (exp > Math.floor(Date.now()/1000) + 60) {
+      _session = sess;
+      _isAdmin = !!(sess.user && sess.user.user_metadata && sess.user.user_metadata.is_admin);
+      onLoggedIn();
+    } else {
+      localStorage.removeItem('uf_session');
     }
   } catch(e) { try { localStorage.removeItem('uf_session'); } catch(e2) {} }
 })();
-
-/* ── ACCREDITATION FOLLOW-UP VIEW ── */
-function showAccredView(){
-  document.getElementById('orders-view').style.display='none';
-  document.getElementById('accred-view').style.display='';
-  loadAccredOrders();
-}
-function showOrdersView(){
-  document.getElementById('accred-view').style.display='none';
-  document.getElementById('orders-view').style.display='';
-}
-function loadAccredOrders(){
-  document.getElementById('accred-loading').style.display='flex';
-  document.getElementById('accred-table').style.display='none';
-  document.getElementById('accred-no-data').style.display='none';
-  sbFetch('/rest/v1/order_history?select=id,saved_at,user_name,form_data&form_data->>accredPending=eq.yes&order=saved_at.desc&limit=500')
-    .then(function(r){return r.json();})
-    .then(renderAccredTable)
-    .catch(function(){document.getElementById('accred-loading').style.display='none';});
-}
-function renderAccredTable(rows){
-  document.getElementById('accred-loading').style.display='none';
-  var now=new Date(), tbody=document.getElementById('accred-body');
-  tbody.innerHTML='';
-  var overdue=(rows||[]).filter(function(row){
-    return row.saved_at && Math.floor((now-new Date(row.saved_at))/86400000)>=5;
-  });
-  if(!overdue.length){document.getElementById('accred-no-data').style.display='block';return;}
-  overdue.forEach(function(row){
-    var fd=row.form_data||{}, d=new Date(row.saved_at);
-    var days=Math.floor((now-d)/86400000);
-    var offered=fd.accredAnswer==='yes', wm=!!fd.accredWatermarkSent;
-    var tr=document.createElement('tr');
-    tr.innerHTML=
-      '<td>'+d.toLocaleDateString('en-GB')+'</td>'+
-      '<td>'+(fd.ref||'—')+'</td>'+
-      '<td>'+(fd.company||'—')+'</td>'+
-      '<td>'+(row.user_name||'—')+'</td>'+
-      '<td style="font-weight:700;color:'+(days>5?'#c0392b':'#e67e22')+'">'+days+'d  <span style="font-size:.75em;padding:1px 5px;border-radius:3px;background:'+(days===5?'#fff3cd':'#fde8e8')+';">'+(days===5?'⚠️ DUE TODAY':'🔴 OVERDUE')+'</span></td>'+
-      '<td style="text-align:center">'+(offered?'<span style="color:var(--green);font-size:15px">✓</span>':'<span style="color:#c0392b;font-size:15px">✗</span>')+'</td>'+
-      '<td style="text-align:center"><label class="wm-check"><input type="checkbox"'+(wm?' checked':'')+' onchange="toggleWatermark(\''+ row.id+'\',this)"><span class="wm-label">'+(wm?'Sent':'Not sent')+'</span></label></td>';
-    tbody.appendChild(tr);
-  });
-  document.getElementById('accred-table').style.display='';
-}
-function toggleWatermark(id,el){
-  var val=el.checked; el.disabled=true;
-  sbFetch('/rest/v1/order_history?id=eq.'+encodeURIComponent(id)+'&select=form_data')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      var fd=(data&&data[0]&&data[0].form_data)||{};
-      fd.accredWatermarkSent=val;
-      return sbFetch('/rest/v1/order_history?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({form_data:fd})});
-    })
-    .then(function(){el.disabled=false;var sp=el.nextElementSibling;if(sp)sp.textContent=val?'Sent':'Not sent';})
-    .catch(function(){el.disabled=false;el.checked=!val;});
-}
-
-/* ── SIGNED PDF UPLOAD ── */
-var GDASH = {
-  cId: '978032756141-8ch9id7gvdhvp2qke5lqf0vts453vur2.apps.googleusercontent.com',
-  fId: '1ZR9uhvtNc_6fMlR4SSGQv4FSPxQ8_fbe'
-};
-function driveUploadBlob(blob, fname, tok, fid) {
-  var meta = { name: fname, mimeType: "application/pdf", parents: [fid] };
-  var form = new FormData();
-  form.append("metadata", new Blob([JSON.stringify(meta)], { type: "application/json" }));
-  form.append("file", blob);
-  return fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
-    method: "POST", headers: { Authorization: "Bearer " + tok }, body: form
-  }).then(function(r) { return r.json(); });
-}
-function getOrCreateDriveFolder(name, parentId, tok) {
-  var q = encodeURIComponent('name="' + name + '" and mimeType="application/vnd.google-apps.folder" and "' + parentId + '" in parents and trashed=false');
-  return fetch('https://www.googleapis.com/drive/v3/files?q=' + q + '&fields=files(id,name)', { headers: { Authorization: 'Bearer ' + tok } })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.files && data.files.length > 0) return data.files[0].id;
-      return fetch('https://www.googleapis.com/drive/v3/files', {
-        method: 'POST', headers: { Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, mimeType: 'application/vnd.google-apps.folder', parents: [parentId] })
-      }).then(function(r) { return r.json(); }).then(function(d) { return d.id; });
-    });
-}
-var _sigCtx = null;
-var _gToken = null;
-var _gTokenExpiry = 0;
-function _hasValidToken() { return _gToken && Date.now() < _gTokenExpiry - 30000; }
-function uploadSignedPdf(btn) {
-  _sigCtx = { id: btn.getAttribute("data-id"), ref: btn.getAttribute("data-ref"), company: btn.getAttribute("data-company"), btn: btn };
-  // If we have a cached token (valid for ~1hr), go straight to file picker — single click
-  if (_hasValidToken()) {
-    document.getElementById("sig-file-input").value = "";
-    document.getElementById("sig-file-input").click();
-    return;
-  }
-  // First time this session: OAuth from direct button click (popup never blocked)
-  if (btn) { btn.textContent = "Authorising..."; btn.disabled = true; }
-  var _rt = setTimeout(function() {
-    if (_sigCtx && _sigCtx.btn && document.contains(_sigCtx.btn)) { _sigCtx.btn.textContent = "Upload signed PDF"; _sigCtx.btn.disabled = false; }
-    alert("Upload timed out. Please try again.");
-  }, 60000);
-  if (!window.google || !google.accounts) {
-    clearTimeout(_rt);
-    if (btn) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
-    alert("Google not loaded. Refresh the page."); return;
-  }
-  try {
-    google.accounts.oauth2.initTokenClient({
-      client_id: GDASH.cId,
-      scope: "https://www.googleapis.com/auth/drive",
-      error_callback: function(err) {
-        clearTimeout(_rt);
-        if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
-        if (err.type !== "popup_closed") alert("Google sign-in failed. Please try again.");
-      },
-      callback: function(resp) {
-        clearTimeout(_rt);
-        if (resp.error) {
-          if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
-          alert("Google auth error: " + resp.error); return;
-        }
-        // Cache token for ~1 hour so subsequent uploads are single-click
-        _gToken = resp.access_token;
-        _gTokenExpiry = Date.now() + ((resp.expires_in || 3600) * 1000);
-        if (btn && document.contains(btn)) { btn.textContent = "Select PDF →"; btn.disabled = false; }
-      }
-    }).requestAccessToken();
-  } catch(e) {
-    clearTimeout(_rt);
-    if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
-    alert("Auth error: " + e.message);
-  }
-}
-function _doSignedUpload(input) {
-  var file = input.files[0];
-  if (!file || !_sigCtx || !_hasValidToken()) return;
-  var ctx = _sigCtx;
-  var btn = ctx.btn;
-  var accessToken = _gToken;
-  function resetBtn(msg) {
-    if (btn && document.contains(btn)) { btn.textContent = "Upload signed PDF"; btn.disabled = false; }
-    if (msg) alert(msg);
-  }
-  if (btn) { btn.textContent = "Uploading..."; btn.disabled = true; }
-  var fname = (ctx.ref || "Order") + " - " + (ctx.company || "") + " - Signed.pdf";
-  var uid = _session && _session.user && _session.user.id;
-  var folderPromise = uid
-    ? sbFetch('/rest/v1/profiles?id=eq.' + uid + '&select=drive_folder_id,initials')
-        .then(function(r) { return r.json(); })
-        .then(function(rows) {
-          var prof = rows && rows[0];
-          if (prof && prof.drive_folder_id) {
-            var m = prof.drive_folder_id.match(/\/folders\/([a-zA-Z0-9_-]+)/);
-            return m ? m[1] : prof.drive_folder_id;
-          }
-          if (prof && prof.initials) {
-            return getOrCreateDriveFolder(prof.initials.toUpperCase(), GDASH.fId, accessToken);
-          }
-          return GDASH.fId;
-        })
-    : Promise.resolve(GDASH.fId);
-  folderPromise.then(function(folder) {
-  return driveUploadBlob(file, fname, accessToken, folder)
-    .then(function(res) {
-      if (!res || !res.id) { resetBtn("Drive upload failed: " + JSON.stringify(res).slice(0,120)); return; }
-      if (btn) btn.textContent = "Saving...";
-      var at = new Date().toISOString();
-      var fu = addWorkingDays(new Date(), 5).toISOString().split("T")[0];
-      sbFetch("/rest/v1/order_history?id=eq." + encodeURIComponent(ctx.id) + "&select=form_data")
-        .then(function(r) { return r.json(); })
-        .then(function(rows) {
-          var fd = (rows[0] && rows[0].form_data) || {};
-          fd.signed_at = at; if (!fd.sent_at) fd.sent_at = at; fd.partner_followup_date = fu;
-          return sbFetch("/rest/v1/order_history?id=eq." + encodeURIComponent(ctx.id),
-            { method: "PATCH", body: JSON.stringify({ form_data: fd }) });
-        })
-        .then(function(r) {
-          if (!r.ok) { resetBtn("File saved to Drive but dashboard update failed — refresh manually."); return; }
-          _sigCtx = null;
-          var driveFileUrl = "https://drive.google.com/file/d/" + res.id + "/view";
-          var driveFolderUrl = "https://drive.google.com/drive/folders/" + folder;
-          if (confirm("Signed ✓ — uploaded to Drive.\n\nFolder: " + folder + "\n\nClick OK to open the Drive folder and confirm the file is there.")) { window.open(driveFolderUrl, "_blank"); }
-          loadOrders();
-        })
-        .catch(function(e) { resetBtn("Dashboard error: " + (e.message || e)); });
-    })
-    .catch(function(e) { resetBtn("Upload error: " + (e.message || e)); });
-  });
-}
 </script>
-<input type="file" id="sig-file-input" accept=".pdf" style="display:none" onchange="_doSignedUpload(this)">
 </body>
 </html>
