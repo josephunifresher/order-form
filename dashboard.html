@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unifresher â Order Dashboard</title>
+  <title>Unifresher – Order Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -25,7 +25,7 @@
     }
     body { font-family: 'Lato', sans-serif; background: var(--grey-bg); color: var(--black); min-height: 100vh; }
 
-    /* ââ LOGIN ââ */
+    /* ── LOGIN ── */
     #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--purple-dark); }
     .login-box { background: #fff; border-radius: 12px; padding: 40px 36px; width: 100%; max-width: 380px; box-shadow: 0 8px 32px rgba(0,0,0,.25); text-align: center; }
     .login-box h2 { font-family: 'Roboto', sans-serif; color: var(--purple-dark); margin-bottom: 6px; font-size: 1.5rem; }
@@ -38,7 +38,7 @@
     #login-btn { width: 100%; padding: 12px; font-size: 1rem; font-weight: 700; background: var(--purple); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-family: 'Lato', sans-serif; transition: opacity .15s; }
     #login-btn:hover { opacity: .88; }
 
-    /* ââ HEADER ââ */
+    /* ── HEADER ── */
     #app { display: none; }
     .header { background: var(--purple-dark); color: #fff; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .header h1 { font-family: 'Roboto', sans-serif; font-size: 1.2rem; font-weight: 700; }
@@ -49,17 +49,17 @@
     .btn-white  { background: #fff; color: var(--purple-dark); }
     .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.55); }
 
-    /* ââ TAB NAV ââ */
+    /* ── TAB NAV ── */
     .view-nav { background: #fff; border-bottom: 2px solid var(--grey-border); display: flex; align-items: center; gap: 0; padding: 0 24px; overflow-x: auto; }
     .view-tab { padding: 13px 20px; border: none; background: none; font-family: 'Lato', sans-serif; font-size: .86rem; font-weight: 700; color: #888; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: color .15s, border-color .15s; }
     .view-tab:hover { color: var(--purple); }
     .view-tab.active { color: var(--purple-dark); border-bottom-color: var(--purple); }
     .view-tab.admin-only { display: none; }
 
-    /* ââ CONTAINER ââ */
+    /* ── CONTAINER ── */
     .container { max-width: 1300px; margin: 0 auto; padding: 24px 20px; }
 
-    /* ââ TOOLBAR ââ */
+    /* ── TOOLBAR ── */
     .toolbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
     .toolbar-label { font-size: .84rem; font-weight: 700; color: var(--purple-dark); }
     .month-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -71,7 +71,7 @@
     .admin-toggle-label { display: flex; align-items: center; gap: 7px; background: var(--purple-lightest); border: 1.5px solid var(--purple-lighter); border-radius: 8px; padding: 5px 12px; cursor: pointer; font-size: .8rem; font-weight: 700; color: var(--purple-dark); user-select: none; }
     .admin-toggle-label input { cursor: pointer; accent-color: var(--purple); }
 
-    /* ââ SUMMARY CARDS ââ */
+    /* ── SUMMARY CARDS ── */
     .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
     .card { background: #fff; border-radius: 10px; padding: 16px 15px; border-left: 4px solid var(--purple); box-shadow: 0 1px 4px rgba(0,0,0,.07); }
     .card.green { border-color: var(--green); }
@@ -84,7 +84,7 @@
     .card-label { font-size: .74rem; color: #777; margin-top: 5px; }
     .card-sub   { font-size: .72rem; color: #aaa; margin-top: 3px; }
 
-    /* ââ TABLE ââ */
+    /* ── TABLE ── */
     .table-wrap { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: .84rem; }
     thead th { background: var(--purple-dark); color: #fff; padding: 11px 14px; text-align: left; white-space: nowrap; font-weight: 700; font-size: .78rem; letter-spacing: .03em; }
@@ -99,7 +99,7 @@
     .spinner  { width: 26px; height: 26px; border: 3px solid var(--purple-lighter); border-top-color: var(--purple); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 10px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ââ CHECKBOX CELLS ââ */
+    /* ── CHECKBOX CELLS ── */
     .check-cell { text-align: center; min-width: 140px; }
     .order-checkbox-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
     .order-checkbox { width: 22px; height: 22px; cursor: pointer; accent-color: var(--green); border-radius: 4px; }
@@ -108,20 +108,20 @@
     .check-label.done { color: var(--green); font-weight: 700; }
     .check-date { font-size: .68rem; color: #999; }
 
-    /* ââ COUNTDOWN ââ */
+    /* ── COUNTDOWN ── */
     .countdown { display: inline-block; font-size: .74rem; font-weight: 700; padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
     .countdown.overdue  { background: var(--red-bg);   color: var(--red); }
     .countdown.due-soon { background: var(--amber-bg); color: var(--amber); }
     .countdown.ok       { background: var(--green-bg); color: var(--green); }
     .countdown.waiting  { background: #f0f0f0; color: #999; font-weight: 400; }
 
-    /* ââ SECTION HEADERS ââ */
+    /* ── SECTION HEADERS ── */
     .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; margin-top: 28px; }
     .section-head:first-child { margin-top: 0; }
     .section-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 1rem; color: var(--purple-dark); }
     .section-sub { font-size: .78rem; color: #999; margin-top: 2px; }
 
-    /* ââ REVENUE CHART ââ */
+    /* ── REVENUE CHART ── */
     .chart-wrap { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); padding: 20px 24px 16px; margin-bottom: 20px; }
     .chart-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: .9rem; color: var(--purple-dark); margin-bottom: 16px; }
     .bar-chart { display: flex; align-items: flex-end; justify-content: center; gap: 6px; height: 180px; padding-bottom: 22px; padding-top: 22px; position: relative; overflow: visible; }
@@ -137,7 +137,7 @@
     .legend-item { display: flex; align-items: center; gap: 5px; font-size: .75rem; color: #666; }
     .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
-    /* ââ TEAM TABLE ââ */
+    /* ── TEAM TABLE ── */
     .rank-badge { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: var(--purple-lightest); color: var(--purple-dark); font-size: .72rem; font-weight: 700; text-align: center; line-height: 22px; }
     .rank-badge.gold   { background: #FEF3C7; color: #92400E; }
     .rank-badge.silver { background: #F1F5F9; color: #475569; }
@@ -146,7 +146,7 @@
     .progress-bar-fill { height: 100%; border-radius: 99px; background: var(--purple); }
     .progress-bar-fill.green { background: var(--green); }
 
-    /* ââ CAMPAIGN CARDS ââ */
+    /* ── CAMPAIGN CARDS ── */
     .campaign-card { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); padding: 14px 16px; margin-bottom: 10px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; cursor: default; transition: background .1s; }
     .campaign-card:hover { background: var(--purple-lightest); }
     .campaign-badge { font-size: .7rem; font-weight: 700; padding: 3px 9px; border-radius: 99px; white-space: nowrap; }
@@ -165,16 +165,16 @@
     .filter-pill { padding: 4px 12px; border-radius: 20px; border: 1.5px solid var(--grey-border); background: #fff; font-size: .76rem; font-weight: 700; cursor: pointer; color: #666; font-family: 'Lato', sans-serif; transition: all .15s; }
     .filter-pill.active { background: var(--purple); color: #fff; border-color: var(--purple); }
 
-    /* ââ PERIOD PILLS ââ */
+    /* ── PERIOD PILLS ── */
     .period-pills { display: flex; gap: 6px; flex-wrap: wrap; }
     .period-pill { padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--grey-border); background: #fff; font-size: .78rem; font-weight: 700; cursor: pointer; color: #666; font-family: 'Lato', sans-serif; transition: all .15s; }
     .period-pill.active { background: var(--purple); color: #fff; border-color: var(--purple); }
 
-    /* ââ TOAST ââ */
+    /* ── TOAST ── */
     #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: 9px 18px; border-radius: 8px; font-size: .83rem; z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none; }
     #toast.show { opacity: 1; }
 
-    /* ââ VIEWS ââ */
+    /* ── VIEWS ── */
     .view { display: none; }
     .view.active { display: block; }
 
@@ -191,14 +191,14 @@
 <div id="login-screen">
   <div class="login-box">
     <h2>Unifresher</h2>
-    <p>Order Dashboard â sign in to continue</p>
+    <p>Order Dashboard — sign in to continue</p>
     <div class="form-group">
       <label>Email</label>
       <input type="email" id="l-email" placeholder="you@unifresher.co.uk" autocomplete="username">
     </div>
     <div class="form-group">
       <label>Password</label>
-      <input type="password" id="l-pw" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" autocomplete="current-password">
+      <input type="password" id="l-pw" placeholder="••••••••" autocomplete="current-password">
     </div>
     <div id="login-error"></div>
     <button id="login-btn" onclick="doLogin()">Sign in</button>
@@ -220,25 +220,25 @@
 
   <!-- TAB NAV -->
   <nav class="view-nav">
-    <button class="view-tab active"    onclick="switchView('overview')">ð Overview</button>
-    <button class="view-tab"           onclick="switchView('revenue')">ð° Revenue</button>
-    <button class="view-tab admin-only" id="team-tab-btn" onclick="switchView('team')">ð¥ Team</button>
-    <button class="view-tab"           onclick="switchView('campaigns')">ð Campaigns</button>
-    <button class="view-tab"           onclick="switchView('accred')">ð Accreditation</button>
+    <button class="view-tab active"    onclick="switchView('overview')">📊 Overview</button>
+    <button class="view-tab"           onclick="switchView('revenue')">💰 Revenue</button>
+    <button class="view-tab admin-only" id="team-tab-btn" onclick="switchView('team')">👥 Team</button>
+    <button class="view-tab"           onclick="switchView('campaigns')">📅 Campaigns</button>
+    <button class="view-tab"           onclick="switchView('accred')">🎓 Accreditation</button>
   </nav>
 
   <!-- UNSIGNED REMINDER BANNER -->
   <div id="unsigned-reminder" style="display:none; margin: 12px 24px 0; background:#fff8ed; border:1.5px solid #f5a623; border-radius:10px; padding:14px 18px;">
     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-      <strong style="font-family:'Roboto',sans-serif; color:#b36200; font-size:.9rem;">â ï¸ Awaiting Signature â Sent 5+ Days Ago</strong>
-      <button onclick="document.getElementById('unsigned-reminder').style.display='none'" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#b36200;line-height:1;">â</button>
+      <strong style="font-family:'Roboto',sans-serif; color:#b36200; font-size:.9rem;">⚠️ Awaiting Signature — Sent 5+ Days Ago</strong>
+      <button onclick="document.getElementById('unsigned-reminder').style.display='none'" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#b36200;line-height:1;">✕</button>
     </div>
     <div id="unsigned-reminder-list" style="display:flex; flex-direction:column; gap:8px;"></div>
   </div>
 
   <div class="container">
 
-    <!-- ââââââââââââââââââ OVERVIEW ââââââââââââââââââ -->
+    <!-- ══════════════════ OVERVIEW ══════════════════ -->
     <div id="view-overview" class="view active">
       <div class="toolbar">
         <span class="toolbar-label">Month:</span>
@@ -252,14 +252,14 @@
         </div>
       </div>
       <div class="cards">
-        <div class="card">         <div class="card-value" id="c-total">â</div>  <div class="card-label">Orders this period</div></div>
-        <div class="card green">   <div class="card-value" id="c-sent">â</div>   <div class="card-label">Form Sent</div></div>
-        <div class="card green">   <div class="card-value" id="c-signed">â</div> <div class="card-label">Form Signed</div></div>
-        <div class="card amber">   <div class="card-value" id="c-pending">â</div><div class="card-label">Awaiting Signature</div></div>
-        <div class="card red">     <div class="card-value" id="c-due">â</div>    <div class="card-label">Verification Due / Overdue</div></div>
+        <div class="card">         <div class="card-value" id="c-total">—</div>  <div class="card-label">Orders this period</div></div>
+        <div class="card green">   <div class="card-value" id="c-sent">—</div>   <div class="card-label">Form Sent</div></div>
+        <div class="card green">   <div class="card-value" id="c-signed">—</div> <div class="card-label">Form Signed</div></div>
+        <div class="card amber">   <div class="card-value" id="c-pending">—</div><div class="card-label">Awaiting Signature</div></div>
+        <div class="card red">     <div class="card-value" id="c-due">—</div>    <div class="card-label">Verification Due / Overdue</div></div>
       </div>
       <div class="table-wrap">
-        <div id="tbl-loading" class="loading"><div class="spinner"></div>Loadingâ¦</div>
+        <div id="tbl-loading" class="loading"><div class="spinner"></div>Loading…</div>
         <table id="orders-table" style="display:none">
           <thead><tr>
             <th>Date</th><th>Ref</th><th>Company</th><th>Sales Person</th><th>Total</th>
@@ -273,7 +273,7 @@
       </div>
     </div>
 
-    <!-- ââââââââââââââââââ REVENUE ââââââââââââââââââ -->
+    <!-- ══════════════════ REVENUE ══════════════════ -->
     <div id="view-revenue" class="view">
       <div class="toolbar">
         <span class="toolbar-label">Period:</span>
@@ -292,11 +292,11 @@
       </div>
 
       <div class="cards" style="grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));">
-        <div class="card">       <div class="card-value" id="rev-total" style="font-size:1.5rem">â</div>    <div class="card-label">Total Contracted</div></div>
-        <div class="card green"> <div class="card-value" id="rev-signed" style="font-size:1.5rem">â</div>   <div class="card-label">Signed Value</div><div class="card-sub" id="rev-signed-pct"></div></div>
-        <div class="card amber"> <div class="card-value" id="rev-pipeline" style="font-size:1.5rem">â</div> <div class="card-label">Pipeline (Unsigned)</div></div>
-        <div class="card">       <div class="card-value" id="rev-avg" style="font-size:1.5rem">â</div>      <div class="card-label">Avg Deal Size</div></div>
-        <div class="card">       <div class="card-value" id="rev-count">â</div>                              <div class="card-label">Total Orders</div></div>
+        <div class="card">       <div class="card-value" id="rev-total" style="font-size:1.5rem">—</div>    <div class="card-label">Total Contracted</div></div>
+        <div class="card green"> <div class="card-value" id="rev-signed" style="font-size:1.5rem">—</div>   <div class="card-label">Signed Value</div><div class="card-sub" id="rev-signed-pct"></div></div>
+        <div class="card amber"> <div class="card-value" id="rev-pipeline" style="font-size:1.5rem">—</div> <div class="card-label">Pipeline (Unsigned)</div></div>
+        <div class="card">       <div class="card-value" id="rev-avg" style="font-size:1.5rem">—</div>      <div class="card-label">Avg Deal Size</div></div>
+        <div class="card">       <div class="card-value" id="rev-count">—</div>                              <div class="card-label">Total Orders</div></div>
       </div>
 
       <div class="chart-wrap">
@@ -312,7 +312,7 @@
         <div><div class="section-title">Top Deals</div><div class="section-sub">Sorted by contract value</div></div>
       </div>
       <div class="table-wrap">
-        <div id="rev-loading" class="loading"><div class="spinner"></div>Loadingâ¦</div>
+        <div id="rev-loading" class="loading"><div class="spinner"></div>Loading…</div>
         <table id="rev-table" style="display:none">
           <thead><tr>
             <th>#</th><th>Date</th><th>Ref</th><th>Company</th>
@@ -324,7 +324,7 @@
       </div>
     </div>
 
-    <!-- ââââââââââââââââââ TEAM ââââââââââââââââââ -->
+    <!-- ══════════════════ TEAM ══════════════════ -->
     <div id="view-team" class="view">
       <div class="toolbar">
         <span class="toolbar-label">Period:</span>
@@ -338,7 +338,7 @@
         <div><div class="section-title">Team Performance</div><div class="section-sub" id="team-period-label">Year to date</div></div>
       </div>
       <div class="table-wrap">
-        <div id="team-loading" class="loading"><div class="spinner"></div>Loadingâ¦</div>
+        <div id="team-loading" class="loading"><div class="spinner"></div>Loading…</div>
         <table id="team-table" style="display:none">
           <thead><tr>
             <th>#</th><th>Sales Person</th><th>Orders</th><th>Revenue</th>
@@ -350,15 +350,15 @@
       </div>
     </div>
 
-    <!-- ââââââââââââââââââ CAMPAIGNS ââââââââââââââââââ -->
+    <!-- ══════════════════ CAMPAIGNS ══════════════════ -->
     <div id="view-campaigns" class="view">
       <div class="toolbar">
         <span class="toolbar-label">Filter:</span>
         <div class="filter-pills" id="camp-filter-pills">
           <button class="filter-pill active" onclick="setCampFilter('all')">All</button>
-          <button class="filter-pill"        onclick="setCampFilter('active')">ð¡ Active</button>
-          <button class="filter-pill"        onclick="setCampFilter('upcoming')">ð¢ Upcoming</button>
-          <button class="filter-pill"        onclick="setCampFilter('past')">â« Past</button>
+          <button class="filter-pill"        onclick="setCampFilter('active')">🟡 Active</button>
+          <button class="filter-pill"        onclick="setCampFilter('upcoming')">🟢 Upcoming</button>
+          <button class="filter-pill"        onclick="setCampFilter('past')">⚫ Past</button>
         </div>
         <div class="spacer"></div>
         <div class="admin-wrap camp-admin-wrap">
@@ -370,26 +370,26 @@
       </div>
 
       <div class="cards" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); margin-bottom: 20px;">
-        <div class="card amber"><div class="card-value" id="camp-active">â</div>  <div class="card-label">Active Now</div></div>
-        <div class="card green"><div class="card-value" id="camp-upcoming">â</div><div class="card-label">Upcoming (30 days)</div></div>
-        <div class="card">     <div class="card-value" id="camp-total">â</div>    <div class="card-label">Total Campaigns</div></div>
+        <div class="card amber"><div class="card-value" id="camp-active">—</div>  <div class="card-label">Active Now</div></div>
+        <div class="card green"><div class="card-value" id="camp-upcoming">—</div><div class="card-label">Upcoming (30 days)</div></div>
+        <div class="card">     <div class="card-value" id="camp-total">—</div>    <div class="card-label">Total Campaigns</div></div>
       </div>
 
-      <div id="camp-loading" class="loading"><div class="spinner"></div>Loadingâ¦</div>
+      <div id="camp-loading" class="loading"><div class="spinner"></div>Loading…</div>
       <div id="camp-list"></div>
       <div id="camp-no-data" class="no-data" style="display:none">No campaigns found.</div>
     </div>
 
-    <!-- ââââââââââââââââââ ACCREDITATION ââââââââââââââââââ -->
+    <!-- ══════════════════ ACCREDITATION ══════════════════ -->
     <div id="view-accred" class="view">
       <div class="section-head" style="margin-bottom:18px">
         <div>
-          <div class="section-title">ð Accreditation Follow-up</div>
+          <div class="section-title">🎓 Accreditation Follow-up</div>
           <div class="section-sub">Partners pending accreditation verification</div>
         </div>
       </div>
       <div class="table-wrap">
-        <div id="accred-loading" class="loading"><div class="spinner"></div>Loadingâ¦</div>
+        <div id="accred-loading" class="loading"><div class="spinner"></div>Loading…</div>
         <table id="accred-table" style="display:none">
           <thead><tr>
             <th>Date</th><th>Ref</th><th>Company</th><th>City</th>
@@ -414,7 +414,7 @@ var _session = null, _isAdmin = false;
 var _activeMonth = null, _allMonths = [];
 var _revPeriod = 'year', _teamPeriod = 'year', _campFilter = 'all';
 
-/* ââ SUPABASE FETCH ââ */
+/* ══ SUPABASE FETCH ══ */
 function sbFetch(path, opts) {
   opts = opts || {};
   opts.headers = Object.assign({
@@ -428,14 +428,14 @@ function sbFetch(path, opts) {
   return fetch(SB_URL + path, opts);
 }
 
-/* ââ HELPERS ââ */
+/* ══ HELPERS ══ */
 function toast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(function() { t.classList.remove('show'); }, 2800);
 }
 function fmtDate(iso) {
-  if (!iso) return 'â';
+  if (!iso) return '—';
   return new Date(iso).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
 }
 function fmtDateShort(iso) {
@@ -448,12 +448,12 @@ function addWorkingDays(date, days) {
   return d;
 }
 function countdownTag(isoDate) {
-  if (!isoDate) return '<span class="countdown waiting">â</span>';
+  if (!isoDate) return '<span class="countdown waiting">—</span>';
   var due = new Date(isoDate), now = new Date();
   due.setHours(0,0,0,0); now.setHours(0,0,0,0);
   var diff = Math.round((due - now) / 86400000);
-  if (diff < 0)  return '<span class="countdown overdue">â  ' + Math.abs(diff) + 'd overdue</span>';
-  if (diff === 0) return '<span class="countdown overdue">â  Due today</span>';
+  if (diff < 0)  return '<span class="countdown overdue">⚠ ' + Math.abs(diff) + 'd overdue</span>';
+  if (diff === 0) return '<span class="countdown overdue">⚠ Due today</span>';
   if (diff <= 2)  return '<span class="countdown due-soon">Due in ' + diff + 'd</span>';
   return '<span class="countdown ok">Due ' + fmtDateShort(isoDate) + '</span>';
 }
@@ -475,12 +475,12 @@ function parseAmount(s) {
   return isNaN(n) ? 0 : n;
 }
 function fmtMoney(n) {
-  if (n >= 1000000) return 'Â£' + (n/1000000).toFixed(1) + 'M';
-  if (n >= 1000)    return 'Â£' + (n/1000).toFixed(1) + 'k';
-  return 'Â£' + Math.round(n);
+  if (n >= 1000000) return '£' + (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000)    return '£' + (n/1000).toFixed(1) + 'k';
+  return '£' + Math.round(n);
 }
 function fmtMoneyFull(n) {
-  return 'Â£' + Math.round(n).toLocaleString('en-GB');
+  return '£' + Math.round(n).toLocaleString('en-GB');
 }
 function getPeriodRange(period) {
   var now = new Date();
@@ -537,7 +537,7 @@ function phaseStatus(p) {
   return 'active';
 }
 
-/* ââ VIEW SWITCHING ââ */
+/* ══ VIEW SWITCHING ══ */
 function switchView(view) {
   ['overview','revenue','team','campaigns','accred'].forEach(function(v) {
     document.getElementById('view-' + v).classList.toggle('active', v === view);
@@ -551,13 +551,13 @@ function switchView(view) {
   if (view === 'accred')    loadAccred();
 }
 
-/* ââ AUTH ââ */
+/* ══ AUTH ══ */
 function doLogin() {
   var email = document.getElementById('l-email').value.trim();
   var pw    = document.getElementById('l-pw').value;
   var err   = document.getElementById('login-error');
   var btn   = document.getElementById('login-btn');
-  err.textContent = ''; btn.textContent = 'Signing inâ¦'; btn.disabled = true;
+  err.textContent = ''; btn.textContent = 'Signing in…'; btn.disabled = true;
 
   fetch(SB_URL + '/auth/v1/token?grant_type=password', {
     method: 'POST',
@@ -627,7 +627,7 @@ function loadUnsignedReminder() {
       var fd = row.form_data || {};
       var daysAgo = Math.floor((Date.now() - new Date(fd.sent_at)) / 86400000);
       return '<div style="display:flex;align-items:center;gap:10px;font-size:.82rem;flex-wrap:wrap;">' +
-        '<span style="font-weight:700;color:#333">' + escHtml(row.company||'â') + '</span>' +
+        '<span style="font-weight:700;color:#333">' + escHtml(row.company||'—') + '</span>' +
         '<span style="color:#666">' + escHtml(row.ref||'') + '</span>' +
         '<span style="color:#666">' + escHtml(row.total||'') + '</span>' +
         '<span style="color:#b36200">Sent ' + daysAgo + ' day' + (daysAgo===1?'':'s') + ' ago</span>' +
@@ -637,7 +637,7 @@ function loadUnsignedReminder() {
     document.getElementById('unsigned-reminder-list').innerHTML = html;
     document.getElementById('unsigned-reminder').style.display = 'block';
   })
-  .catch(function() {}); // silent fail â reminder is non-critical
+  .catch(function() {}); // silent fail — reminder is non-critical
 }
 
 function doLogout() {
@@ -648,7 +648,7 @@ function doLogout() {
   document.getElementById('l-pw').value = '';
 }
 
-/* ââ MONTH TABS ââ */
+/* ══ MONTH TABS ══ */
 function buildMonthTabs() {
   sbFetch('/rest/v1/order_history?select=saved_at&order=saved_at.desc')
   .then(function(r) { return r.json(); })
@@ -686,7 +686,7 @@ function selectMonth(ym) {
   loadOrders();
 }
 
-/* ââ LOAD OVERVIEW ORDERS ââ */
+/* ══ LOAD OVERVIEW ORDERS ══ */
 function loadOrders() {
   if (!_activeMonth) return;
   var parts = _activeMonth.split('-');
@@ -736,10 +736,10 @@ function renderTable(rows) {
     var sentChecked   = isSent   ? 'checked disabled' : '';
     var signedChecked = isSigned ? 'checked disabled' : '';
     var sentLbl = isSent
-      ? '<div class="check-label done">â Sent</div><div class="check-date">' + fmtDateShort(fd.sent_at) + '</div>'
+      ? '<div class="check-label done">✓ Sent</div><div class="check-date">' + fmtDateShort(fd.sent_at) + '</div>'
       : '<div class="check-label">Mark sent</div>';
     var signedLbl = isSigned
-      ? '<div class="check-label done">â Signed</div><div class="check-date">' + fmtDateShort(fd.signed_at) + '</div>'
+      ? '<div class="check-label done">✓ Signed</div><div class="check-date">' + fmtDateShort(fd.signed_at) + '</div>'
       : '<div class="check-label">Mark signed</div>';
 
     var verifyCell = isSigned
@@ -748,10 +748,10 @@ function renderTable(rows) {
 
     html += '<tr>' +
       '<td>' + fmtDate(row.saved_at) + '</td>' +
-      '<td><strong>' + escHtml(row.ref||'â') + '</strong></td>' +
-      '<td>' + escHtml(row.company||'â') + '</td>' +
-      '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'â') + '</td>' +
-      '<td><strong>' + escHtml(row.total||'â') + '</strong></td>' +
+      '<td><strong>' + escHtml(row.ref||'—') + '</strong></td>' +
+      '<td>' + escHtml(row.company||'—') + '</td>' +
+      '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'—') + '</td>' +
+      '<td><strong>' + escHtml(row.total||'—') + '</strong></td>' +
       '<td class="check-cell"><div class="order-checkbox-wrap">' +
         '<input type="checkbox" class="order-checkbox" ' + sentChecked + ' onchange="markSent(\'' + row.id + '\',this)">' +
         sentLbl + '</div></td>' +
@@ -775,7 +775,7 @@ function updateCards(total, sent, signed, pending, due) {
   document.getElementById('c-due').textContent     = due;
 }
 
-/* ââ MARK SENT / SIGNED ââ */
+/* ══ MARK SENT / SIGNED ══ */
 function markSent(id, cb) {
   cb.disabled = true;
   var by = ((_session.user||{}).user_metadata||{}).full_name || ((_session.user||{}).email) || '';
@@ -790,7 +790,7 @@ function markSent(id, cb) {
   })
   .then(function(r) {
     if (!r.ok) throw new Error('patch failed');
-    toast('Order form marked as sent â');
+    toast('Order form marked as sent ✓');
     loadOrders();
   })
   .catch(function(e) { toast('Error: ' + (e.message||'Could not update.')); cb.disabled = false; cb.checked = false; });
@@ -813,13 +813,13 @@ function markSigned(id, cb) {
   })
   .then(function(r) {
     if (!r.ok) throw new Error('patch failed');
-    toast('Signed â â partner verification timer set for 5 working days');
+    toast('Signed ✓ — partner verification timer set for 5 working days');
     loadOrders();
   })
   .catch(function(e) { toast('Error: ' + (e.message||'Could not update.')); cb.disabled = false; cb.checked = false; });
 }
 
-/* ââââââââââââââââââââââ REVENUE TAB ââââââââââââââââââââââ */
+/* ══════════════════════ REVENUE TAB ══════════════════════ */
 function setRevPeriod(p) {
   _revPeriod = p;
   document.querySelectorAll('#rev-period-pills .period-pill').forEach(function(b) {
@@ -934,16 +934,16 @@ function renderRevenue(rows) {
   sorted.forEach(function(row, i) {
     var isSigned = !!(row.form_data && row.form_data.signed_at);
     var badge = isSigned
-      ? '<span class="countdown ok" style="font-size:.72rem">â Signed</span>'
+      ? '<span class="countdown ok" style="font-size:.72rem">✓ Signed</span>'
       : '<span class="countdown waiting" style="font-size:.72rem">Unsigned</span>';
     tHtml +=
       '<tr>' +
         '<td>' + (i+1) + '</td>' +
         '<td>' + fmtDate(row.saved_at) + '</td>' +
-        '<td><strong>' + escHtml(row.ref||'â') + '</strong></td>' +
-        '<td>' + escHtml(row.company||'â') + '</td>' +
-        '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'â') + '</td>' +
-        '<td><strong>' + escHtml(row.total||'â') + '</strong></td>' +
+        '<td><strong>' + escHtml(row.ref||'—') + '</strong></td>' +
+        '<td>' + escHtml(row.company||'—') + '</td>' +
+        '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'—') + '</td>' +
+        '<td><strong>' + escHtml(row.total||'—') + '</strong></td>' +
         '<td>' + badge + '</td>' +
       '</tr>';
   });
@@ -951,7 +951,7 @@ function renderRevenue(rows) {
   document.getElementById('rev-table').style.display = 'table';
 }
 
-/* ââââââââââââââââââââââ TEAM TAB ââââââââââââââââââââââ */
+/* ══════════════════════ TEAM TAB ══════════════════════ */
 function setTeamPeriod(p) {
   _teamPeriod = p;
   document.querySelectorAll('#team-period-pills .period-pill').forEach(function(b) {
@@ -1011,7 +1011,7 @@ function renderTeam(rows) {
     var avgDays = u.daysToSign.length > 0
       ? Math.round(u.daysToSign.reduce(function(a,b){return a+b;},0) / u.daysToSign.length)
       : null;
-    var fastest = u.fastest < Infinity ? u.fastest + 'd' : 'â';
+    var fastest = u.fastest < Infinity ? u.fastest + 'd' : '—';
     var rankCls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
     var revBarW = maxRev > 0 ? Math.round(u.revenue / maxRev * 100) : 0;
     var signColor = signPct >= 70 ? 'var(--green)' : signPct >= 40 ? 'var(--amber)' : 'var(--red)';
@@ -1029,7 +1029,7 @@ function renderTeam(rows) {
           '<span style="font-weight:700;color:' + signColor + '">' + signPct + '%</span>' +
           ' <div class="progress-bar-wrap" style="width:60px"><div class="progress-bar-fill green" style="width:' + signPct + '%"></div></div>' +
         '</td>' +
-        '<td>' + (avgDays !== null ? avgDays + ' days' : 'â') + '</td>' +
+        '<td>' + (avgDays !== null ? avgDays + ' days' : '—') + '</td>' +
         '<td>' + fastest + '</td>' +
       '</tr>';
   });
@@ -1038,7 +1038,7 @@ function renderTeam(rows) {
   document.getElementById('team-table').style.display = 'table';
 }
 
-/* ââââââââââââââââââââââ CAMPAIGNS TAB ââââââââââââââââââââââ */
+/* ══════════════════════ CAMPAIGNS TAB ══════════════════════ */
 function setCampFilter(filter) {
   _campFilter = filter;
   document.querySelectorAll('#camp-filter-pills .filter-pill').forEach(function(b) {
@@ -1111,14 +1111,14 @@ function renderCampaigns(rows) {
   var html = '';
   filtered.forEach(function(c) {
     var badgeText, badgeCls;
-    if (c.status === 'active')   { badgeText = 'ð¡ Active';    badgeCls = 'active'; }
-    else if (c.status === 'upcoming') { badgeText = 'ð¢ Upcoming'; badgeCls = 'upcoming'; }
-    else if (c.status === 'past')     { badgeText = 'â« Past';      badgeCls = 'past'; }
+    if (c.status === 'active')   { badgeText = '🟡 Active';    badgeCls = 'active'; }
+    else if (c.status === 'upcoming') { badgeText = '🟢 Upcoming'; badgeCls = 'upcoming'; }
+    else if (c.status === 'past')     { badgeText = '⚫ Past';      badgeCls = 'past'; }
     else                              { badgeText = 'No dates';     badgeCls = 'past'; }
 
-    var dateStr = 'â', durStr = '';
+    var dateStr = '—', durStr = '';
     if (c.start && c.end) {
-      dateStr = fmtDateShort(c.start) + ' â ' + fmtDateShort(c.end);
+      dateStr = fmtDateShort(c.start) + ' → ' + fmtDateShort(c.end);
       if (c.phase) durStr = phaseDuration(c.phase);
     } else if (c.start) {
       dateStr = 'From ' + fmtDateShort(c.start);
@@ -1129,13 +1129,13 @@ function renderCampaigns(rows) {
       '<div class="campaign-card">' +
         '<div><span class="campaign-badge ' + badgeCls + '">' + badgeText + '</span></div>' +
         '<div class="campaign-info">' +
-          '<div class="campaign-company">' + escHtml(c.row.company||'â') + '</div>' +
-          '<div class="campaign-ref">' + escHtml(c.row.ref||'') + (notes ? ' Â· ' + escHtml(notes) : '') + '</div>' +
+          '<div class="campaign-company">' + escHtml(c.row.company||'—') + '</div>' +
+          '<div class="campaign-ref">' + escHtml(c.row.ref||'') + (notes ? ' · ' + escHtml(notes) : '') + '</div>' +
           '<div class="campaign-dates">' + dateStr + '</div>' +
           (durStr ? '<div class="campaign-dur">' + durStr + '</div>' : '') +
         '</div>' +
         '<div class="campaign-right">' +
-          '<div class="campaign-total">' + escHtml(c.row.total||'â') + '</div>' +
+          '<div class="campaign-total">' + escHtml(c.row.total||'—') + '</div>' +
           '<div class="campaign-user">' + escHtml(c.row.user_name||'') + '</div>' +
         '</div>' +
       '</div>';
@@ -1143,7 +1143,7 @@ function renderCampaigns(rows) {
   document.getElementById('camp-list').innerHTML = html;
 }
 
-/* ââââââââââââââââââââââ ACCREDITATION TAB ââââââââââââââââââââââ */
+/* ══════════════════════ ACCREDITATION TAB ══════════════════════ */
 function loadAccred() {
   document.getElementById('accred-loading').style.display = 'block';
   document.getElementById('accred-table').style.display = 'none';
@@ -1176,28 +1176,28 @@ function renderAccred(rows) {
   var html = '';
   accredRows.forEach(function(row) {
     var fd = row.form_data || {};
-    var city     = fd.accred_city || fd.accredCity || (fd.accreditation && fd.accreditation.city) || 'â';
-    var category = fd.accred_category || fd.accredCategory || (fd.accreditation && fd.accreditation.category) || 'â';
+    var city     = fd.accred_city || fd.accredCity || (fd.accreditation && fd.accreditation.city) || '—';
+    var category = fd.accred_category || fd.accredCategory || (fd.accreditation && fd.accreditation.category) || '—';
     var due      = fd.accreditation_due || fd.accred_due || fd.partner_followup_date || null;
     var status   = fd.accreditation_status || fd.accred_status || 'pending';
 
     html +=
       '<tr>' +
         '<td>' + fmtDate(row.saved_at) + '</td>' +
-        '<td><strong>' + escHtml(row.ref||'â') + '</strong></td>' +
-        '<td>' + escHtml(row.company||'â') + '</td>' +
+        '<td><strong>' + escHtml(row.ref||'—') + '</strong></td>' +
+        '<td>' + escHtml(row.company||'—') + '</td>' +
         '<td>' + escHtml(city) + '</td>' +
         '<td>' + escHtml(category) + '</td>' +
-        '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'â') + '</td>' +
+        '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'—') + '</td>' +
         '<td><span class="countdown due-soon">' + escHtml(status) + '</span></td>' +
-        '<td>' + (due ? countdownTag(due) : 'â') + '</td>' +
+        '<td>' + (due ? countdownTag(due) : '—') + '</td>' +
       '</tr>';
   });
   document.getElementById('accred-body').innerHTML = html;
   document.getElementById('accred-table').style.display = 'table';
 }
 
-/* ââ AUTO-RESTORE SESSION ââ */
+/* ══ AUTO-RESTORE SESSION ══ */
 (function() {
   try {
     var raw = localStorage.getItem('uf_session');
