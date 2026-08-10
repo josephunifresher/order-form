@@ -239,9 +239,9 @@
   .pl-signoff-wrap { page-break-inside:avoid; break-inside:avoid; }
   .pl-tc-section { }
   .pl-tc-title { font-weight:bold; font-size:9pt; padding-bottom:2pt; margin-bottom:3pt; border-bottom:1pt solid #000; }
-  .pl-tc-cols { display:flex; gap:10pt; }
-  .pl-tc-col { flex:1; font-size:5.5pt; line-height:1.2; color:#222; }
-  .pl-tc-col p { margin-bottom:1.5pt; }
+  .pl-tc-cols { display:block; }
+  .pl-tc-col { font-size:8.5pt; line-height:1.55; color:#222; }
+  .pl-tc-col p { margin-bottom:4pt; }
   .pl-bank { font-size:5.5pt; color:#444; border-top:0.5pt solid #ccc; padding-top:3pt; margin-top:4pt; line-height:1.4; }
 
   .last-updated-bar { display:flex; align-items:center; justify-content:flex-end; gap:14px; font-size:10px; color:#aaa; padding:10px 0 0; border-top:1px solid var(--grey-border); margin-top:20px; }
@@ -418,8 +418,8 @@
   }
 })();
 </script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -3187,6 +3187,7 @@ function doChecklistUpload(token) {
   var clName  = (refNo + ' - ' + company).replace(/[<>:"\/\\|?*]/g, '').trim() + ' - Checklist.pdf';
   generateTextBasedChecklistBlob(clName)
     .then(function(blob) {
+      if (!blob) { return; }
       var clFolderId = GDRIVE_CONFIG.checklistFolderId || GDRIVE_CONFIG.folderId;
       var metadata = { name: clName, mimeType: 'application/pdf', parents: [clFolderId] };
       var form = new FormData();
@@ -3570,6 +3571,7 @@ function pdfOpts(filename) {
 
 // ─── Text-based checklist PDF (jsPDF, selectable text) ───────────────────────
 function generateTextBasedChecklistBlob(filename) {
+  if (!window.jspdf || !window.jspdf.jsPDF) { return Promise.resolve(null); }
   var jsPDF = window.jspdf.jsPDF;
   var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
   var margin = 15;
