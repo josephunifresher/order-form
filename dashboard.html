@@ -221,10 +221,10 @@
   <!-- TAB NAV -->
   <nav class="view-nav">
     <button class="view-tab active"    onclick="switchView('overview')">📊 Overview</button>
-    <button class="view-tab"           onclick="switchView('revenue')">💰 Revenue</button>
+    <button class="view-tab admin-only" onclick="switchView('revenue')">💰 Revenue</button>
     <button class="view-tab admin-only" id="team-tab-btn" onclick="switchView('team')">👥 Team</button>
-    <button class="view-tab"           onclick="switchView('campaigns')">📅 Campaigns</button>
-    <button class="view-tab"           onclick="switchView('accred')">🎓 Accreditation</button>
+    <button class="view-tab admin-only" onclick="switchView('campaigns')">📅 Campaigns</button>
+    <button class="view-tab admin-only" onclick="switchView('accred')">🎓 Accreditation</button>
   </nav>
 
   <!-- UNSIGNED REMINDER BANNER -->
@@ -593,7 +593,9 @@ function onLoggedIn() {
   document.getElementById('user-label').textContent = name;
   if (_isAdmin) {
     document.getElementById('admin-wrap').style.display = 'block';
-    document.getElementById('team-tab-btn').style.display = 'block';
+    document.querySelectorAll('.view-tab.admin-only').forEach(function(el) {
+      el.style.display = 'block';
+    });
     document.querySelectorAll('.rev-admin-wrap, .camp-admin-wrap').forEach(function(el) {
       el.style.display = 'block';
     });
