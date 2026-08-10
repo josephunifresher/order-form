@@ -3866,7 +3866,8 @@ function generateTextBasedPdfBlob(filename) {
           br.parentNode.replaceChild(document.createTextNode('\n'), br);
         });
         _tmp.querySelectorAll('*').forEach(function(el) {
-          el.parentNode.replaceChild(document.createTextNode(el.textContent), el);
+          var _nb = /^(DIV|P|H[1-6])$/.test(el.tagName);
+          if (el.parentNode) el.parentNode.replaceChild(document.createTextNode((_nb ? '\n' : '') + el.textContent), el);
         });
         notesText = _tmp.textContent.replace(/&[a-z]+;/gi, function(e) {
           var m = { '&amp;':'&','&nbsp;':' ','&ndash;':'\u2013','&mdash;':'\u2014','&lt;':'<','&gt;':'>','&quot;':'"','&#39;':"'" };
