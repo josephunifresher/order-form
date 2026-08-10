@@ -3929,6 +3929,7 @@ function generateTextBasedPdfBlob(filename) {
       });
 
       if (campRows.length) {
+        doc.addPage(); y = margin;
         doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
         doc.line(margin, y, pageW - margin, y);
         y += 4;
