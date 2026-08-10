@@ -3865,7 +3865,7 @@ function generateTextBasedPdfBlob(filename) {
         _tmp.querySelectorAll('br').forEach(function(br) {
           br.parentNode.replaceChild(document.createTextNode('\n'), br);
         });
-        _tmp.querySelectorAll('*').forEach(function(el) {
+        Array.from(_tmp.querySelectorAll('*')).reverse().forEach(function(el) {
           var _nb = /^(DIV|P|H[1-6])$/.test(el.tagName);
           if (el.parentNode) el.parentNode.replaceChild(document.createTextNode((_nb ? '\n' : '') + el.textContent), el);
         });
