@@ -1114,7 +1114,7 @@ function updatePaymentTerms() {
       return;
     }
     var _pts=document.getElementById('payment-terms');var _ptTxt=_pts&&_pts.selectedIndex>=0?_pts.options[_pts.selectedIndex].text:'';
-    sendAlertEmail('Non-Standard Payment Terms', document.getElementById('client-company')&&document.getElementById('client-company').value||'', (currentUser()&&currentUser().name)||'', 'Payment terms changed to: '+_ptTxt, EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk');
+    sendAlertEmail('Non-Standard Payment Terms', document.getElementById('client-company')&&document.getElementById('client-company').value||'', (currentUser()&&currentUser().name)||'', 'Payment terms changed to: '+_ptTxt, EMAILJS_CONFIG.ownerEmail+',accounts@unifresher.co.uk');
   }
   var isReceipt = (days === 'receipt');
     document.querySelectorAll('.tc-pay-phrase').forEach(function(el) {
