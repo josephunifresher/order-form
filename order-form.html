@@ -3431,7 +3431,8 @@ function uploadToDrive(accessToken, btn) {
     if (storedFolderId && initials) folder = ' → ' + initials + '/ (direct)';
     if (data.id) {
       logDriveUpload(refNo, company, checklistFilename, 'Checklist');
-            sendAccountsEmail(refNo, companyFull, user, data.id);
+            var _signed = (document.getElementById('signed') || {}).value || '';
+            if (_signed) sendAccountsEmail(refNo, companyFull, user, data.id);
 addToHistory(); // auto-save to history list on successful Drive upload
       var driveUrl = 'https://drive.google.com/drive/folders/' + orderFolderId;
       if (confirm('✅ Both files saved to Google Drive!' + folder + '\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename + '\n\nClick OK to open the Drive folder.')) { window.open(driveUrl, '_blank'); }
