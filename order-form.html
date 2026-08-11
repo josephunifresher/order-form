@@ -587,15 +587,10 @@
       </div>
     </div>
     <div class="desc-box">
-      <div class="box-title" id="desc-box-title">Please Note</div>
-      <div class="notice-box" id="fst-notice">
+      <div class="box-title">Please Note</div>
+      <div class="notice-box">
         <strong>ORDER FOR INFORMATION ONLY</strong>
         This is an order for information only. If you wish to proceed, please confirm the information is correct and that you wish to proceed.
-      </div>
-      <div id="ooh-notice" style="display:none;padding:8px 0;">
-        <div style="font-size:11.5px;line-height:1.7;color:var(--purple-darker);">
-          University Digital Screen – x <input type="number" id="ooh-screen-count" min="1" placeholder="N" oninput="updateLastUpdated()" style="width:48px;border:none;border-bottom:1.5px solid var(--purple-lighter);text-align:center;font-size:13px;font-family:'Lato',Arial,sans-serif;"> in locations as per agreed spreadsheet
-        </div>
       </div>
     </div>
   </div>
@@ -1409,10 +1404,10 @@ function validateForm() {
   var notesEl = document.getElementById('campaign-notes');
   var notesErrEl = document.getElementById('err-campaign-notes');
   var notesText = notesEl.innerText.trim();
-  var notesBad = !notesText || notesText.indexOf('CITY NAME') !== -1;
+  var notesBad = !notesText || notesText.indexOf('CITY NAME') !== -1 || (window.formType === 'OOH' && notesText.indexOf('NUMBER') !== -1);
   notesEl.classList.toggle('error', notesBad);
   if (notesErrEl) {
-    notesErrEl.textContent = notesText.indexOf('CITY NAME') !== -1 ? 'Replace CITY NAME with the actual city before saving' : 'Campaign notes are required';
+    notesErrEl.textContent = notesText.indexOf('CITY NAME') !== -1 ? 'Replace CITY NAME with the actual city before saving' : (notesText.indexOf('NUMBER') !== -1 ? 'Replace NUMBER with the actual screen count before saving' : 'Campaign notes are required');
     notesErrEl.classList.toggle('show', notesBad);
   }
   if (notesBad) valid = false;
@@ -1535,7 +1530,9 @@ function clearForm() {
   recalc();
   document.getElementById('order-date').value = new Date().toISOString().split('T')[0];
   // Reset contenteditable campaign notes to default text
-  document.getElementById('campaign-notes').innerHTML = 'Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month.';
+  var _fstNotes = 'Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month.';
+  var _oohNotes = 'University Digital Screen &ndash; x <span style="color:#e74c3c;font-weight:bold;">NUMBER</span> in locations as per agreed spreadsheet';
+  document.getElementById('campaign-notes').innerHTML = (window.formType === 'OOH') ? _oohNotes : _fstNotes;
   document.getElementById('campaign-notes').classList.remove('error');
 
 function updateLastUpdated() {
@@ -2150,8 +2147,7 @@ function captureFormData() {
     accredReason:  (function(){ var r=document.querySelector('[name=accred-reason]:checked'); return r ? r.value : ''; })(),
     accredOther:   (document.getElementById('accred-other-reason') || {}).value || '',
     payMonthly:    !!(document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked),
-    formType:     window.formType || 'FST',
-    oohScreenCount: (document.getElementById('ooh-screen-count') || {}).value || ''
+    formType:     window.formType || 'FST'
   };
 }
 
@@ -2161,17 +2157,19 @@ function setFormType(type) {
   var btnOoh = document.getElementById('btn-ooh');
   if (btnFst) btnFst.classList.toggle('active', type === 'FST');
   if (btnOoh) btnOoh.classList.toggle('active', type === 'OOH');
-  var fstNotice = document.getElementById('fst-notice');
-  var oohNotice = document.getElementById('ooh-notice');
-  if (fstNotice) fstNotice.style.display = type === 'FST' ? '' : 'none';
-  if (oohNotice) oohNotice.style.display = type === 'OOH' ? '' : 'none';
+  var notesEl = document.getElementById('campaign-notes');
+  if (notesEl) {
+    var fstDefault = 'Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month.';
+    var oohDefault = 'University Digital Screen &ndash; x <span style="color:#e74c3c;font-weight:bold;">NUMBER</span> in locations as per agreed spreadsheet';
+    notesEl.innerHTML = type === 'OOH' ? oohDefault : fstDefault;
+    notesEl.classList.remove('error');
+  }
 }
 window.formType = 'FST';
 
 function restoreFormData(data) {
   if (!data) return;
   if (data.formType) setFormType(data.formType);
-  var _osc = document.getElementById('ooh-screen-count'); if (_osc && data.oohScreenCount) _osc.value = data.oohScreenCount;
   var setVal = function(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; };
   setVal('ref-no',         data.ref); validateUniField();
   setVal('order-date',     data.date);
