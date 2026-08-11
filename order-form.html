@@ -76,6 +76,9 @@
   /* SECTION TITLES */
   .section-title { font-family:'Roboto',Arial,sans-serif; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.8px; color:#fff; background:var(--purple); margin:20px -44px 14px; padding:8px 44px; }
   .req-note { font-size:11px; color:#e74c3c; margin-bottom:14px; }
+  .form-type-toggle { display:flex; gap:8px; margin-bottom:14px; }
+  .form-type-btn { padding:5px 22px; border-radius:20px; border:2px solid var(--purple); font-size:12px; font-weight:700; cursor:pointer; background:#fff; color:var(--purple); letter-spacing:.5px; transition:background .15s,color .15s; }
+  .form-type-btn.active { background:var(--purple); color:#fff; }
 
   /* ITEMS TABLE */
   .items-table { width:100%; border-collapse:collapse; margin-bottom:6px; }
@@ -563,6 +566,10 @@
     </div>
   </div>
 
+  <div class="form-type-toggle">
+    <button class="form-type-btn active" id="btn-fst" onclick="setFormType('FST')">FST</button>
+    <button class="form-type-btn" id="btn-ooh" onclick="setFormType('OOH')">OOH</button>
+  </div>
   <p class="req-note">* Required fields — complete before sending.</p>
 
   <div class="to-desc-row">
@@ -2141,12 +2148,23 @@ function captureFormData() {
     accredCat:     (document.getElementById('accred-category') || {}).value || '',
     accredReason:  (function(){ var r=document.querySelector('[name=accred-reason]:checked'); return r ? r.value : ''; })(),
     accredOther:   (document.getElementById('accred-other-reason') || {}).value || '',
-    payMonthly:    !!(document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked)
+    payMonthly:    !!(document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked),
+    formType:     window.formType || 'FST'
   };
 }
 
+function setFormType(type) {
+  window.formType = type;
+  var btnFst = document.getElementById('btn-fst');
+  var btnOoh = document.getElementById('btn-ooh');
+  if (btnFst) btnFst.classList.toggle('active', type === 'FST');
+  if (btnOoh) btnOoh.classList.toggle('active', type === 'OOH');
+}
+window.formType = 'FST';
+
 function restoreFormData(data) {
   if (!data) return;
+  if (data.formType) setFormType(data.formType);
   var setVal = function(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; };
   setVal('ref-no',         data.ref); validateUniField();
   setVal('order-date',     data.date);
@@ -2285,7 +2303,7 @@ function addToHistory() {
 function doSaveHistory(user, fd) {
   if (fd && (parseFloat(fd.discountPct) > 0 || parseFloat(fd.discountAmt) > 0)) {
     var _dMsg = parseFloat(fd.discountPct) > 0 ? 'Discount: ' + fd.discountPct + '%' : '£' + parseFloat(fd.discountAmt).toFixed(2) + ' discount';
-    sendAlertEmail('Discount Applied', (fd.ref || '') + ' - ' + (fd.company || ''), (user && user.name) || '', _dMsg);
+    sendAlertEmail('Discount Applied', (fd.ref || '') + ' - ' + (fd.company || ''), (user && user.name) || '', _dMsg, EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk');
   }
   sbFetch('order_history', 'POST', {
     user_name:  user ? user.name : 'Unknown',
@@ -3710,9 +3728,14 @@ function generateTextBasedPdfBlob(filename) {
 
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
+      doc.setTextColor(112, 45, 215);
+      doc.text(window.formType || 'FST', pageW - margin, y + 14, { align: 'right' });
+
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
       doc.setTextColor(0, 0, 0);
-      doc.text('UNI: ' + refNo + (inits ? ' (' + inits + ')' : ''), pageW - margin, y + 16, { align: 'right' });
-      doc.text('Date: ' + dateStr, pageW - margin, y + 21, { align: 'right' });
+      doc.text('UNI: ' + refNo + (inits ? ' (' + inits + ')' : ''), pageW - margin, y + 19, { align: 'right' });
+      doc.text('Date: ' + dateStr, pageW - margin, y + 24, { align: 'right' });
 
       y += headerH;
 
