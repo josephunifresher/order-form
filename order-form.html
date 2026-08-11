@@ -1473,16 +1473,7 @@ function validateForm() {
     }
   }
 
-  // Checklist validation
-  var _allCl = Array.from(document.querySelectorAll('.cl-check'));
-    var _visCl = _allCl.filter(function(cb) { return cb.offsetParent !== null; });
-    var totalChecks  = _visCl.length;
-    var tickedChecks = _visCl.filter(function(cb) { return cb.checked; }).length;
-  var clBy = (document.getElementById('cl-by') || {}).value || '';
-      var clBad = tickedChecks < totalChecks || (totalChecks > 0 && !clBy.trim());
-  var clErr = document.getElementById('err-checklist');
-  if (clErr) clErr.classList.toggle('show', clBad);
-  if (clBad) valid = false;
+  // Checklist is advisory only — does not block saving
 
   var banner = document.getElementById('validation-banner');
   if (valid) {
