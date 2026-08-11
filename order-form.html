@@ -587,10 +587,15 @@
       </div>
     </div>
     <div class="desc-box">
-      <div class="box-title">Please Note</div>
-      <div class="notice-box">
+      <div class="box-title" id="desc-box-title">Please Note</div>
+      <div class="notice-box" id="fst-notice">
         <strong>ORDER FOR INFORMATION ONLY</strong>
         This is an order for information only. If you wish to proceed, please confirm the information is correct and that you wish to proceed.
+      </div>
+      <div id="ooh-notice" style="display:none;padding:8px 0;">
+        <div style="font-size:11.5px;line-height:1.7;color:var(--purple-darker);">
+          University Digital Screen – x <input type="number" id="ooh-screen-count" min="1" placeholder="N" oninput="updateLastUpdated()" style="width:48px;border:none;border-bottom:1.5px solid var(--purple-lighter);text-align:center;font-size:13px;font-family:'Lato',Arial,sans-serif;"> in locations as per agreed spreadsheet
+        </div>
       </div>
     </div>
   </div>
@@ -2145,7 +2150,8 @@ function captureFormData() {
     accredReason:  (function(){ var r=document.querySelector('[name=accred-reason]:checked'); return r ? r.value : ''; })(),
     accredOther:   (document.getElementById('accred-other-reason') || {}).value || '',
     payMonthly:    !!(document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked),
-    formType:     window.formType || 'FST'
+    formType:     window.formType || 'FST',
+    oohScreenCount: (document.getElementById('ooh-screen-count') || {}).value || ''
   };
 }
 
@@ -2155,12 +2161,17 @@ function setFormType(type) {
   var btnOoh = document.getElementById('btn-ooh');
   if (btnFst) btnFst.classList.toggle('active', type === 'FST');
   if (btnOoh) btnOoh.classList.toggle('active', type === 'OOH');
+  var fstNotice = document.getElementById('fst-notice');
+  var oohNotice = document.getElementById('ooh-notice');
+  if (fstNotice) fstNotice.style.display = type === 'FST' ? '' : 'none';
+  if (oohNotice) oohNotice.style.display = type === 'OOH' ? '' : 'none';
 }
 window.formType = 'FST';
 
 function restoreFormData(data) {
   if (!data) return;
   if (data.formType) setFormType(data.formType);
+  var _osc = document.getElementById('ooh-screen-count'); if (_osc && data.oohScreenCount) _osc.value = data.oohScreenCount;
   var setVal = function(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; };
   setVal('ref-no',         data.ref); validateUniField();
   setVal('order-date',     data.date);
@@ -3761,16 +3772,27 @@ function generateTextBasedPdfBlob(filename) {
 
       // Description notice (right half)
       var rX = margin + cW / 2 + 2;
-      doc.setFontSize(8.5);
-      doc.setFont('helvetica', 'bold');
-      doc.text('DESCRIPTION: Full details below', rX, y + 4);
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'normal');
-      var notice = 'PLEASE NOTE: THIS IS AN ORDER AND IS FOR INFORMATION ONLY.\nIF YOU WISH TO PROCEED WITH THIS ORDER, PLEASE CONFIRM THAT THE INFORMATION IS CORRECT AND THAT YOU WISH TO PROCEED.';
-      var nLines = doc.splitTextToSize(notice, cW / 2 - 4);
-      doc.setTextColor(204, 0, 0);
-      doc.text(nLines, rX, y + 9);
-      doc.setTextColor(0, 0, 0);
+      var nLines;
+      if (window.formType === 'OOH') {
+        var screenCount = (document.getElementById('ooh-screen-count') || {}).value || 'N';
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        var oohDesc = 'University Digital Screen – x ' + screenCount + ' in locations as per agreed spreadsheet';
+        nLines = doc.splitTextToSize(oohDesc, cW / 2 - 4);
+        doc.setTextColor(0, 0, 0);
+        doc.text(nLines, rX, y + 4);
+      } else {
+        doc.setFontSize(8.5);
+        doc.setFont('helvetica', 'bold');
+        doc.text('DESCRIPTION: Full details below', rX, y + 4);
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'normal');
+        var notice = 'PLEASE NOTE: THIS IS AN ORDER AND IS FOR INFORMATION ONLY.\nIF YOU WISH TO PROCEED WITH THIS ORDER, PLEASE CONFIRM THAT THE INFORMATION IS CORRECT AND THAT YOU WISH TO PROCEED.';
+        nLines = doc.splitTextToSize(notice, cW / 2 - 4);
+        doc.setTextColor(204, 0, 0);
+        doc.text(nLines, rX, y + 9);
+        doc.setTextColor(0, 0, 0);
+      }
 
       y += Math.max(coLines.length * 5 + addrRaw.length * 3.5 + 4, nLines.length * 3.2 + 9) + 2;
 
