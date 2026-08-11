@@ -3727,17 +3727,16 @@ function generateTextBasedPdfBlob(filename) {
       // "TO" label
       doc.setFontSize(7);
       doc.setFont('helvetica', 'bold');
-      doc.text('TO', margin, y + 4);
-
       // Client company (bold, larger)
       doc.setFontSize(11);
-      doc.text(doc.splitTextToSize(co, 82)[0], margin + 7, y + 4);
+      var coLines = doc.splitTextToSize(co, 82);
+      doc.text(coLines, margin + 7, y + 4);
 
       // Address lines
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
       var addrRaw = addr.split('\n').map(function(l) { return l.trim(); }).filter(Boolean);
-      var addrY = y + 9;
+      var addrY = y + 4 + coLines.length * 5;
       addrRaw.forEach(function(line) { doc.text(line, margin + 7, addrY); addrY += 3.5; });
 
       // Description notice (right half)
@@ -3753,7 +3752,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.text(nLines, rX, y + 9);
       doc.setTextColor(0, 0, 0);
 
-      y += Math.max(addrRaw.length * 3.5 + 9, nLines.length * 3.2 + 9) + 2;
+      y += Math.max(coLines.length * 5 + addrRaw.length * 3.5 + 4, nLines.length * 3.2 + 9) + 2;
 
       // ── Items table ───────────────────────────────────────────────────────
       var items = [];
