@@ -226,6 +226,7 @@
     <button class="view-tab admin-only" id="team-tab-btn" onclick="switchView('team')">👥 Team</button>
     <button class="view-tab admin-only" onclick="switchView('campaigns')">📅 Campaigns</button>
     <button class="view-tab admin-only" onclick="switchView('accred')">🎓 Accreditation</button>
+    <button class="view-tab admin-only" onclick="switchView('settings')">⚙️ Settings</button>
   </nav>
 
   <!-- UNSIGNED REMINDER BANNER -->
@@ -402,6 +403,31 @@
       </div>
     </div>
 
+    <!-- ══════════════════ SETTINGS ══════════════════ -->
+    <div id="view-settings" class="view">
+      <div style="max-width:820px;margin:0 auto;padding:4px 0 20px;">
+        <h2 style="font-size:1.1rem;font-weight:700;color:var(--purple-dark);margin-bottom:18px;">⚙️ Admin Settings</h2>
+        <div style="background:#fff;border:1.5px solid var(--purple-lighter);border-radius:12px;padding:20px 24px;margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h3 style="font-size:.95rem;font-weight:700;color:var(--purple-dark);margin:0;">Terms &amp; Conditions</h3>
+            <div style="display:flex;gap:8px;">
+              <button onclick="loadTcFromSupabase()" style="padding:5px 14px;border-radius:20px;border:1.5px solid var(--purple-lighter);background:#fff;color:var(--purple-dark);font-size:12px;cursor:pointer;font-weight:600;">↺ Reload</button>
+              <button onclick="saveTcToSupabase()" style="padding:5px 18px;border-radius:20px;border:none;background:var(--purple);color:#fff;font-size:12px;cursor:pointer;font-weight:700;">💾 Save T&amp;Cs</button>
+            </div>
+          </div>
+          <div style="margin-bottom:8px;display:flex;gap:4px;flex-wrap:wrap;">
+            <button type="button" onclick="tcFmt('bold')" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;font-weight:700;font-size:12px;">B</button>
+            <button type="button" onclick="tcFmt('italic')" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;font-style:italic;font-size:12px;">I</button>
+            <button type="button" onclick="tcFmt('underline')" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;text-decoration:underline;font-size:12px;">U</button>
+            <button type="button" onclick="tcFmt('removeFormat')" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;font-size:11px;color:#888;">✕ Clear fmt</button>
+          </div>
+          <div id="tc-admin-editor" contenteditable="true" spellcheck="false" style="min-height:260px;border:1.5px solid #ddd;border-radius:8px;padding:14px 16px;font-size:12.5px;line-height:1.65;font-family:'Lato',Arial,sans-serif;color:#222;background:#fafafa;outline:none;"><p style="color:#aaa;font-style:italic;">Loading T&amp;Cs…</p></div>
+          <p style="font-size:11px;color:#888;margin-top:8px;">Changes apply to the order form screen view and PDF. Payment terms and bank details are managed separately.</p>
+          <div id="tc-save-status" style="font-size:12px;margin-top:6px;font-weight:600;"></div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- /container -->
 </div><!-- /app -->
 
@@ -540,7 +566,7 @@ function phaseStatus(p) {
 
 /* ══ VIEW SWITCHING ══ */
 function switchView(view) {
-  ['overview','revenue','team','campaigns','accred'].forEach(function(v) {
+  ['overview','revenue','team','campaigns','accred','settings'].forEach(function(v) {
     document.getElementById('view-' + v).classList.toggle('active', v === view);
   });
   document.querySelectorAll('.view-tab').forEach(function(btn) {
@@ -550,6 +576,7 @@ function switchView(view) {
   if (view === 'team')      loadTeam();
   if (view === 'campaigns') loadCampaigns();
   if (view === 'accred')    loadAccred();
+  if (view === 'settings')  loadTcFromSupabase();
 }
 
 /* ══ AUTH ══ */
@@ -1279,6 +1306,46 @@ function uploadSignedPdf(ref, company, userName) {
     tc.requestAccessToken({ prompt: 'none' });
   };
   inp.click();
+}
+
+/* ══ T&C ADMIN ════════════════════════════════════════════════════════════ */
+var _tcDefaultScreen = '<p>By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.</p><p>The order value (plus VAT if applicable) is payable within 30 days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin.</p><p>All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested. If you would like instalments, these must be paid by Direct Debit, due the month prior to each month of the campaign.</p><p>The order form together with these terms and conditions constitute all terms of this contract. You are solely responsible for submitting suitable artwork/copy by the date agreed.</p><p>Materials must be supplied as: JPG, PNG or GIF for Online Ads; Word Document for content. Submitted via email to correct specifications.</p><p>If you fail to supply copy by the due date you will be responsible for paying for the advertising space even if your advertisement does not appear.</p><p>KPIs are averaged per month. Student Media Ltd will not be in breach if monthly KPIs are not met so long as total KPIs are met by campaign end.</p><p>This contract is conditional upon publisher approval of your copy/artwork. Student Media Ltd may partner with third parties to deliver KPIs.</p><p>Late payment attracts interest at 8% above Bank of England base rate under the Late Payment of Commercial Debts (Interest) Act 1998.</p><p>Student Media Ltd may cancel or pause your campaign if payment terms are not met. This contract is governed by the laws of England and Wales.</p>';
+
+function tcFmt(cmd) { document.getElementById('tc-admin-editor').focus(); document.execCommand(cmd, false, null); }
+
+function loadTcFromSupabase() {
+  var el = document.getElementById('tc-admin-editor');
+  if (!el) return;
+  sbFetch('/rest/v1/settings?key=eq.tc_screen&select=value')
+  .then(function(r) { return r.json(); })
+  .then(function(rows) {
+    if (rows && rows.length && rows[0].value) { el.innerHTML = rows[0].value; } else { el.innerHTML = _tcDefaultScreen; }
+    document.getElementById('tc-save-status').textContent = '';
+  })['catch'](function() { el.innerHTML = _tcDefaultScreen; });
+}
+
+function saveTcToSupabase() {
+  var el = document.getElementById('tc-admin-editor');
+  if (!el) return;
+  var html = el.innerHTML.trim();
+  if (!html) { alert('T&C content is empty.'); return; }
+  var statusEl = document.getElementById('tc-save-status');
+  statusEl.style.color = '#888'; statusEl.textContent = 'Saving…';
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  var paras = Array.from(tmp.querySelectorAll('p'));
+  var half = Math.ceil(paras.length / 2);
+  var col1 = paras.slice(0, half).map(function(p) { return p.outerHTML; }).join('');
+  var col2 = paras.slice(half).map(function(p) { return p.outerHTML; }).join('');
+  var printCols = '<div class="pl-tc-col">' + col1 + '</div><div class="pl-tc-col" style="border-left:0.5pt solid #ccc;padding-left:16pt;">' + col2 + '</div>';
+  Promise.all([
+    sbFetch('/rest/v1/settings', { method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' }, body: JSON.stringify({ key: 'tc_screen', value: html }) }),
+    sbFetch('/rest/v1/settings', { method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' }, body: JSON.stringify({ key: 'tc_print_cols', value: printCols }) })
+  ]).then(function(results) {
+    return Promise.all(results.map(function(r) { return r.ok ? Promise.resolve() : r.json().then(function(e) { throw new Error(JSON.stringify(e)); }); }));
+  }).then(function() {
+    statusEl.style.color = 'green'; statusEl.textContent = '✓ Saved — changes will appear on the order form next load.';
+  })['catch'](function(e) { statusEl.style.color = 'red'; statusEl.textContent = 'Error: ' + (e.message || String(e)); });
 }
 </script>
 </body>
