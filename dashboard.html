@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unifresher – Order Dashboard</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -759,7 +760,9 @@ function renderTable(rows) {
         sentLbl + '</div></td>' +
       '<td class="check-cell"><div class="order-checkbox-wrap">' +
         '<input type="checkbox" class="order-checkbox" ' + signedChecked + ' onchange="markSigned(\'' + row.id + '\',this)">' +
-        signedLbl + '</div></td>' +
+        signedLbl + '</div>' +
+        (isSigned ? '<button onclick="uploadSignedPdf(\\'' + escHtml(row.ref||'') + '\\',\\'' + escHtml(row.company||'') + '\\',\\'' + escHtml(row.user_name||'') + '\\')" style="margin-top:5px;font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid #702DD7;background:#fff;color:#702DD7;cursor:pointer;width:100%">☁ Upload PDF</button>' : '') +
+        '</td>' +
       '<td class="check-cell">' + verifyCell + '</td>' +
     '</tr>';
   });
@@ -1215,6 +1218,68 @@ function renderAccred(rows) {
     }
   } catch(e) { try { localStorage.removeItem('uf_session'); } catch(e2) {} }
 })();
+</script>
+
+<input type="file" id="drive-upload-input" accept="application/pdf" style="display:none">
+
+<script>
+/* ══ GOOGLE DRIVE UPLOAD ════════════════════════════════════════════════ */
+var GDRIVE_CLIENT_ID = '978032756141-8ch9id7gvdhvp2qke5lqf0vts453vur2.apps.googleusercontent.com';
+var _driveToken = null;
+
+function driveUploadBlob(blob, filename, accessToken, folderId) {
+  var metadata = { name: filename, mimeType: 'application/pdf', parents: [folderId] };
+  var form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+  form.append('file', blob);
+  return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + accessToken },
+    body: form
+  }).then(function(r) { return r.json(); });
+}
+
+function doUploadSignedPdf(file, ref, company, userName) {
+  sbFetch('profiles?name=eq.' + encodeURIComponent(userName) + '&select=drive_folder_id')
+  .then(function(r) { return r.json(); })
+  .then(function(profiles) {
+    var folderId = profiles && profiles[0] && profiles[0].drive_folder_id;
+    if (!folderId) { toast('No Drive folder set for ' + userName + ' — ask admin to set one.'); return; }
+    var filename = (ref + ' - ' + company.split(/[,\n]/)[0].trim() + ' (Signed).pdf').replace(/[<>:"/\\|?*]/g, '').trim();
+    toast('Uploading to Drive…');
+    driveUploadBlob(file, filename, _driveToken, folderId)
+    .then(function(resp) {
+      if (resp && resp.id) {
+        toast('✓ Uploaded: ' + filename);
+      } else {
+        toast('Upload failed: ' + JSON.stringify(resp).substring(0, 80));
+      }
+    });
+  })
+  ['catch'](function(e) { toast('Error: ' + (e.message || 'Upload failed')); });
+}
+
+function uploadSignedPdf(ref, company, userName) {
+  var inp = document.getElementById('drive-upload-input');
+  inp.value = '';
+  inp.onchange = function() {
+    var file = inp.files[0];
+    if (!file) return;
+    if (_driveToken) { doUploadSignedPdf(file, ref, company, userName); return; }
+    if (!window.google || !google.accounts) { toast('Google not loaded yet — try again in a moment.'); return; }
+    var tc = google.accounts.oauth2.initTokenClient({
+      client_id: GDRIVE_CLIENT_ID,
+      scope: 'https://www.googleapis.com/auth/drive',
+      callback: function(resp) {
+        if (resp.error) { toast('Auth failed: ' + resp.error); return; }
+        _driveToken = resp.access_token;
+        doUploadSignedPdf(file, ref, company, userName);
+      }
+    });
+    tc.requestAccessToken({ prompt: 'none' });
+  };
+  inp.click();
+}
 </script>
 </body>
 </html>
