@@ -2100,6 +2100,40 @@ function doLogout() {
     }
   }
   initUniNumber(); // validate UNI field on load
+
+  // Fetch T&Cs from Supabase settings and apply to form
+  (function() {
+    var SB_URL_TC = 'https://jyljjlaqogqpsdtvseqf.supabase.co';
+    var SB_KEY_TC = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
+    fetch(SB_URL_TC + '/rest/v1/settings?key=in.(tc_screen,tc_print_cols)&select=key,value', {
+      headers: { 'apikey': SB_KEY_TC, 'Content-Type': 'application/json' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      if (!Array.isArray(rows) || !rows.length) return;
+      var tcScreen = null, tcPrintCols = null;
+      rows.forEach(function(r) {
+        if (r.key === 'tc_screen') tcScreen = r.value;
+        if (r.key === 'tc_print_cols') tcPrintCols = r.value;
+      });
+      if (tcScreen) {
+        var box = document.getElementById('tc-box');
+        if (box) {
+          var title = box.querySelector('.tc-title');
+          var bank  = box.querySelector('.bank-details');
+          var titleHtml = title ? title.outerHTML : '';
+          var bankHtml  = bank  ? bank.outerHTML  : '';
+          box.innerHTML = titleHtml + tcScreen + bankHtml;
+        }
+      }
+      if (tcPrintCols) {
+        var colsEl = document.querySelector('.pl-tc-cols');
+        if (colsEl) colsEl.innerHTML = tcPrintCols;
+      }
+      if (typeof updatePaymentTerms === 'function') updatePaymentTerms();
+    })
+    ['catch'](function() {});
+  })();
 })();
 
 function captureFormData() {
