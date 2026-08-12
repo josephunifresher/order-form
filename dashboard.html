@@ -248,7 +248,7 @@
         <div class="spacer"></div>
         <div class="admin-wrap" id="admin-wrap">
           <label class="admin-toggle-label">
-            <input type="checkbox" id="admin-toggle" onchange="buildMonthTabs()">
+            <input type="checkbox" id="admin-toggle" onchange="loadOrders()">
             View all users
           </label>
         </div>
@@ -743,7 +743,16 @@ function loadOrders() {
 
 function renderTable(rows) {
   document.getElementById('tbl-loading').style.display = 'none';
-  if (!rows || rows.length === 0) {
+  if (!rows) rows = [];
+
+  // Filter by current user unless admin has "View all users" toggled on
+  var showAll = _isAdmin && document.getElementById('admin-toggle').checked;
+  if (!showAll) {
+    var myName = ((_session && _session.user && _session.user.user_metadata) || {}).full_name || '';
+    if (myName) rows = rows.filter(function(r) { return r.user_name === myName; });
+  }
+
+  if (rows.length === 0) {
     document.getElementById('no-data').style.display = 'block';
     updateCards(0,0,0,0,0); return;
   }
