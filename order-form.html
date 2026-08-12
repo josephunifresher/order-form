@@ -646,6 +646,7 @@
   <div class="totals-wrap">
     <table class="totals-table">
       <tr><td>NET:</td><td id="net-total">£0.00</td></tr>
+      <tr id="instalment-fee-row" style="display:none"><td style="color:#702DD7;font-weight:600;">Instalment Admin Fee:</td><td id="instalment-fee-display" style="text-align:right;color:#702DD7;font-weight:600;">£40.00 + VAT</td></tr>
       <tr class="discount-row" id="discount-row" style="display:none">
         <td id="discount-label-cell">Discount:</td>
         <td id="discount-display" style="text-align:right">–£0.00</td>
@@ -1190,7 +1191,14 @@ function recalc() {
   var discPct  = parseFloat(document.getElementById('discount-pct').value) || 0;
   var discAmt  = parseFloat(document.getElementById('discount-amt').value) || 0;
   var discount = discAmt > 0 ? discAmt : (discPct > 0 ? net * discPct / 100 : 0);
-  var netAfter = net - discount;
+
+  // Instalment admin fee: £40 added after discount, before VAT
+  var _pmChecked = document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked;
+  var instalmentFee = _pmChecked ? 40 : 0;
+  var _ifRow = document.getElementById('instalment-fee-row');
+  if (_ifRow) _ifRow.style.display = _pmChecked ? '' : 'none';
+
+  var netAfter = net - discount + instalmentFee;
 
   var discRow = document.getElementById('discount-row');
   if (discount > 0) {
@@ -1297,6 +1305,10 @@ function populatePrintLayout() {
   tfoot.appendChild(sepRow);
 
   tfoot.appendChild(makeTotRow('NET:', document.getElementById('net-total').textContent, false, false));
+
+  if (document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked) {
+    tfoot.appendChild(makeTotRow('Instalment Admin Fee:', '£40.00 + VAT', false, false));
+  }
 
   var discAmt2 = parseFloat(document.getElementById('discount-amt').value) || 0;
   var discPct2 = parseFloat(document.getElementById('discount-pct').value) || 0;
@@ -2842,6 +2854,7 @@ function updateClProgress() {
       var checked = document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked;
       var clGroup = document.getElementById('pay-monthly-cl-group');
       if (clGroup) clGroup.style.display = checked ? 'block' : 'none';
+      recalc();
           var notesRow = document.getElementById('pay-monthly-notes-row');
               if (notesRow) notesRow.style.display = checked ? 'block' : 'none';
                   if (!checked) { var n = document.getElementById('pay-monthly-notes'); if(n) n.value=''; }
@@ -3954,6 +3967,14 @@ function generateTextBasedPdfBlob(filename) {
       doc.text('NET:', lX, y, { align: 'right' });
       doc.text((document.getElementById('net-total')||{}).textContent || '£0.00', rX2, y, { align: 'right' });
       y += 5;
+
+      if (document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked) {
+        doc.setTextColor(112, 45, 215);
+        doc.text('Instalment Admin Fee:', lX, y, { align: 'right' });
+        doc.text('£40.00 + VAT', rX2, y, { align: 'right' });
+        doc.setTextColor(0, 0, 0);
+        y += 5;
+      }
 
       var discAmt = parseFloat((document.getElementById('discount-amt')||{}).value) || 0;
       var discPct = parseFloat((document.getElementById('discount-pct')||{}).value) || 0;
