@@ -1138,7 +1138,7 @@ function updatePaymentTerms() {
     });
     document.querySelectorAll('.tc-pay-days').forEach(function(el) { el.textContent = isReceipt ? 'receipt' : days; });
   var warn = document.getElementById('payment-terms-warning');
-  if (warn) warn.style.display = (days !== '30') ? 'block' : 'none';
+  if (warn) warn.style.display = (days !== '30' && days !== 'receipt') ? 'block' : 'none';
 }
 
 // Auto-select "Due on receipt" if earliest campaign go-live is within 1 month
