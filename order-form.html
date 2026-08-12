@@ -3495,7 +3495,8 @@ function uploadToDrive(accessToken, btn) {
   var refNo = document.getElementById('ref-no').value || 'REF';
   var companyFull = document.getElementById('client-company').value || 'Client';
   var company = companyFull.split(/[,\n]/)[0].trim();
-  var baseName = (refNo + ' - ' + company).replace(/[<>:"\/\\|?*]/g, '').trim();
+    var isOoh = (window.formType === 'OOH');
+  var baseName = (refNo + ' - ' + company + (isOoh ? ' - OOH' : '')).replace(/[<>:"/\|?*]/g, '').trim();
   var orderFilename     = baseName + '.pdf';
   var checklistFilename = baseName + ' - Checklist.pdf';
 
