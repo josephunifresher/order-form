@@ -384,10 +384,17 @@
 
     <!-- ══════════════════ ACCREDITATION ══════════════════ -->
     <div id="view-accred" class="view">
-      <div class="section-head" style="margin-bottom:18px">
+      <div class="toolbar">
         <div>
           <div class="section-title">🎓 Accreditation Follow-up</div>
           <div class="section-sub">Partners pending accreditation verification</div>
+        </div>
+        <div class="spacer"></div>
+        <div class="admin-wrap accred-admin-wrap">
+          <label class="admin-toggle-label">
+            <input type="checkbox" id="accred-admin-toggle" onchange="loadAccred()">
+            View all users
+          </label>
         </div>
       </div>
       <div class="table-wrap">
@@ -624,7 +631,7 @@ function onLoggedIn() {
     document.querySelectorAll('.view-tab.admin-only').forEach(function(el) {
       el.style.display = 'block';
     });
-    document.querySelectorAll('.rev-admin-wrap, .camp-admin-wrap').forEach(function(el) {
+    document.querySelectorAll('.rev-admin-wrap, .camp-admin-wrap, .accred-admin-wrap').forEach(function(el) {
       el.style.display = 'block';
     });
   }
@@ -1202,6 +1209,12 @@ function loadAccred() {
 function renderAccred(rows) {
   document.getElementById('accred-loading').style.display = 'none';
   rows = rows || [];
+
+  var showAll = _isAdmin && document.getElementById('accred-admin-toggle') && document.getElementById('accred-admin-toggle').checked;
+  if (!showAll) {
+    var myName = ((_session && _session.user && _session.user.user_metadata) || {}).full_name || '';
+    if (myName) rows = rows.filter(function(r) { return r.user_name === myName; });
+  }
 
   var accredRows = rows.filter(function(row) {
     var fd = row.form_data || {};
