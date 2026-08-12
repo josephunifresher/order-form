@@ -2571,7 +2571,7 @@ function loadAdminTc() {
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     el.innerHTML = (rows && rows[0] && rows[0].value) ? rows[0].value : '<p>No T&Cs saved yet.</p>';
-  })['catch'](function() { el.innerHTML = '<p style="color:#e74c3c">Could not load T&Cs.</p>'; });
+  })['catch'](function() { el.innerHTML = '<p>By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.</p><p>The order value (plus VAT if applicable) is payable within 30 days of invoice and/or return of this confirmation. Your invoice must be paid and payment cleared before your campaign can begin.</p><p>All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested.</p><p>The order form together with these terms and conditions constitute all terms of this contract. You are solely responsible for submitting suitable artwork/copy by the date agreed.</p><p>Materials must be supplied as JPG, PNG or GIF for Online Ads; Word Document for content.</p><p>If you fail to supply copy by the due date you will be responsible for paying for the advertising space even if your advertisement does not appear.</p><p>KPIs are averaged per month. Student Media Ltd will not be in breach if monthly KPIs are not met so long as total KPIs are met by campaign end.</p><p>Late payment attracts interest at 8% above Bank of England base rate. Student Media Ltd may cancel or pause your campaign if payment terms are not met. This contract is governed by the laws of England and Wales.</p>'; });
 }
 
 function saveAdminTc() {
