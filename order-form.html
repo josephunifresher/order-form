@@ -2959,13 +2959,15 @@ function calcDuration(startVal, endVal) {
   var sd = new Date(startVal + 'T00:00:00');
   var ed = new Date(endVal   + 'T00:00:00');
   if (isNaN(sd) || isNaN(ed) || ed < sd) return null;
-  var totalDays = Math.round((ed - sd) / 86400000);
-  // Full calendar months
-  var months = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth());
+  // End date is inclusive (last day of campaign), so use day-after as exclusive end
+  var edExcl = new Date(ed.getTime() + 86400000);
+  var totalDays = Math.round((edExcl - sd) / 86400000);
+  // Full calendar months (using exclusive end so e.g. Aug 1->Aug 31 = 1m correctly)
+  var months = (edExcl.getFullYear() - sd.getFullYear()) * 12 + (edExcl.getMonth() - sd.getMonth());
   // Date that is exactly 'months' calendar months after start
   var pivot = new Date(sd.getFullYear(), sd.getMonth() + months, sd.getDate());
-  if (pivot > ed) { months--; pivot = new Date(sd.getFullYear(), sd.getMonth() + months, sd.getDate()); }
-  var remainingDays = Math.round((ed - pivot) / 86400000);
+  if (pivot > edExcl) { months--; pivot = new Date(sd.getFullYear(), sd.getMonth() + months, sd.getDate()); }
+  var remainingDays = Math.round((edExcl - pivot) / 86400000);
   var weeks = Math.floor(remainingDays / 7);
   var days  = remainingDays % 7;
   return { months: months, weeks: weeks, days: days, totalDays: totalDays };
