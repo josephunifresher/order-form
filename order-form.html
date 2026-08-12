@@ -2539,7 +2539,24 @@ function renderAdminBody() {
       html += '</tbody></table>';
     }
     html += '</div>';
+    // ── T&C Editor ──
+    html += '<div class="adm-section"><h3>📋 Terms &amp; Conditions</h3>';
+    html += '<div style="margin-bottom:8px;display:flex;gap:4px;flex-wrap:wrap;">';
+    html += '<button type="button" onclick="document.getElementById(\'adm-tc-editor\').focus();document.execCommand(\'bold\',false,null)" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;font-weight:700;font-size:12px;">B</button>';
+    html += '<button type="button" onclick="document.getElementById(\'adm-tc-editor\').focus();document.execCommand(\'italic\',false,null)" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;font-style:italic;font-size:12px;">I</button>';
+    html += '<button type="button" onclick="document.getElementById(\'adm-tc-editor\').focus();document.execCommand(\'underline\',false,null)" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;text-decoration:underline;font-size:12px;">U</button>';
+    html += '<button type="button" onclick="document.getElementById(\'adm-tc-editor\').focus();document.execCommand(\'removeFormat\',false,null)" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;font-size:11px;color:#888;">✕ Clear</button>';
+    html += '</div>';
+    html += '<div id="adm-tc-editor" contenteditable="true" spellcheck="false" style="min-height:220px;border:1.5px solid #ddd;border-radius:8px;padding:14px 16px;font-size:12.5px;line-height:1.7;font-family:\'Lato\',Arial,sans-serif;color:#222;background:#fafafa;outline:none;margin-bottom:10px;"><em style=\"color:#aaa\">Loading…</em></div>';
+    html += '<div style="display:flex;gap:8px;align-items:center;">';
+    html += '<button onclick="saveAdminTc()" style="padding:6px 20px;border-radius:20px;border:none;background:var(--purple);color:#fff;font-size:12px;cursor:pointer;font-weight:700;">💾 Save T&amp;Cs</button>';
+    html += '<span id="adm-tc-status" style="font-size:12px;font-weight:600;"></span>';
+    html += '</div>';
+    html += '<p style="font-size:11px;color:#888;margin-top:8px;">Changes update the T&amp;Cs on the order form for all users.</p>';
+    html += '</div>';
+
     document.getElementById('admin-body').innerHTML = html;
+    setTimeout(loadAdminTc, 50);
   })['catch'](function() {
     document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Could not load data — check connection.</div>';
   });
@@ -2547,6 +2564,38 @@ function renderAdminBody() {
 
 // Extract a bare Drive folder ID from either a raw ID or a full Drive URL.
 // e.g. "https://drive.google.com/drive/u/0/folders/1ABC..." → "1ABC..."
+function loadAdminTc() {
+  var el = document.getElementById('adm-tc-editor');
+  if (!el) return;
+  sbFetch('settings?key=eq.tc_screen&select=value')
+  .then(function(r) { return r.json(); })
+  .then(function(rows) {
+    el.innerHTML = (rows && rows[0] && rows[0].value) ? rows[0].value : '<p>No T&Cs saved yet.</p>';
+  })['catch'](function() { el.innerHTML = '<p style="color:#e74c3c">Could not load T&Cs.</p>'; });
+}
+
+function saveAdminTc() {
+  var el = document.getElementById('adm-tc-editor');
+  var statusEl = document.getElementById('adm-tc-status');
+  if (!el || !statusEl) return;
+  var html = el.innerHTML.trim();
+  if (!html) { alert('T&C content is empty.'); return; }
+  statusEl.style.color = '#888'; statusEl.textContent = 'Saving…';
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  var paras = Array.from(tmp.querySelectorAll('p'));
+  var half = Math.ceil(paras.length / 2);
+  var col1 = paras.slice(0, half).map(function(p) { return p.outerHTML; }).join('');
+  var col2 = paras.slice(half).map(function(p) { return p.outerHTML; }).join('');
+  var printCols = '<div class="pl-tc-col">' + col1 + '</div><div class="pl-tc-col" style="border-left:0.5pt solid #ccc;padding-left:16pt;">' + col2 + '</div>';
+  Promise.all([
+    sbFetch('settings', 'POST', { key: 'tc_screen', value: html }, { 'Prefer': 'resolution=merge-duplicates,return=representation' }),
+    sbFetch('settings', 'POST', { key: 'tc_print_cols', value: printCols }, { 'Prefer': 'resolution=merge-duplicates,return=representation' })
+  ]).then(function() {
+    statusEl.style.color = 'green'; statusEl.textContent = '✓ Saved!';
+  })['catch'](function() { statusEl.style.color = 'red'; statusEl.textContent = 'Error saving.'; });
+}
+
 function parseDriveFolderId(val) {
   if (!val) return '';
   val = val.trim();
