@@ -805,7 +805,7 @@ function renderTable(rows) {
       '<td class="check-cell"><div class="order-checkbox-wrap">' +
         '<input type="checkbox" class="order-checkbox" ' + signedChecked + ' onchange="markSigned(\'' + row.id + '\',this)">' +
         signedLbl + '</div>' +
-        (isSigned ? '<button onclick="uploadSignedPdf(\'' + escHtml(row.ref||'') + '\',\'' + escHtml(row.company||'') + '\',\'' + escHtml(row.user_name||'') + '\') style="margin-top:5px;font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid #702DD7;background:#fff;color:#702DD7;cursor:pointer;width:100%">☁ Upload PDF</button>' : '') +
+        (isSigned ? '<button onclick="uploadSignedPdf(\'' + escHtml(row.ref||'') + '\',\'' + escHtml(row.company||'') + '\',\'' + escHtml(row.user_name||'') + '\')" style="margin-top:5px;font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid #702DD7;background:#fff;color:#702DD7;cursor:pointer;width:100%">☁ Upload PDF</button>' : '') +
         '</td>' +
       '<td class="check-cell">' + verifyCell + '</td>' +
     '</tr>';
