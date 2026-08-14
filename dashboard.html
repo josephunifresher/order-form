@@ -7,7 +7,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lhato:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -1335,39 +1335,27 @@ function doUploadSignedPdf(file, ref, company, userName) {
 }
 
 function uploadSignedPdf(ref, company, userName) {
-  _driveToken = null;
-  var inp = document.getElementById('drive-upload-input');
-  inp.value = '';
-  inp.onchange = function() {
-    var file = inp.files[0];
-    if (!file) { toast('No file selected.'); return; }
-    if (!window.google || !google.accounts) { toast('Google Drive not loaded — refresh and try again.'); return; }
-    toast('Authorising Google Drive…');
-    var tc = google.accounts.oauth2.initTokenClient({
-      client_id: GDRIVE_CLIENT_ID,
-      scope: 'https://www.googleapis.com/auth/drive',
-      callback: function(resp) {
-        if (resp.error) {
-          if (resp.error === 'consent_required' || resp.error === 'interaction_required') {
-            toast('Google sign-in needed — please allow access in the popup…');
-            tc.requestAccessToken({ prompt: 'consent' });
-          } else {
-            toast('Google auth failed: ' + resp.error);
-          }
-          return;
-        }
-        _driveToken = resp.access_token;
+  if (!window.google || !google.accounts) { toast('Google Drive not loaded — refresh and try again.'); return; }
+  toast('Connecting to Google Drive…');
+  var tc = google.accounts.oauth2.initTokenClient({
+    client_id: GDRIVE_CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/drive',
+    callback: function(resp) {
+      if (resp.error) { toast('Google auth failed: ' + resp.error); return; }
+      _driveToken = resp.access_token;
+      var inp = document.getElementById('drive-upload-input');
+      inp.value = '';
+      inp.onchange = function() {
+        var file = inp.files[0];
+        if (!file) return;
         toast('Uploading to Drive…');
         doUploadSignedPdf(file, ref, company, userName);
-      }
-    });
-    tc.requestAccessToken({ prompt: '' });
-  };
-  inp.click();
+      };
+      inp.click();
+    }
+  });
+  tc.requestAccessToken({ prompt: '' });
 }
-
-/* ══ T&C ADMIN ════════════════════════════════════════════════════════════ */
-var _tcDefaultScreen = '<p>By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.</p><p>The order value (plus VAT if applicable) is payable within 30 days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin.</p><p>All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested. If you would like instalments, these must be paid by Direct Debit, due the month prior to each month of the campaign.</p><p>The order form together with these terms and conditions constitute all terms of this contract. You are solely responsible for submitting suitable artwork/copy by the date agreed.</p><p>Materials must be supplied as: JPG, PNG or GIF for Online Ads; Word Document for content. Submitted via email to correct specifications.</p><p>If you fail to supply copy by the due date you will be responsible for paying for the advertising space even if your advertisement does not appear.</p><p>KPIs are averaged per month. Student Media Ltd will not be in breach if monthly KPIs are not met so long as total KPIs are met by campaign end.</p><p>This contract is conditional upon publisher approval of your copy/artwork. Student Media Ltd may partner with third parties to deliver KPIs.</p><p>Late payment attracts interest at 8% above Bank of England base rate under the Late Payment of Commercial Debts (Interest) Act 1998.</p><p>Student Media Ltd may cancel or pause your campaign if payment terms are not met. This contract is governed by the laws of England and Wales.</p>';
 
 function tcFmt(cmd) { document.getElementById('tc-admin-editor').focus(); document.execCommand(cmd, false, null); }
 
