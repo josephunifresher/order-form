@@ -1331,16 +1331,16 @@ function doUploadSignedPdf(file, ref, company, userName) {
       }
     });
   })
-  ['catch'](function(e) { toast('Error: ' + (e.message || 'Upload failed')); });
+  ['catch'](function(e) { _driveToken = null; toast('Error: ' + (e.message || 'Upload failed — please try again')); });
 }
 
 function uploadSignedPdf(ref, company, userName) {
+  _driveToken = null;
   var inp = document.getElementById('drive-upload-input');
   inp.value = '';
   inp.onchange = function() {
     var file = inp.files[0];
     if (!file) return;
-    if (_driveToken) { doUploadSignedPdf(file, ref, company, userName); return; }
     if (!window.google || !google.accounts) { toast('Google not loaded yet — try again in a moment.'); return; }
     var tc = google.accounts.oauth2.initTokenClient({
       client_id: GDRIVE_CLIENT_ID,
