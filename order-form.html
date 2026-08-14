@@ -673,6 +673,10 @@
       </div>
       <div class="notes-area" id="campaign-notes" contenteditable="true" spellcheck="true">Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month.</div>
       <span class="error-label" id="err-campaign-notes">Campaign notes are required</span>
+      <div style="margin-top:12px;">
+        <label style="font-size:11px;font-weight:700;color:var(--purple-dark);text-transform:uppercase;letter-spacing:.5px;">Additional Info <span style="font-size:10px;font-weight:400;color:#888;">(e.g. No dates have been agreed)</span></label>
+        <textarea id="additional-info" rows="3" style="width:100%;margin-top:4px;border:1px solid var(--purple-lighter);border-radius:6px;padding:8px;font-size:12px;font-family:'Lato',Arial,sans-serif;resize:vertical;box-sizing:border-box;" placeholder="Any additional notes or caveats..."></textarea>
+      </div>
     </div>
     <div class="dates-col">
       <div class="camp-dates-label">Campaign Dates</div>
@@ -919,6 +923,7 @@
   <hr class="pl-hr">
   <div class="pl-notes-label">Notes:</div>
   <div id="pl-notes" class="pl-notes-body"></div>
+          <div id="pl-additional-info-wrap" style="display:none;margin-top:6pt;padding:5pt 10pt;background:#fffbf0;border-left:3pt solid #f39c12;font-size:9pt;line-height:1.5;"><strong>Additional Info:</strong> <span id="pl-additional-info-text" style="white-space:pre-wrap;"></span></div>
           <div id="pl-accred-wrap" style="display:none;margin-top:6pt;padding:5pt 10pt;background:#f0fff4;border-left:3pt solid #27ae60;font-size:9pt;line-height:1.5;"><strong>Accreditation Scheme:</strong> <span id="pl-accred-text"></span></div>
           <div id="pl-pay-monthly-wrap" style="display:none;margin-top:4pt;"><div style="font-size:10pt;font-weight:bold;color:#cc0000;">* Pay in Instalments *</div><div id="pl-pay-monthly-notes-text" style="font-size:9pt;color:#333;margin-top:2pt;white-space:pre-wrap;"></div></div>
 
@@ -1323,6 +1328,14 @@ function populatePrintLayout() {
   tfoot.appendChild(makeTotRow('TOTAL:', document.getElementById('grand-total').textContent, true, true));
 
   document.getElementById('pl-notes').innerHTML = document.getElementById('campaign-notes').innerHTML || '';
+  var _aiEl = document.getElementById('additional-info');
+  var _aiWrap = document.getElementById('pl-additional-info-wrap');
+  var _aiText = document.getElementById('pl-additional-info-text');
+  if (_aiEl && _aiWrap && _aiText) {
+    var _aiVal = (_aiEl.value || '').trim();
+    if (_aiVal) { _aiText.textContent = _aiVal; _aiWrap.style.display = 'block'; }
+    else { _aiWrap.style.display = 'none'; }
+  }
   // Accreditation print
   var plAccredWrap = document.getElementById('pl-accred-wrap');
   var plAccredText = document.getElementById('pl-accred-text');
@@ -2181,6 +2194,7 @@ function captureFormData() {
     discountAmt:  (document.getElementById('discount-amt')    || {}).value || '',
     vatRate:      (document.getElementById('vat-rate')        || {}).value || '20',
     notesHtml:    (document.getElementById('campaign-notes')  || {}).innerHTML || '',
+    additionalInfo: (document.getElementById('additional-info') || {}).value || '',
     clBy:         (document.getElementById('cl-by')           || {}).value || '',
     items:        rows,
     campDates:    campDates,
@@ -2227,6 +2241,8 @@ function restoreFormData(data) {
   setVal('vat-rate',       data.vatRate || '20');
   if (document.getElementById('campaign-notes') && data.notesHtml)
     document.getElementById('campaign-notes').innerHTML = data.notesHtml;
+  if (document.getElementById('additional-info') && data.additionalInfo)
+    document.getElementById('additional-info').value = data.additionalInfo;
   if (document.getElementById('cl-by') && data.clBy)
     document.getElementById('cl-by').value = data.clBy;
     // Restore accreditation
