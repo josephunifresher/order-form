@@ -1316,8 +1316,10 @@ function doUploadSignedPdf(file, ref, company, userName) {
   sbFetch('profiles?name=eq.' + encodeURIComponent(userName) + '&select=drive_folder_id')
   .then(function(r) { return r.json(); })
   .then(function(profiles) {
-    var folderId = profiles && profiles[0] && profiles[0].drive_folder_id;
-    if (!folderId) { toast('No Drive folder set for ' + userName + ' — ask admin to set one.'); return; }
+    var rawFolder = profiles && profiles[0] && profiles[0].drive_folder_id;
+    if (!rawFolder) { toast('No Drive folder set for ' + userName + ' — ask admin to set one.'); return; }
+    var folderMatch = rawFolder.match(/folders\/([\w-]+)/);
+    var folderId = folderMatch ? folderMatch[1] : rawFolder;
     var filename = (ref + ' - ' + company.split(/[,\n]/)[0].trim() + ' (Signed).pdf').replace(/[<>:"/\\|?*]/g, '').trim();
     toast('Uploading to Drive…');
     driveUploadBlob(file, filename, _driveToken, folderId)
