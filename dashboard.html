@@ -1340,14 +1340,24 @@ function uploadSignedPdf(ref, company, userName) {
   inp.value = '';
   inp.onchange = function() {
     var file = inp.files[0];
-    if (!file) return;
-    if (!window.google || !google.accounts) { toast('Google not loaded yet — try again in a moment.'); return; }
+    if (!file) { toast('No file selected.'); return; }
+    if (!window.google || !google.accounts) { toast('Google Drive not loaded — refresh and try again.'); return; }
+    toast('Authorising Google Drive…');
     var tc = google.accounts.oauth2.initTokenClient({
       client_id: GDRIVE_CLIENT_ID,
       scope: 'https://www.googleapis.com/auth/drive',
       callback: function(resp) {
-        if (resp.error) { toast('Auth failed: ' + resp.error); return; }
+        if (resp.error) {
+          if (resp.error === 'consent_required' || resp.error === 'interaction_required') {
+            toast('Google sign-in needed — please allow access in the popup…');
+            tc.requestAccessToken({ prompt: 'consent' });
+          } else {
+            toast('Google auth failed: ' + resp.error);
+          }
+          return;
+        }
         _driveToken = resp.access_token;
+        toast('Uploading to Drive…');
         doUploadSignedPdf(file, ref, company, userName);
       }
     });
