@@ -7,7 +7,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lhato:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lhhato:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -872,7 +872,7 @@ function markSigned(id, cb) {
       var addInfo = fd2.additionalInfo || '';
       var signedBy = ((_session && _session.user && _session.user.user_metadata) || {}).full_name || ((_session && _session.user) || {}).email || '';
       var msgLines = ['Order signed: ' + (ref2 ? ref2 + ' – ' : '') + company2, 'Signed by: ' + signedBy, 'Signed at: ' + new Date().toLocaleString('en-GB')];
-      if (addInfo) msgLines.push('<br><br><strong>Additional Info:</strong><br>' + addInfo);
+      if (addInfo) msgLines.push('Additional Info: ' + addInfo);
       var EJ = { publicKey: 'X8v7VjuJWZ9mNRo23', serviceId: 'service_a5nfqxx', templateId: 'template_8h5woef' };
       if (window.emailjs) {
         emailjs.init({ publicKey: EJ.publicKey });
@@ -882,7 +882,7 @@ function markSigned(id, cb) {
           company: company2, contact: ref2, filled_by: signedBy, ref: ref2,
           date_time: new Date().toLocaleString('en-GB'),
           form_url: 'https://josephunifresher.github.io/order-form/',
-          message: msgLines.join('<br>')
+                    message: msgLines.join('<br>'), additional_info: addInfo || ''
         })['catch'](function(err) { console.warn('Signed email failed:', err); });
       }
     })['catch'](function(e) { console.warn('Email fetch error:', e); });
