@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unifresher – Order Dashboard</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -862,6 +863,29 @@ function markSigned(id, cb) {
   .then(function(r) {
     if (!r.ok) throw new Error('patch failed');
     toast('Signed ✓ — partner verification timer set for 5 working days');
+    sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data,user_name')
+    .then(function(r2) { return r2.json(); })
+    .then(function(rows2) {
+      var fd2 = (rows2[0] && rows2[0].form_data) || {};
+      var ref2 = fd2.ref || fd2.refNo || '';
+      var company2 = fd2.company || '';
+      var addInfo = fd2.additionalInfo || '';
+      var signedBy = ((_session && _session.user && _session.user.user_metadata) || {}).full_name || ((_session && _session.user) || {}).email || '';
+      var msgLines = ['Order signed: ' + (ref2 ? ref2 + ' – ' : '') + company2, 'Signed by: ' + signedBy, 'Signed at: ' + new Date().toLocaleString('en-GB')];
+      if (addInfo) msgLines.push('\nAdditional Info:\n' + addInfo);
+      var EJ = { publicKey: 'X8v7VjuJWZ9mNRo23', serviceId: 'service_a5nfqxx', templateId: 'template_8h5woef' };
+      if (window.emailjs) {
+        emailjs.init({ publicKey: EJ.publicKey });
+        emailjs.send(EJ.serviceId, EJ.templateId, {
+          to_email: 'joseph@unifresher.co.uk,adam@unifresher.co.uk',
+          subject: (ref2 ? ref2 + ' – ' : '') + company2 + ' — Order Signed',
+          company: company2, contact: ref2, filled_by: signedBy, ref: ref2,
+          date_time: new Date().toLocaleString('en-GB'),
+          form_url: 'https://josephunifresher.github.io/order-form/',
+          message: msgLines.join('\n')
+        })['catch'](function(err) { console.warn('Signed email failed:', err); });
+      }
+    })['catch'](function(e) { console.warn('Email fetch error:', e); });
     loadOrders();
   })
   .catch(function(e) { toast('Error: ' + (e.message||'Could not update.')); cb.disabled = false; cb.checked = false; });
