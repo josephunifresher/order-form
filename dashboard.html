@@ -1337,30 +1337,42 @@ function doUploadSignedPdf(file, ref, company, userName) {
 
 function uploadSignedPdf(ref, company, userName) {
   if (!window.google || !google.accounts) { toast('Google Drive not loaded — refresh and try again.'); return; }
-  if (!_driveToken) {
-    toast('Connecting to Google Drive…');
-    var tc = google.accounts.oauth2.initTokenClient({
-      client_id: GDRIVE_CLIENT_ID,
-      scope: 'https://www.googleapis.com/auth/drive',
-      callback: function(resp) {
-        if (resp.error) { toast('Google auth failed: ' + resp.error); return; }
-        _driveToken = resp.access_token;
-        toast('✅ Drive connected! Click Upload PDF again to pick your file.');
-      }
-    });
-    tc.requestAccessToken();
-    return;
-  }
   var inp = document.getElementById('drive-upload-input');
   if (!inp) { toast('Upload input not found'); return; }
   inp.value = '';
   inp.onchange = function() {
     var file = inp.files[0];
     if (!file) return;
-    toast('Uploading to Drive…');
-    doUploadSignedPdf(file, ref, company, userName);
+    if (_driveToken) {
+      toast('Uploading to Drive…');
+      doUploadSignedPdf(file, ref, company, userName);
+      return;
+    }
+    toast('Waiting for Google sign-in…');
+    var tries = 0;
+    var poll = setInterval(function() {
+      tries++;
+      if (_driveToken) {
+        clearInterval(poll);
+        toast('Uploading to Drive…');
+        doUploadSignedPdf(file, ref, company, userName);
+      } else if (tries > 60) {
+        clearInterval(poll);
+        toast('Google sign-in timed out. Allow popups for this site and try again.');
+      }
+    }, 500);
   };
   inp.click();
+  if (!_driveToken) {
+    google.accounts.oauth2.initTokenClient({
+      client_id: GDRIVE_CLIENT_ID,
+      scope: 'https://www.googleapis.com/auth/drive',
+      callback: function(resp) {
+        if (resp.error) { toast('Google auth failed: ' + resp.error); return; }
+        _driveToken = resp.access_token;
+      }
+    }).requestAccessToken();
+  }
 }
     });
     tc.requestAccessToken();
