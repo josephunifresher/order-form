@@ -1337,13 +1337,7 @@ function doUploadSignedPdf(file, ref, company, userName) {
 
 function uploadSignedPdf(ref, company, userName) {
   if (!window.google || !google.accounts) { toast('Google Drive not loaded — refresh and try again.'); return; }
-  var inp = document.getElementById('drive-upload-input');
-  if (!inp) { toast('Upload input not found'); return; }
-  inp.value = '';
-  inp.onchange = function() {
-    var file = inp.files[0];
-    if (!file) return;
-    if (_driveToken) { doUploadSignedPdf(file, ref, company, userName); return; }
+  if (!_driveToken) {
     toast('Connecting to Google Drive…');
     var tc = google.accounts.oauth2.initTokenClient({
       client_id: GDRIVE_CLIENT_ID,
@@ -1351,9 +1345,23 @@ function uploadSignedPdf(ref, company, userName) {
       callback: function(resp) {
         if (resp.error) { toast('Google auth failed: ' + resp.error); return; }
         _driveToken = resp.access_token;
-        toast('Uploading to Drive…');
-        doUploadSignedPdf(file, ref, company, userName);
+        toast('✅ Drive connected! Click Upload PDF again to pick your file.');
       }
+    });
+    tc.requestAccessToken();
+    return;
+  }
+  var inp = document.getElementById('drive-upload-input');
+  if (!inp) { toast('Upload input not found'); return; }
+  inp.value = '';
+  inp.onchange = function() {
+    var file = inp.files[0];
+    if (!file) return;
+    toast('Uploading to Drive…');
+    doUploadSignedPdf(file, ref, company, userName);
+  };
+  inp.click();
+}
     });
     tc.requestAccessToken();
   };
