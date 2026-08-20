@@ -1315,7 +1315,7 @@ function driveUploadBlob(blob, filename, accessToken, folderId) {
 }
 
 function doUploadSignedPdf(file, ref, company, userName) {
-  sbFetch('/rest/v1/profiles?select=drive_folder_id&limit=1')
+  sbFetch('/rest/v1/profiles?select=drive_folder_id&name=eq.' + encodeURIComponent(userName) + '&limit=1')
   .then(function(r) { return r.json(); })
   .then(function(profiles) {
     var rawFolder = profiles && profiles[0] && profiles[0].drive_folder_id;
