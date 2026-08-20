@@ -1320,8 +1320,10 @@ function doUploadSignedPdf(file, ref, company, userName) {
   .then(function(profiles) {
     var rawFolder = profiles && profiles[0] && profiles[0].drive_folder_id;
     if (!rawFolder) { toast('No Drive folder configured.'); return; }
-    var folderMatch = rawFolder.match(/folders\/([w-]+)/);
-    var folderId = folderMatch ? folderMatch[1] : rawFolder.replace(/[^a-zA-Z0-9_-]/g,'').trim();
+    var folderId = rawFolder.indexOf('folders/') !== -1
+      ? rawFolder.split('folders/')[1].split('?')[0].split('/')[0].trim()
+      : rawFolder.trim();
+    
     toast('Uploading to Drive…');
     return driveUploadBlob(file, file.name, _driveToken, folderId)
     .then(function(resp) {
