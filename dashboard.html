@@ -1335,13 +1335,13 @@ function doUploadSignedPdf(file, ref, company, userName) {
         setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b);},30000);
       } else {
         _driveToken = null;
-        toast('Upload failed — ' + JSON.stringify(resp).substring(0,120));
+        alert('UPLOAD FAILED\nDrive API response: ' + JSON.stringify(resp));
       }
     });
   })
   ['catch'](function(e) {
     _driveToken = null;
-    toast('Upload error: ' + (e && e.message ? e.message : String(e)));
+    var errMsg = 'UPLOAD ERROR\n' + (e && e.message ? e.message : String(e)) + '\n\nStack: ' + (e && e.stack ? e.stack.substring(0,200) : 'none'); alert(errMsg);
   });
 }
 function uploadSignedPdf(ref, company, userName) {
