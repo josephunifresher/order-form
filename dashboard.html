@@ -217,6 +217,7 @@
     </div>
     <div class="header-right">
       <a href="order-form.html" class="btn btn-outline">+ New Order</a>
+      <button id="drive-connect-btn" onclick="connectDrive()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.5);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-family:inherit;margin-right:6px">Drive</button>
       <button class="btn btn-white" onclick="doLogout()">Sign out</button>
     </div>
   </div>
@@ -1336,45 +1337,52 @@ function doUploadSignedPdf(file, ref, company, userName) {
 }
 
 function uploadSignedPdf(ref, company, userName) {
-  if (!window.google || !google.accounts) { toast('Google Drive not loaded — refresh and try again.'); return; }
+  if (!_driveToken) {
+    toast('Connect Google Drive first — click the Drive button in the header.');
+    return;
+  }
   var inp = document.getElementById('drive-upload-input');
   if (!inp) { toast('Upload input not found'); return; }
   inp.value = '';
   inp.onchange = function() {
     var file = inp.files[0];
     if (!file) return;
-    if (_driveToken) {
-      toast('Uploading to Drive…');
-      doUploadSignedPdf(file, ref, company, userName);
-      return;
-    }
-    toast('Waiting for Google sign-in…');
-    var tries = 0;
-    var poll = setInterval(function() {
-      tries++;
-      if (_driveToken) {
-        clearInterval(poll);
-        toast('Uploading to Drive…');
-        doUploadSignedPdf(file, ref, company, userName);
-      } else if (tries > 60) {
-        clearInterval(poll);
-        toast('Google sign-in timed out. Allow popups for this site and try again.');
-      }
-    }, 500);
+    doUploadSignedPdf(file, ref, company, userName);
   };
   inp.click();
-  if (!_driveToken) {
-    google.accounts.oauth2.initTokenClient({
-      client_id: GDRIVE_CLIENT_ID,
-      scope: 'https://www.googleapis.com/auth/drive',
-      callback: function(resp) {
-        if (resp.error) { toast('Google auth failed: ' + resp.error); return; }
-        _driveToken = resp.access_token;
-      }
-    }).requestAccessToken();
-  }
 }
-
+var _driveTokenClient = null;
+function _ensureDriveClient() {
+  if (_driveTokenClient || !window.google || !google.accounts) return;
+  _driveTokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GDRIVE_CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/drive',
+    callback: function(resp) {
+      if (resp && resp.access_token) {
+        _driveToken = resp.access_token;
+        var btn = document.getElementById('drive-connect-btn');
+        if (btn) { btn.innerHTML = '✓ Drive'; btn.style.background = '#34a853'; btn.style.border = '1px solid #34a853'; }
+      }
+    },
+    error_callback: function() {}
+  });
+}
+function connectDrive() {
+  _ensureDriveClient();
+  if (!_driveTokenClient) { toast('Google services not loaded — refresh the page.'); return; }
+  _driveTokenClient.requestAccessToken({prompt: 'select_account'});
+}
+window.addEventListener('load', function() {
+  var tries = 0, t = setInterval(function() {
+    if (++tries > 20 || (window.google && google.accounts)) {
+      clearInterval(t);
+      if (window.google && google.accounts) {
+        _ensureDriveClient();
+        try { _driveTokenClient.requestAccessToken({prompt: ''}); } catch(e) {}
+      }
+    }
+  }, 500);
+});
 function loadTcFromSupabase() {
   var el = document.getElementById('tc-admin-editor');
   if (!el) return;
