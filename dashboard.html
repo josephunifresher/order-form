@@ -879,7 +879,7 @@ function markSigned(id, cb) {
       if (window.emailjs) {
         emailjs.init({ publicKey: EJ.publicKey });
         emailjs.send(EJ.serviceId, EJ.templateId, {
-          to_email: addInfo ? 'accounts@unifresher.co.uk,campaigns@unifresher.co.uk,adam@unifresher.co.uk' : 'accounts@unifresher.co.uk,campaigns@unifresher.co.uk',
+          to_email: addInfo ? 'campaigns@unifresher.co.uk,adam@unifresher.co.uk' : 'accounts@unifresher.co.uk,campaigns@unifresher.co.uk',
           subject: (ref2 ? ref2 + ' – ' : '') + company2 + ' — Order Signed',
           company: company2, contact: ref2, filled_by: signedBy, ref: ref2,
           date_time: new Date().toLocaleString('en-GB'),
