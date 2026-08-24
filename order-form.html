@@ -562,7 +562,7 @@
     <div style="text-align:right">
       <div class="order-tag">ORDER</div>
       <div class="meta-row"><span><label>UNI Number:</label><input type="text" id="ref-no" placeholder="e.g. UNI02500" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField();" onblur="validateUniBlur()" required title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status" style="margin-left:6px;font-size:10px;"></span></span></div>
-      <div class="meta-row"><span><label style="font-weight:600;font-size:11px;color:var(--purple-dark);margin-right:4px;">UNI No. 2:</label><input type="text" id="ref-no-2" placeholder="Optional" style="width:100px;text-transform:uppercase;border:1px solid #ccc;border-radius:4px;padding:3px 6px;font-size:12px;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');"></span></div>
+      <div class="meta-row"><span><label>UNI No. 2:</label><input type="text" id="ref-no-2" placeholder="Optional" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');"></span></div>
       <div class="meta-row"><span><label>Date:</label><input type="date" id="order-date" required></span></div>
       <div class="meta-row"><span><label>Initials *</label><input type="text" id="initials" placeholder="e.g. JB" maxlength="5" style="width:60px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required><span class="error-label" id="err-initials" style="margin-left:6px;font-size:10px;">Required</span></span></div>
     </div>
