@@ -3138,36 +3138,33 @@ function toggleGroupByLoc() {
     var idx = tr.dataset.cdIdx;
     var sEl = document.getElementById('cs' + idx);
     var eEl = document.getElementById('ce' + idx);
-    var cnEl = document.getElementById('cn' + idx);
     if (!sEl || !eEl || !sEl.value || !eEl.value) return;
-    var cmElR=document.getElementById('cm'+idx); if(cmElR) cmElR.textContent='—';
+    var cmEl = document.getElementById('cm' + idx);
+    if (cmEl) cmEl.textContent = '—';
     var dur = calcDuration(sEl.value, eEl.value);
     if (!dur) return;
-    var cmEl=document.getElementById('cm'+idx); if(cmEl){var rd=Math.round((new Date(eEl.value).getTime()-new Date(sEl.value).getTime())/86400000); cmEl.textContent=campDurMode==='weeks'?durationLabelWeeks(rd):durationLabel(calcDuration(sEl.value,eEl.value));}
-    var loc = (cnEl && cnEl.value && cnEl.value.trim()) ? cnEl.value.trim().toLowerCase() : ('__row_' + idx);
-    phases.push({s: sEl.value, e: eEl.value, totalDays: Math.round((new Date(eEl.value).getTime()-new Date(sEl.value).getTime())/86400000), loc: loc});
+    if (cmEl) {
+      var rd = Math.round((new Date(eEl.value).getTime() - new Date(sEl.value).getTime()) / 86400000);
+      cmEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(rd) : durationLabel(calcDuration(sEl.value, eEl.value));
+    }
+    phases.push({s: sEl.value, e: eEl.value});
   });
   if (!phases.length) { totalEl.textContent = campDurMode === 'weeks' ? '0w' : '—'; return; }
-  var hasLocations = phases.some(function(p) { return p.loc.indexOf('__row_') !== 0; });
-  var maxDays;
-  if (hasLocations) {
-    var locMap = {};
-    phases.forEach(function(p) { if (!locMap[p.loc]) locMap[p.loc] = 0; locMap[p.loc] += p.totalDays; });
-    maxDays = 0;
-    Object.keys(locMap).forEach(function(loc) { if (locMap[loc] > maxDays) maxDays = locMap[loc]; });
-  } else {
-    var sorted = phases.slice().sort(function(a,b) { return new Date(a.s)-new Date(b.s); });
-    var merged = [];
-    sorted.forEach(function(p) {
-      var st = new Date(p.s).getTime(), et = new Date(p.e).getTime();
-      if (!merged.length || st > merged[merged.length-1].et) { merged.push({st:st,et:et}); }
-      else { if (et > merged[merged.length-1].et) merged[merged.length-1].et = et; }
-    });
-    maxDays = merged.reduce(function(acc,r) { return acc + Math.round((r.et-r.st)/86400000) + 1; }, 0);
-  }
-  var m = Math.floor(maxDays / 30), rem = maxDays - m*30, w = Math.floor(rem/7), d = rem%7;
-  var total = {months:m, weeks:w, days:d};
-  totalEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(maxDays) : durationLabel(total);
+  var sorted = phases.slice().sort(function(a, b) { return new Date(a.s) - new Date(b.s); });
+  var merged = [];
+  sorted.forEach(function(p) {
+    var st = new Date(p.s).getTime(), et = new Date(p.e).getTime();
+    if (!merged.length || st > merged[merged.length - 1].et) {
+      merged.push({st: st, et: et});
+    } else {
+      if (et > merged[merged.length - 1].et) merged[merged.length - 1].et = et;
+    }
+  });
+  var totalDays = merged.reduce(function(acc, r) {
+    return acc + Math.round((r.et - r.st) / 86400000) + 1;
+  }, 0);
+  var m = Math.floor(totalDays / 30), rem = totalDays - m * 30, w = Math.floor(rem / 7), d = rem % 7;
+  totalEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(totalDays) : durationLabel({months: m, weeks: w, days: d});
 }
 
 function addCampDateRow(startVal, endVal, notesVal, stcVal) {
