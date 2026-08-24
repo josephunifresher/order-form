@@ -4516,13 +4516,21 @@ function showMergeModal() {
   var modal = document.getElementById('merge-modal');
   if (!modal) return;
   modal.style.display = 'flex';
-  document.getElementById('merge-list').innerHTML = '<p style="color:#999;font-size:13px;padding:8px;">Loading orders…</p>';
+  var listEl = document.getElementById('merge-list');
+  listEl.innerHTML = '<p style="color:#999;font-size:13px;padding:8px;">Loading orders…</p>';
   document.getElementById('merge-search').value = '';
-  sbFetch('order_history?select=id,ref,company,saved_at&order=saved_at.desc&limit=200').then(function(rows) {
-    _mergeOrders = rows || [];
-    renderMergeList(_mergeOrders);
+  var user = currentUser();
+  var query = 'order_history?order=saved_at.desc&limit=200';
+  if (!isAdminUser(user)) query += '&user_name=eq.' + encodeURIComponent(user ? user.name : '');
+  sbFetch(query).then(function(rows) {
+    if (!Array.isArray(rows)) {
+      listEl.innerHTML = '<p style="color:red;font-size:13px;padding:8px;">Error: ' + ((rows && rows.message) || 'could not load orders') + '</p>';
+      return;
+    }
+    _mergeOrders = rows;
+    renderMergeList(rows);
   })['catch'](function() {
-    document.getElementById('merge-list').innerHTML = '<p style="color:red;font-size:13px;padding:8px;">Could not load orders.</p>';
+    listEl.innerHTML = '<p style="color:red;font-size:13px;padding:8px;">Could not load orders.</p>';
   });
 }
 function renderMergeList(orders) {
