@@ -562,7 +562,7 @@
     <div style="text-align:right">
       <div class="order-tag">ORDER</div>
       <div class="meta-row"><span><label>UNI Number:</label><input type="text" id="ref-no" placeholder="e.g. UNI02500" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField();" onblur="validateUniBlur()" required title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status" style="margin-left:6px;font-size:10px;"></span></span></div>
-      <div class="meta-row"><span><label>UNI No. 2:</label><input type="text" id="ref-no-2" placeholder="Optional" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');"></span></div>
+      <div class="meta-row"><span><label>UNI No. 2:</label><input type="text" id="ref-no-2" placeholder="Optional" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField2();" onblur="validateUniBlur2()" title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status-2" style="margin-left:6px;font-size:10px;"></span></span></div>
       <div class="meta-row"><span><label>Date:</label><input type="date" id="order-date" required></span></div>
       <div class="meta-row"><span><label>Initials *</label><input type="text" id="initials" placeholder="e.g. JB" maxlength="5" style="width:60px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required><span class="error-label" id="err-initials" style="margin-left:6px;font-size:10px;">Required</span></span></div>
     </div>
@@ -1764,6 +1764,55 @@ function validateUniBlur() {
   });
 }
 
+function validateUniField2() {
+  var el = document.getElementById('ref-no-2');
+  var st = document.getElementById('uni-status-2');
+  if (!el || !st) return;
+  if (!el.value.trim()) { if(st){st.textContent='';st.style.color='';} el.style.borderColor=''; return; }
+  var val = el.value.trim().toUpperCase();
+  el.value = val;
+  if (!val) { st.textContent = ''; el.style.borderColor = ''; return; }
+  if (!isValidUniFormat(val)) {
+    st.textContent = '⚠ Must be UNI + 5 digits';
+    st.style.color = '#e74c3c';
+    el.style.borderColor = '#e74c3c';
+    return;
+  }
+  st.textContent = '…';
+  st.style.color = '#aaa';
+  el.style.borderColor = '';
+}
+function validateUniBlur2() {
+  var el = document.getElementById('ref-no-2');
+  var st = document.getElementById('uni-status-2');
+  if (!el || !st) return;
+  var val = el.value.trim().toUpperCase();
+  el.value = val;
+  if (!val) { st.textContent = ''; el.style.borderColor = ''; return; }
+  if (!isValidUniFormat(val)) {
+    st.textContent = '⚠ Must be UNI + 5 digits';
+    st.style.color = '#e74c3c';
+    el.style.borderColor = '#e74c3c';
+    return;
+  }
+  st.textContent = 'Checking…';
+  st.style.color = '#aaa';
+  checkUniExists(val).then(function(existing) {
+    if (existing && existing.length > 0) {
+      st.textContent = '✗ Already used';
+      st.style.color = '#e74c3c';
+      el.style.borderColor = '#e74c3c';
+    } else {
+      st.textContent = '✓';
+      st.style.color = '#27ae60';
+      el.style.borderColor = '#27ae60';
+    }
+  })['catch'](function() {
+    st.textContent = '✓';
+    st.style.color = '#27ae60';
+    el.style.borderColor = '';
+  });
+}
 // Check whether a UNI number already exists as a real order (not a REUSE: record)
 // Uses authenticated session token so RLS allows the read
 function checkUniExists(ref) {
