@@ -703,7 +703,8 @@
                 style="background:var(--purple-lighter);border:none;border-radius:10px;cursor:pointer;font-size:11px;padding:2px 8px;color:var(--purple-dark);font-weight:700;white-space:nowrap;">+ Add Phase</button>
             </td>
           </tr>
-        </tfoot>
+        
+          <tr><td colspan="7" style="text-align:left;padding:2px 6px 4px;"><button type="button" id="grp-loc-btn" onclick="toggleGroupByLoc()" style="background:none;border:1px solid var(--purple-light,#c4a9e2);border-radius:6px;cursor:pointer;font-size:10px;padding:2px 8px;color:var(--purple-dark,#4a1a8a);">⊞ Group by location</button></td></tr></tfoot>
       </table>
       <span class="error-label" id="err-camp-months" style="display:block;margin-top:5px;">Please enter at least one campaign date range</span>
     </div>
@@ -3034,7 +3035,49 @@ function sumDurations(durs) {
 }
 
 // ─── Campaign date months ────────────────────────────────────────────────────
-function calcCampaignMonths() {
+function toggleGroupByLoc() {
+  var btn = document.getElementById('grp-loc-btn');
+  var tbody = document.getElementById('camp-dates-tbody');
+  if (!btn || !tbody) return;
+  var isGrouped = btn.dataset.grouped === '1';
+  Array.from(tbody.querySelectorAll('.loc-grp-hdr')).forEach(function(r){r.remove();});
+  if (isGrouped) {
+    var orig = JSON.parse(tbody.dataset.origOrder || '[]');
+    orig.forEach(function(idx) {
+      var row = tbody.querySelector('tr[data-cd-idx="'+idx+'"]');
+      if (row) tbody.appendChild(row);
+    });
+    btn.dataset.grouped = '0';
+    btn.textContent = '⊞ Group by location';
+    btn.style.background = 'none';
+  } else {
+    var rows = Array.from(tbody.querySelectorAll('tr[data-cd-idx]'));
+    tbody.dataset.origOrder = JSON.stringify(rows.map(function(r){return r.dataset.cdIdx;}));
+    rows.sort(function(a,b){
+      var an=(document.getElementById('cn'+a.dataset.cdIdx)||{value:''}).value||'';
+      var bn=(document.getElementById('cn'+b.dataset.cdIdx)||{value:''}).value||'';
+      return an.localeCompare(bn);
+    });
+    var curLoc=null;
+    rows.forEach(function(row){
+      var idx=row.dataset.cdIdx;
+      var note=((document.getElementById('cn'+idx)||{value:''}).value||'').trim();
+      if(note!==curLoc){
+        curLoc=note;
+        var hdr=document.createElement('tr');
+        hdr.className='loc-grp-hdr';
+        hdr.innerHTML='<td colspan="10" style="background:var(--purple-lighter,#f3eaff);font-weight:700;font-size:11px;color:var(--purple-dark,#4a1a8a);padding:3px 8px;">'+(note||'(No location)')+'</td>';
+        tbody.appendChild(hdr);
+      }
+      tbody.appendChild(row);
+    });
+    btn.dataset.grouped='1';
+    btn.textContent='⊟ Ungroup';
+    btn.style.background='var(--purple-lighter,#f3eaff)';
+  }
+}
+
+      function calcCampaignMonths() {
   var totalEl = document.getElementById('total-camp-months');
   if (!totalEl) return;
   var phases = [];
