@@ -3087,8 +3087,10 @@ function toggleGroupByLoc() {
     var eEl = document.getElementById('ce' + idx);
     var cnEl = document.getElementById('cn' + idx);
     if (!sEl || !eEl || !sEl.value || !eEl.value) return;
+    var cmElR=document.getElementById('cm'+idx); if(cmElR) cmElR.textContent='—';
     var dur = calcDuration(sEl.value, eEl.value);
     if (!dur) return;
+    var cmEl=document.getElementById('cm'+idx); if(cmEl){var rd=Math.round((new Date(eEl.value).getTime()-new Date(sEl.value).getTime())/86400000); cmEl.textContent=campDurMode==='weeks'?durationLabelWeeks(rd):durationLabel(calcDuration(sEl.value,eEl.value));}
     var loc = (cnEl && cnEl.value && cnEl.value.trim()) ? cnEl.value.trim().toLowerCase() : ('__row_' + idx);
     phases.push({s: sEl.value, e: eEl.value, totalDays: Math.round((new Date(eEl.value).getTime()-new Date(sEl.value).getTime())/86400000), loc: loc});
   });
