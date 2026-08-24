@@ -4518,7 +4518,7 @@ function showMergeModal() {
   modal.style.display = 'flex';
   document.getElementById('merge-list').innerHTML = '<p style="color:#999;font-size:13px;padding:8px;">Loading orders…</p>';
   document.getElementById('merge-search').value = '';
-  sbFetch('order_history?select=id,ref,company,created_at&order=created_at.desc&limit=200').then(function(rows) {
+  sbFetch('order_history?select=id,ref,company,saved_at&order=saved_at.desc&limit=200').then(function(rows) {
     _mergeOrders = rows || [];
     renderMergeList(_mergeOrders);
   })['catch'](function() {
@@ -4529,7 +4529,7 @@ function renderMergeList(orders) {
   var list = document.getElementById('merge-list');
   if (!orders || !orders.length) { list.innerHTML = '<p style="color:#999;font-size:13px;padding:8px;">No orders found.</p>'; return; }
   list.innerHTML = orders.map(function(o) {
-    var dt = o.created_at ? new Date(o.created_at).toLocaleDateString('en-GB') : '';
+    var dt = o.saved_at ? new Date(o.saved_at).toLocaleDateString('en-GB') : '';
     return '<div class="merge-item" onclick="selectMergeOrder(' + o.id + ',this)">' +
       '<strong>' + (o.ref||'No ref') + '</strong> — ' + (o.company||'Unknown') +
       '<span style="float:right;font-size:11px;color:#999;">' + dt + '</span></div>';
