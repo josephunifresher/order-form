@@ -3090,7 +3090,7 @@ function toggleGroupByLoc() {
     var dur = calcDuration(sEl.value, eEl.value);
     if (!dur) return;
     var loc = (cnEl && cnEl.value && cnEl.value.trim()) ? cnEl.value.trim().toLowerCase() : ('__row_' + idx);
-    phases.push({s: sEl.value, e: eEl.value, totalDays: dur.totalDays, loc: loc});
+    phases.push({s: sEl.value, e: eEl.value, totalDays: Math.round((new Date(eEl.value).getTime()-new Date(sEl.value).getTime())/86400000), loc: loc});
   });
   if (!phases.length) { totalEl.textContent = campDurMode === 'weeks' ? '0w' : '—'; return; }
   var hasLocations = phases.some(function(p) { return p.loc.indexOf('__row_') !== 0; });
