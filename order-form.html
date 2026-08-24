@@ -3060,7 +3060,13 @@ function calcCampaignMonths() {
   });
   var totalEl = document.getElementById('total-camp-months');
   if (hasAny) {
-    var total = sumDurations(durs);
+    var rawDates2=[];document.querySelectorAll('#camp-dates-tbody tr').forEach(function(tr2){var ix=tr2.dataset.cdIdx;var sv=(document.getElementById('cs'+ix)||{}).value;var ev=(document.getElementById('ce'+ix)||{}).value;if(sv&&ev)rawDates2.push({s:sv,e:ev});});
+    var ranges2=rawDates2.map(function(r){return{s:r.s,e:r.e,st:new Date(r.s).getTime(),et:new Date(r.e).getTime()};}).sort(function(a,b){return a.st-b.st;});
+    var merged2=ranges2.length?[{s:ranges2[0].s,e:ranges2[0].e,st:ranges2[0].st,et:ranges2[0].et}]:[];
+    for(var ri=1;ri<ranges2.length;ri++){var ml2=merged2[merged2.length-1];if(ranges2[ri].st<=ml2.et){if(ranges2[ri].et>ml2.et){ml2.et=ranges2[ri].et;ml2.e=ranges2[ri].e;}}else{merged2.push({s:ranges2[ri].s,e:ranges2[ri].e,st:ranges2[ri].st,et:ranges2[ri].et});}}
+    var mergedDurs=merged2.map(function(r){return calcDuration(r.s,r.e);});
+    var total=sumDurations(mergedDurs);
+    totalDaysAll=merged2.reduce(function(acc,r){return acc+Math.round((r.et-r.st)/86400000);},0);
     totalEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(totalDaysAll) : durationLabel(total);
     totalEl.dataset.durMonths = total.months;
     totalEl.dataset.durWeeks  = total.weeks;
