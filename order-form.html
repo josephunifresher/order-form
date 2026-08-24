@@ -2242,7 +2242,8 @@ function captureFormData() {
       start: (document.getElementById('cs'+idx) || {}).value || '',
       end:   (document.getElementById('ce'+idx) || {}).value || '',
       notes: (document.getElementById('cn'+idx) || {}).value || '',
-      stc:   (document.getElementById('stc'+idx) || {}).checked || false
+      stc:   (document.getElementById('stc'+idx) || {}).checked || false,
+      type:  (tr.querySelector('.cd-type-select') || {value:'FST'}).value || 'FST'
     });
   });
   var checks = {};
@@ -4587,11 +4588,23 @@ function doMergeOrder() {
     }
     if (mergeDates && fd.campDates && fd.campDates.length) {
       fd.campDates.forEach(function(cd) {
+        if (!cd.start && !cd.end) return;
         addCampDateRow(cd.start || '', cd.end || '', cd.notes || '', cd.stc || false);
+        var lr = document.querySelector('#camp-dates-tbody tr:last-child');
+        if (lr && cd.type) { var ts = lr.querySelector('.cd-type-select'); if (ts) ts.value = cd.type; }
       });
       calcCampaignMonths();
     }
-    closeMergeModal();
+if (fd.notesHtml) {
+      var cn = document.getElementById('campaign-notes');
+      if (cn) {
+        var ex = cn.innerHTML.trim();
+        var sep = ex ? '<hr style="margin:6px 0;border-color:#ddd;">' : '';
+        var lbl = '<p style="color:#555;font-size:11px;font-style:italic;margin:2px 0 4px;">— Notes from ' + (rows[0].ref||'merged') + ' —</p>';
+        cn.innerHTML = ex + sep + lbl + fd.notesHtml;
+      }
+    }
+        closeMergeModal();
     alert('✅ ' + (rows[0].ref||'Order') + ' from ' + (rows[0].company||'unknown') + ' merged in.');
   })['catch'](function() {
     alert('Error loading order. Please try again.');
