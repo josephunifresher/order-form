@@ -502,6 +502,7 @@
   <h1>Order Form</h1>
   <button class="btn-ghost" onclick="location.href='dashboard.html'">📊 Dashboard</button>
   <button class="btn-ghost" onclick="showHistory()">📋 History</button>
+  <button class="btn-ghost" id="merge-btn" onclick="showMergeModal()" style="display:none;">🔀 Merge Order</button>
   <button class="btn-ghost" id="admin-btn" onclick="showAdmin()" style="display:none;">⚙️ Admin</button>
   <div style="flex:1"></div>
   <button class="btn btn-clear" onclick="clearForm()">Clear</button>
@@ -2106,6 +2107,7 @@ function doLogin() {
           document.getElementById('toolbar-user').textContent = '👤 ' + profile.name;
           if (isAdminUser(profile)) {
             document.getElementById('admin-btn').style.display = '';
+            document.getElementById('merge-btn').style.display = '';
             setTimeout(checkPendingUniReuseRequests, 800); // check for pending UNI reuse requests
           }
           // Auto-fill initials on the order form
@@ -2166,6 +2168,7 @@ function doLogout() {
   document.querySelectorAll('#user-btns .user-btn').forEach(function(b) { b.classList.remove('active'); });
   document.getElementById('login-overlay').style.display = 'flex';
   document.getElementById('admin-btn').style.display = 'none';
+  document.getElementById('merge-btn').style.display = 'none';
   buildLoginBtns();
 }
 
@@ -2176,6 +2179,7 @@ function doLogout() {
     document.getElementById('toolbar-user').textContent = '👤 ' + u.name;
     if (isAdminUser(u)) {
       document.getElementById('admin-btn').style.display = '';
+      document.getElementById('merge-btn').style.display = '';
       setTimeout(checkPendingUniReuseRequests, 1000); // check on page load for admins
     }
     if (u.initials) {
@@ -4505,6 +4509,109 @@ function sendPayMonthlyAlert(){
   if(typeof emailjs!=='undefined')doSend();
   else{var s=document.querySelector('script[src*="emailjs"]');if(s)s.addEventListener('load',doSend);else setTimeout(doSend,1500);}
 }
+
+// ── Merge Order ─────────────────────────────────────────────────
+var _mergeOrders = [];
+function showMergeModal() {
+  var modal = document.getElementById('merge-modal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  document.getElementById('merge-list').innerHTML = '<p style="color:#999;font-size:13px;padding:8px;">Loading orders…</p>';
+  document.getElementById('merge-search').value = '';
+  sbFetch('order_history?select=id,ref,company,created_at&order=created_at.desc&limit=200').then(function(rows) {
+    _mergeOrders = rows || [];
+    renderMergeList(_mergeOrders);
+  })['catch'](function() {
+    document.getElementById('merge-list').innerHTML = '<p style="color:red;font-size:13px;padding:8px;">Could not load orders.</p>';
+  });
+}
+function renderMergeList(orders) {
+  var list = document.getElementById('merge-list');
+  if (!orders || !orders.length) { list.innerHTML = '<p style="color:#999;font-size:13px;padding:8px;">No orders found.</p>'; return; }
+  list.innerHTML = orders.map(function(o) {
+    var dt = o.created_at ? new Date(o.created_at).toLocaleDateString('en-GB') : '';
+    return '<div class="merge-item" onclick="selectMergeOrder(' + o.id + ',this)">' +
+      '<strong>' + (o.ref||'No ref') + '</strong> — ' + (o.company||'Unknown') +
+      '<span style="float:right;font-size:11px;color:#999;">' + dt + '</span></div>';
+  }).join('');
+}
+function filterMergeList() {
+  var q = (document.getElementById('merge-search').value || '').toLowerCase();
+  renderMergeList(_mergeOrders.filter(function(o) {
+    return (o.ref||'').toLowerCase().indexOf(q) >= 0 || (o.company||'').toLowerCase().indexOf(q) >= 0;
+  }));
+}
+var _selectedMergeId = null;
+function selectMergeOrder(id, el) {
+  _selectedMergeId = id;
+  document.querySelectorAll('.merge-item').forEach(function(d) { d.classList.remove('merge-selected'); });
+  if (el) el.classList.add('merge-selected');
+  var cb = document.getElementById('merge-confirm-btn');
+  if (cb) { cb.disabled = false; cb.style.opacity = '1'; cb.style.cursor = 'pointer'; }
+}
+function closeMergeModal() {
+  var modal = document.getElementById('merge-modal');
+  if (modal) modal.style.display = 'none';
+  _selectedMergeId = null;
+}
+function doMergeOrder() {
+  if (!_selectedMergeId) return;
+  var mergeItems = document.getElementById('merge-items-cb').checked;
+  var mergeDates = document.getElementById('merge-dates-cb').checked;
+  if (!mergeItems && !mergeDates) { alert('Select at least one section to merge.'); return; }
+  var btn = document.getElementById('merge-confirm-btn');
+  if (btn) { btn.textContent = 'Merging…'; btn.disabled = true; }
+  sbFetch('order_history?id=eq.' + _selectedMergeId + '&select=form_data,ref,company').then(function(rows) {
+    if (!rows || !rows[0] || !rows[0].form_data) { alert('Could not load that order.'); closeMergeModal(); return; }
+    var fd = rows[0].form_data;
+    if (mergeItems && fd.items && fd.items.length) {
+      fd.items.forEach(function(item) {
+        addRow();
+        var tr = document.querySelector('#items-tbody tr:last-child');
+        if (!tr) return;
+        var descEl = tr.querySelector('.item-desc');
+        if (descEl && item.descHtml) descEl.innerHTML = item.descHtml;
+        var priceEl = tr.querySelector('.item-price');
+        if (priceEl && item.price != null) { priceEl.value = item.price; priceEl.dispatchEvent(new Event('input')); }
+        var qtyEl = tr.querySelector('.item-qty');
+        if (qtyEl && item.qty != null) { qtyEl.value = item.qty; qtyEl.dispatchEvent(new Event('input')); }
+      });
+    }
+    if (mergeDates && fd.campDates && fd.campDates.length) {
+      fd.campDates.forEach(function(cd) {
+        addCampDateRow(cd.start || '', cd.end || '', cd.notes || '', cd.stc || false);
+      });
+      calcCampaignMonths();
+    }
+    closeMergeModal();
+    alert('✅ ' + (rows[0].ref||'Order') + ' from ' + (rows[0].company||'unknown') + ' merged in.');
+  })['catch'](function() {
+    alert('Error loading order. Please try again.');
+    closeMergeModal();
+  });
+}
 </script>
+
+<!-- Merge Order Modal -->
+<div id="merge-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:12px;padding:24px;width:560px;max-width:95vw;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.25);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <h3 style="margin:0;font-size:16px;font-weight:700;color:var(--purple-dark);">🔀 Merge Another Order</h3>
+      <button onclick="closeMergeModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#888;">×</button>
+    </div>
+    <p style="margin:0 0 12px;font-size:12px;color:#666;">Select a saved order — its items and/or campaign dates will be appended to the current form.</p>
+    <input type="text" id="merge-search" placeholder="Search by UNI or company…" oninput="filterMergeList()" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;margin-bottom:8px;">
+    <div id="merge-list" style="flex:1;overflow-y:auto;border:1px solid #e0e0e0;border-radius:6px;padding:4px;min-height:180px;max-height:300px;"></div>
+    <div style="margin-top:12px;display:flex;gap:16px;align-items:center;">
+      <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="checkbox" id="merge-items-cb" checked> Line items</label>
+      <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="checkbox" id="merge-dates-cb" checked> Campaign dates</label>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="closeMergeModal()" class="btn-ghost" style="font-size:13px;">Cancel</button>
+      <button id="merge-confirm-btn" onclick="doMergeOrder()" disabled style="background:var(--purple-dark);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:not-allowed;opacity:0.45;">Merge into form</button>
+    </div>
+  </div>
+</div>
+<style>.merge-item{padding:7px 10px;border-radius:5px;cursor:pointer;font-size:13px;border-bottom:1px solid #f0f0f0;}.merge-item:hover{background:#f5f0ff;}.merge-item.merge-selected{background:#ede7f6;border-left:3px solid var(--purple-dark);padding-left:7px;}</style>
 </body>
 </html>
