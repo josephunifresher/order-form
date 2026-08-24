@@ -4575,7 +4575,7 @@ function doMergeOrder() {
     if (mergeItems && fd.items && fd.items.length) {
       fd.items.forEach(function(item) {
         addRow();
-        var tr = document.querySelector('#items-tbody tr:last-child');
+        var tr = document.querySelector('#items-body tr:last-child');
         if (!tr) return;
         var descEl = tr.querySelector('.item-desc');
         if (descEl && item.descHtml) descEl.innerHTML = item.descHtml;
