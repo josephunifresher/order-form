@@ -692,7 +692,7 @@
             <th style="text-align:center">Duration <button type="button" id="dur-mode-btn" onclick="toggleDurMode()" title="Switch to weeks view" style="background:var(--purple-lighter);border:none;border-radius:8px;cursor:pointer;font-size:9px;padding:1px 5px;color:var(--purple-dark);font-weight:700;vertical-align:middle;margin-left:2px;">Wks</button></th>
             <th>Notes</th>
             <th style="text-align:center" title="Subject to change — tick if these dates are estimated and may change">STC <button type="button" class="info-tip" tabindex="0" style="font-size:8px;width:12px;height:12px;"><span class="info-tip-popup">Subject to Change — tick this if the dates for this phase are estimated and may change. A note will appear on the printed form.</span>i</button></th>
-            <th style="width:50px;text-align:center;">UNI</th>
+            <th style="width:50px;text-align:center;">UNI</th><th style="width:50px;text-align:center;">Type</th>
             <th style="width:18px;"></th>
           </tr>
         </thead>
@@ -701,10 +701,14 @@
           <tr>
             <td colspan="4" style="text-align:right;padding-right:8px;font-size:12px;">Total Duration:</td>
             <td class="camp-total-val" id="total-camp-months" style="text-align:center;">—</td>
+            <td></td>
             <td style="padding-left:6px;">
               <button type="button" onclick="addCampDateRow()" title="Add another campaign phase"
                 style="background:var(--purple-lighter);border:none;border-radius:10px;cursor:pointer;font-size:11px;padding:2px 8px;color:var(--purple-dark);font-weight:700;white-space:nowrap;">+ Add Phase</button>
             </td>
+          </tr>
+          <tr>
+            <td colspan="7" style="text-align:right;padding-right:8px;font-size:11px;color:#666;">FST Total: <strong id="total-fst-months">—</strong> &nbsp;&nbsp; OOH Total: <strong id="total-ooh-months">—</strong></td>
           </tr>
         
           <tr><td colspan="7" style="text-align:left;padding:2px 6px 4px;"><button type="button" id="grp-loc-btn" onclick="toggleGroupByLoc()" style="background:none;border:1px solid var(--purple-light,#c4a9e2);border-radius:6px;cursor:pointer;font-size:10px;padding:2px 8px;color:var(--purple-dark,#4a1a8a);">⊞ Group by location</button></td></tr></tfoot>
@@ -3147,24 +3151,45 @@ function toggleGroupByLoc() {
       var rd = Math.round((new Date(eEl.value).getTime() - new Date(sEl.value).getTime()) / 86400000);
       cmEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(rd) : durationLabel(calcDuration(sEl.value, eEl.value));
     }
-    phases.push({s: sEl.value, e: eEl.value});
+    var typeEl = tr.querySelector('.cd-type-select');
+    var type = typeEl ? typeEl.value : 'FST';
+    phases.push({s: sEl.value, e: eEl.value, type: type});
   });
-  if (!phases.length) { totalEl.textContent = campDurMode === 'weeks' ? '0w' : '—'; return; }
-  var sorted = phases.slice().sort(function(a, b) { return new Date(a.s) - new Date(b.s); });
-  var merged = [];
-  sorted.forEach(function(p) {
-    var st = new Date(p.s).getTime(), et = new Date(p.e).getTime();
-    if (!merged.length || st > merged[merged.length - 1].et) {
-      merged.push({st: st, et: et});
-    } else {
-      if (et > merged[merged.length - 1].et) merged[merged.length - 1].et = et;
-    }
-  });
-  var totalDays = merged.reduce(function(acc, r) {
-    return acc + Math.round((r.et - r.st) / 86400000) + 1;
-  }, 0);
-  var m = Math.floor(totalDays / 30), rem = totalDays - m * 30, w = Math.floor(rem / 7), d = rem % 7;
-  totalEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(totalDays) : durationLabel({months: m, weeks: w, days: d});
+  function mergeAndCalc(list) {
+    if (!list.length) return 0;
+    var sorted = list.slice().sort(function(a, b) { return new Date(a.s) - new Date(b.s); });
+    var merged = [];
+    sorted.forEach(function(p) {
+      var st = new Date(p.s).getTime(), et = new Date(p.e).getTime();
+      if (!merged.length || st > merged[merged.length - 1].et) {
+        merged.push({st: st, et: et});
+      } else {
+        if (et > merged[merged.length - 1].et) merged[merged.length - 1].et = et;
+      }
+    });
+    return merged.reduce(function(acc, r) {
+      return acc + Math.round((r.et - r.st) / 86400000) + 1;
+    }, 0);
+  }
+  function fmtDays(d) {
+    var m = Math.floor(d / 30), rem = d - m * 30, w = Math.floor(rem / 7), dy = rem % 7;
+    return campDurMode === 'weeks' ? durationLabelWeeks(d) : durationLabel({months: m, weeks: w, days: dy});
+  }
+  var fe = document.getElementById('total-fst-months');
+  var oe = document.getElementById('total-ooh-months');
+  if (!phases.length) {
+    totalEl.textContent = campDurMode === 'weeks' ? '0w' : '—';
+    if (fe) fe.textContent = '—';
+    if (oe) oe.textContent = '—';
+    return;
+  }
+  var allDays = mergeAndCalc(phases);
+  var fstDays = mergeAndCalc(phases.filter(function(p) { return p.type === 'FST'; }));
+  var oohDays = mergeAndCalc(phases.filter(function(p) { return p.type === 'OOH'; }));
+  var m = Math.floor(allDays / 30), rem = allDays - m * 30, w = Math.floor(rem / 7), d = rem % 7;
+  totalEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(allDays) : durationLabel({months: m, weeks: w, days: d});
+  if (fe) fe.textContent = fstDays ? fmtDays(fstDays) : '—';
+  if (oe) oe.textContent = oohDays ? fmtDays(oohDays) : '—';
 }
 
 function addCampDateRow(startVal, endVal, notesVal, stcVal) {
@@ -3182,6 +3207,7 @@ function addCampDateRow(startVal, endVal, notesVal, stcVal) {
     '<td><input type="text" id="cn' + idx + '" class="notes-input" placeholder="Optional notes" style="width:100%;font-size:11px;padding:2px 4px;border:none;border-bottom:1px solid var(--purple-lighter);background:transparent;font-family:\'Lato\',Arial,sans-serif;outline:none;min-width:70px;"></td>' +
     '<td class="stc-cell" style="text-align:center;"><input type="checkbox" id="stc' + idx + '" class="stc-check" title="Subject to change"></td>' +
     '<td style="text-align:center;padding:0 2px;"><select id="cu'+idx+'" class="uni-select" style="font-size:10px;border:1px solid #ccc;border-radius:4px;padding:1px 2px;width:64px;" onchange="calcCampaignMonths()"><option value="1">UNI 1</option><option value="2">UNI 2</option><option value="both">Both</option></select></td>' +
+    '<td style="text-align:center;padding:0 2px;"><select class="cd-type-select" style="font-size:10px;border:1px solid #ccc;border-radius:4px;padding:1px 2px;width:48px;" onchange="calcCampaignMonths()"><option value="FST">FST</option><option value="OOH">OOH</option></select></td>' +
     '<td style="padding:0 2px;"><button type="button" onclick="removeCampDateRow(this)" title="Remove this phase" ' +
       'style="background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:0 3px;" ' +
       'onmouseover="this.style.color=\'#e74c3c\'" onmouseout="this.style.color=\'#bbb\'">×</button></td>';
