@@ -180,7 +180,8 @@
 
 
   /* ── Print / PDF layout styles (always loaded, visibility controlled by JS / @media print) ── */
-  #print-layout { display:none; font-family:Arial,sans-serif; font-size:10pt; color:#000; }
+  #print-layout { display:none; font-family:Arial,sans-serif; font-size:10pt; color:#000;   .merge-meta { display:none !important; }
+}
 
   /* Header */
   .pl-header { display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2pt solid #000; padding-bottom:10pt; margin-bottom:10pt; }
@@ -4639,8 +4640,8 @@ if (fd.notesHtml) {
       var cn = document.getElementById('campaign-notes');
       if (cn) {
         var ex = cn.innerHTML.trim();
-        var sep = ex ? '<hr style="margin:6px 0;border-color:#ddd;">' : '';
-        var lbl = '<p style="color:#555;font-size:11px;font-style:italic;margin:2px 0 4px;">— Notes from ' + (rows[0].ref||'merged') + ' —</p>';
+        var sep = ex ? '<span class="merge-meta"><hr style="margin:6px 0;border-color:#ddd;"></span>' : '';
+        var lbl = '<span class="merge-meta"><p style="color:#555;font-size:11px;font-style:italic;margin:2px 0 4px;">— Notes from ' + (rows[0].ref||'merged') + ' —</p></span>';
         cn.innerHTML = ex + sep + lbl + fd.notesHtml;
       }
     }
