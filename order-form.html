@@ -2243,7 +2243,8 @@ function captureFormData() {
       end:   (document.getElementById('ce'+idx) || {}).value || '',
       notes: (document.getElementById('cn'+idx) || {}).value || '',
       stc:   (document.getElementById('stc'+idx) || {}).checked || false,
-      type:  (tr.querySelector('.cd-type-select') || {value:'FST'}).value || 'FST'
+      type:  (tr.querySelector('.cd-type-select') || {value:'FST'}).value || 'FST',
+      uni:   (document.getElementById('cu'+idx) || {value:'1'}).value || '1'
     });
   });
   var checks = {};
@@ -2356,6 +2357,11 @@ function restoreFormData(data) {
   } else {
     savedDates.forEach(function(cd) {
       addCampDateRow(cd.start, cd.end, cd.notes, cd.stc);
+      var lr2 = document.querySelector('#camp-dates-tbody tr:last-child');
+      if (lr2) {
+        if (cd.type) { var ts2 = lr2.querySelector('.cd-type-select'); if (ts2) ts2.value = cd.type; }
+        if (cd.uni) { var us2 = lr2.querySelector('.uni-select'); if (us2) us2.value = cd.uni; }
+      }
     });
     // Pad to at least 5 rows if fewer were saved
     while (document.getElementById('camp-dates-tbody').rows.length < 5) addCampDateRow();
@@ -4592,6 +4598,7 @@ function doMergeOrder() {
         addCampDateRow(cd.start || '', cd.end || '', cd.notes || '', cd.stc || false);
         var lr = document.querySelector('#camp-dates-tbody tr:last-child');
         if (lr && cd.type) { var ts = lr.querySelector('.cd-type-select'); if (ts) ts.value = cd.type; }
+        if (lr && cd.uni) { var us = lr.querySelector('.uni-select'); if (us) us.value = cd.uni; }
       });
       calcCampaignMonths();
     }
