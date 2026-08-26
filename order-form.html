@@ -3801,7 +3801,8 @@ function uploadToDrive(accessToken, btn) {
       logDriveUpload(refNo, company, checklistFilename, 'Checklist');
             var _signed = (document.getElementById('signed') || {}).value || '';
             if (_signed) sendAccountsEmail(refNo, companyFull, user, data.id);
-addToHistory(); // auto-save to history list on successful Drive upload
+// auto-save to history list on successful Drive upload
+              (function(){ var _u = currentUser(); var _fd = captureFormData(); if (window._mergedRef2) { _fd.ref = _fd.ref + ' & ' + window._mergedRef2; doSaveHistory(_u, _fd); } else { addToHistory(); } })();
       var driveUrl = 'https://drive.google.com/drive/folders/' + orderFolderId;
       if (confirm('✅ Both files saved to Google Drive!' + folder + '\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename + '\n\nClick OK to open the Drive folder.')) { window.open(driveUrl, '_blank'); }
     } else {
