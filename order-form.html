@@ -3047,7 +3047,7 @@ function calcDuration(startVal, endVal) {
   var ed = new Date(endVal   + 'T00:00:00');
   if (isNaN(sd) || isNaN(ed) || ed < sd) return null;
   // End date is inclusive (last day of campaign), so use day-after as exclusive end
-  var edExcl = new Date(ed.getTime() + 86400000);
+  var edExcl = new Date(ed.getTime()); // same-day convention: Sept14->Dec14 = 3m exactly
   var totalDays = Math.round((edExcl - sd) / 86400000);
   // Full calendar months (using exclusive end so e.g. Aug 1->Aug 31 = 1m correctly)
   var months = (edExcl.getFullYear() - sd.getFullYear()) * 12 + (edExcl.getMonth() - sd.getMonth());
