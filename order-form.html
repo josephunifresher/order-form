@@ -3229,11 +3229,15 @@ function sortCampDateRows() {
     return;
   }
   var allDays = mergeAndCalc(phases);
-  var fstDays = mergeAndCalc(phases.filter(function(p) { return p.type === 'FST'; }));
+  var fstList = phases.filter(function(p) { return p.type === 'FST'; });
+  var fstTotalM = 0, fstTotalD = 0;
+  fstList.forEach(function(p) { var dur = calcDuration(p.s, p.e); if (dur) { fstTotalM += dur.months; fstTotalD += dur.days; } });
+  fstTotalM += Math.floor(fstTotalD / 30); fstTotalD = fstTotalD % 30;
   var oohDays = mergeAndCalc(phases.filter(function(p) { return p.type === 'OOH'; }), true);
   var m = Math.floor(allDays / 30), rem = allDays - m * 30, w = Math.floor(rem / 7), d = rem % 7;
-  totalEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(allDays) : durationLabel({months: m, weeks: w, days: d});
-  if (fe) fe.textContent = fstDays ? fmtDays(fstDays) : '—';
+  var combinedM = fstTotalM + Math.floor((oohDays + fstTotalD) / 30), combinedD = (oohDays + fstTotalD) % 30;
+  totalEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(allDays) : durationLabel({months: combinedM, weeks: 0, days: combinedD});
+  if (fe) fe.textContent = (fstTotalM || fstTotalD) ? durationLabel({ months: fstTotalM, weeks: 0, days: fstTotalD }) : '—';
   if (oe) oe.textContent = oohDays ? fmtDays(oohDays) : '—';
 }
 
