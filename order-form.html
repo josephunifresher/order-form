@@ -2510,6 +2510,49 @@ function loadFromHistory(id) {
     if (!confirm('Load "' + h.ref + ' — ' + h.company + '"?\nThis will replace your current form.')) return;
     closeHistory(); closeAdmin();
     restoreFormData(h.form_data);
+    window._editingOrderId = h.id;
+    window._editingOrderRef = h.ref;
+    showEditingBanner(h.ref);
+  });
+}
+
+function showEditingBanner(ref) {
+  var b = document.getElementById('editing-order-banner');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = 'editing-order-banner';
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#4a2c8c;color:#fff;text-align:center;padding:8px 16px;font-family:Lato,Arial,sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center;gap:12px;';
+    document.body.prepend(b);
+  }
+  b.innerHTML = '<span>&#9998; Editing saved order: <strong>' + ref + '</strong></span>' +
+    '<button onclick="doUpdateOrder()" style="background:#fff;color:#4a2c8c;border:none;border-radius:5px;padding:4px 14px;font-weight:700;cursor:pointer;font-size:12px;">&#8593; Update Order</button>' +
+    '<button onclick="clearEditingBanner()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.5);border-radius:5px;padding:4px 10px;cursor:pointer;font-size:12px;">&#10005; Discard</button>';
+  b.style.display = 'flex';
+}
+
+function clearEditingBanner() {
+  window._editingOrderId = null;
+  window._editingOrderRef = null;
+  var b = document.getElementById('editing-order-banner');
+  if (b) b.style.display = 'none';
+}
+
+function doUpdateOrder() {
+  if (!window._editingOrderId) return;
+  var fd = captureFormData();
+  if (!fd) return;
+  var user = window.currentUser || null;
+  sbFetch('order_history?id=eq.' + window._editingOrderId, 'PATCH', {
+    user_name: user ? user.name : 'Unknown',
+    ref: fd.ref,
+    company: fd.company.split(/[\n,]/)[0].trim(),
+    total: fd.grandTotal,
+    form_data: fd
+  }).then(function() {
+    clearEditingBanner();
+    var btn = document.querySelector('#editing-order-banner button'); if(btn){ btn.textContent = '\u2713 Updated!'; btn.style.background='#2ecc71'; setTimeout(function(){ clearEditingBanner(); },1800); }
+  }).catch(function(e) {
+    alert('Update failed: ' + (e.message || e));
   });
 }
 
