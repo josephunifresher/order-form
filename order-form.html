@@ -3733,10 +3733,12 @@ function uploadToDrive(accessToken, btn) {
   populatePrintLayout();
   window.scrollTo(0, 0);
   var refNo = document.getElementById('ref-no').value || 'REF';
+  var _ref2 = window._mergedRef2 || '';
+  var refLabel = _ref2 ? refNo + ' & ' + _ref2 : refNo;
   var companyFull = document.getElementById('client-company').value || 'Client';
   var company = companyFull.split(/[,\n]/)[0].trim();
     var isOoh = (window.formType === 'OOH');
-  var baseName = (refNo + ' - ' + company + (isOoh ? ' - OOH' : '')).replace(/[<>:"/\|?*]/g, '').trim();
+  var baseName = (refLabel + ' - ' + company + (isOoh ? ' - OOH' : '')).replace(/[<>:"/\|?*]/g, '').trim();
   var orderFilename     = baseName + '.pdf';
   var checklistFilename = baseName + ' - Checklist.pdf';
 
