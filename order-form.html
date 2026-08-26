@@ -3213,7 +3213,7 @@ function sortCampDateRows() {
       }
     });
     return merged.reduce(function(acc, r) {
-      return acc + Math.round((r.et - r.st) / 86400000) + 1;
+      return acc + Math.round((r.et - r.st) / 86400000);
     }, 0);
   }
   function fmtDays(d) {
