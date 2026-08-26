@@ -389,6 +389,9 @@
     #print-layout.pl-print-xl .pl-hr        { margin:2pt 0 !important; }
     #print-layout.pl-print-xl .pl-to-row    { margin:3pt 0 2pt !important; }
     #print-layout.pl-print-xl .pl-totals-wrap { margin:1pt 0 3pt !important; }
+    /* XL: notes too long for page 1 — push to page 2 */
+    #print-layout.pl-print-xl .pl-notes-label { page-break-before:always !important; break-before:always !important; }
+    #print-layout.pl-print-xl .pl-notes-body p { margin:0; }
   }
 </style>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
