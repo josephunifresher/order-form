@@ -895,7 +895,7 @@
     </div>
     <div class="pl-header-right">
       <div class="pl-order-word">ORDER</div>
-      <div class="pl-meta-row"><span class="pl-meta-label">UNI Number:</span> <span id="pl-ref"></span><span id="pl-initials" style="color:#555;"></span></div>
+      <div class="pl-meta-row"><span class="pl-meta-label">UNI Number:</span> <span id="pl-ref"></span><span id="pl-ref2" style="display:none;"> / <span id="pl-ref2-val"></span></span><span id="pl-initials" style="color:#555;"></span></div>
       <div class="pl-meta-row"><span class="pl-meta-label">Date:</span> <span id="pl-date"></span></div>
     </div>
   </div>
@@ -943,6 +943,8 @@
     <table style="width:100%;border-collapse:collapse;font-size:9pt;">
       <thead><tr style="border-bottom:1pt solid #000;">
         <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">#</th>
+        <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">Type</th>
+        <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">UNI</th>
         <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">Start</th>
         <th style="text-align:left;padding:2pt 6pt 2pt 0;font-weight:bold;">End</th>
         <th style="text-align:center;padding:2pt 6pt 2pt 0;font-weight:bold;">Duration</th>
@@ -1242,6 +1244,8 @@ function populatePrintLayout() {
   var dateStr = dateVal ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB') : '';
 
   document.getElementById('pl-ref').textContent  = refVal;
+  var _r2el = document.getElementById('pl-ref2'), _r2vl = document.getElementById('pl-ref2-val'), _r2 = window._mergedRef2 || '';
+  if (_r2el && _r2vl) { if (_r2) { _r2vl.textContent = _r2; _r2el.style.display = ''; } else { _r2el.style.display = 'none'; } }
   var initialsVal = document.getElementById('initials').value || '';
   if (document.getElementById('pl-initials')) document.getElementById('pl-initials').textContent = initialsVal ? ' (' + initialsVal + ')' : '';
   document.getElementById('pl-date').textContent = dateStr;
@@ -1387,8 +1391,13 @@ function populatePrintLayout() {
       var sDate = fmtDateShort(sv);
       var eDate = fmtDateShort(ev);
       if (stcChecked) anyStc = true;
+      var typeV = (tr.querySelector('.cd-type-select') || {value:'FST'}).value || 'FST';
+      var uniV = (document.getElementById('cu'+idx) || {value:'1'}).value || '1';
+      var uniLabel = uniV === '1' ? 'UNI 1' : uniV === '2' ? 'UNI 2' : 'Both';
       var plTr = document.createElement('tr');
       plTr.innerHTML = '<td style="padding:2pt 6pt 2pt 0;">' + campRowNum + '</td>' +
+        '<td style="padding:2pt 6pt 2pt 0;font-size:8pt;">' + typeV + '</td>' +
+        '<td style="padding:2pt 6pt 2pt 0;font-size:8pt;">' + uniLabel + '</td>' +
         '<td style="padding:2pt 6pt 2pt 0;">' + sDate + (stcChecked ? ' <span style="color:#e67e22;font-size:7.5pt;font-weight:bold;">*</span>' : '') + '</td>' +
         '<td style="padding:2pt 6pt 2pt 0;">' + eDate + (stcChecked ? ' <span style="color:#e67e22;font-size:7.5pt;font-weight:bold;">*</span>' : '') + '</td>' +
         '<td style="text-align:center;padding:2pt 6pt 2pt 0;">' + mv + '</td>' +
@@ -4689,6 +4698,7 @@ if (fd.notesHtml) {
         var ex = cn.innerHTML.trim();
         var sep = ex ? '<span class="merge-meta"><hr style="margin:6px 0;border-color:#ddd;"></span>' : '';
         var lbl = '<span class="merge-meta"><p style="color:#555;font-size:11px;font-style:italic;margin:2px 0 4px;">— Notes from ' + (rows[0].ref||'merged') + ' —</p></span>';
+        window._mergedRef2 = (rows[0] && rows[0].ref) ? rows[0].ref : '';
         cn.innerHTML = ex + sep + lbl + fd.notesHtml;
       }
     }
