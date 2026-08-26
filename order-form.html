@@ -3852,6 +3852,7 @@ function printForm() {
   if (itemRowCount > 12) {
     pl.classList.add('pl-print-lg');
     pl.classList.add('pl-print-xl');
+    var _nl = pl.querySelector('.pl-notes-label'); if (_nl) { _nl.style.pageBreakBefore = 'always'; _nl.style.breakBefore = 'always'; }
   } else {
     // Temporarily reveal at A4 width (793px ≈ 210mm at 96dpi) to measure layout height
     var savedCss = pl.style.cssText;
