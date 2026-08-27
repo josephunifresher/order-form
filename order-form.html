@@ -2459,13 +2459,24 @@ function doSaveHistory(user, fd) {
     var _dMsg = parseFloat(fd.discountPct) > 0 ? 'Discount: ' + fd.discountPct + '%' : '£' + parseFloat(fd.discountAmt).toFixed(2) + ' discount';
     sendAlertEmail('Discount Applied', (fd.ref || '') + ' - ' + (fd.company || ''), (user && user.name) || '', _dMsg, EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk');
   }
-  sbFetch('order_history', 'POST', {
-    user_name:  user ? user.name : 'Unknown',
-    ref:        fd.ref,
-    company:    fd.company.split(/[\n,]/)[0].trim(),
-    total:      fd.grandTotal,
-    form_data:  fd
-  })['catch'](function() {}); // silent fail
+  if (window._editingOrderId) {
+    sbFetch('order_history?id=eq.' + window._editingOrderId, 'PATCH', {
+      user_name:  user ? user.name : 'Unknown',
+      ref:        fd.ref,
+      company:    fd.company.split(/[\n,]/)[0].trim(),
+      total:      fd.grandTotal,
+      form_data:  fd
+    });
+    window._editingOrderId = null; window._editingOrderRef = null; clearEditingBanner();
+  } else {
+    sbFetch('order_history', 'POST', {
+      user_name:  user ? user.name : 'Unknown',
+      ref:        fd.ref,
+      company:    fd.company.split(/[\n,]/)[0].trim(),
+      total:      fd.grandTotal,
+      form_data:  fd
+    })
+  }['catch'](function() {}); // silent fail
 }
 
 function renderHistoryRows(history, inAdmin) {
