@@ -2309,6 +2309,7 @@ window.formType = 'FST';
 
 function restoreFormData(data) {
   window._mergedRef2 = (data && data.mergedRef2) || '';
+  if (!window._mergedRef2 && data && data.notesHtml) { var _m2 = data.notesHtml.match(/Notes from (UNI\d+)/); if (_m2) window._mergedRef2 = _m2[1]; }
   if (!data) return;
   if (data.formType) setFormType(data.formType);
   var setVal = function(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; };
