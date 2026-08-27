@@ -1248,7 +1248,8 @@ function populatePrintLayout() {
   var dateStr = dateVal ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB') : '';
 
   var _r2 = window._mergedRef2 || '';
-  document.getElementById('pl-ref').textContent  = refVal + (_r2 ? ' & ' + _r2 : '');
+  var _displayRef = (_r2 && !refVal.includes(_r2)) ? refVal + ' & ' + _r2 : refVal;
+  document.getElementById('pl-ref').textContent  = _displayRef;
   var _r2el = document.getElementById('pl-ref2');
   if (_r2el) _r2el.style.display = 'none';
   var initialsVal = document.getElementById('initials').value || '';
