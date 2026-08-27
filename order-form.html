@@ -3750,6 +3750,7 @@ function sendAlertEmail(subject, company, filledBy, msg, toEmail) {
 
 function uploadToDrive(accessToken, btn) {
   calcCampaignMonths();
+  if (window._mergedRef2) { var _rnEl = document.getElementById('ref-no'); if (_rnEl && !_rnEl.value.includes(window._mergedRef2)) { _rnEl.value = _rnEl.value + ' & ' + window._mergedRef2; } }
   populatePrintLayout();
   window.scrollTo(0, 0);
   var refNo = document.getElementById('ref-no').value || 'REF';
@@ -3857,6 +3858,7 @@ function isLargeForm() {
 function printForm() {
   if (!validateForm()) return;
   calcCampaignMonths();
+  if (window._mergedRef2) { var _rnEl = document.getElementById('ref-no'); if (_rnEl && !_rnEl.value.includes(window._mergedRef2)) { _rnEl.value = _rnEl.value + ' & ' + window._mergedRef2; } }
   populatePrintLayout();
 
   // Tag the print layout with a size class so @media print can apply the
