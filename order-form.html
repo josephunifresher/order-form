@@ -2272,6 +2272,7 @@ function captureFormData() {
     discountPct:  (document.getElementById('discount-pct')    || {}).value || '',
     discountAmt:  (document.getElementById('discount-amt')    || {}).value || '',
     vatRate:      (document.getElementById('vat-rate')        || {}).value || '20',
+    mergedRef2:   window._mergedRef2 || '',
     notesHtml:    (document.getElementById('campaign-notes')  || {}).innerHTML || '',
     additionalInfo: (document.getElementById('additional-info') || {}).value || '',
     clBy:         (document.getElementById('cl-by')           || {}).value || '',
@@ -2307,6 +2308,7 @@ function setFormType(type) {
 window.formType = 'FST';
 
 function restoreFormData(data) {
+  window._mergedRef2 = (data && data.mergedRef2) || '';
   if (!data) return;
   if (data.formType) setFormType(data.formType);
   var setVal = function(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; };
