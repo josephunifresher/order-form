@@ -1247,9 +1247,10 @@ function populatePrintLayout() {
   var dateVal = document.getElementById('order-date').value || '';
   var dateStr = dateVal ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB') : '';
 
-  document.getElementById('pl-ref').textContent  = refVal;
-  var _r2el = document.getElementById('pl-ref2'), _r2vl = document.getElementById('pl-ref2-val'), _r2 = window._mergedRef2 || '';
-  if (_r2el && _r2vl) { if (_r2) { _r2vl.textContent = _r2; _r2el.style.display = ''; } else { _r2el.style.display = 'none'; } }
+  var _r2 = window._mergedRef2 || '';
+  document.getElementById('pl-ref').textContent  = refVal + (_r2 ? ' & ' + _r2 : '');
+  var _r2el = document.getElementById('pl-ref2');
+  if (_r2el) _r2el.style.display = 'none';
   var initialsVal = document.getElementById('initials').value || '';
   if (document.getElementById('pl-initials')) document.getElementById('pl-initials').textContent = initialsVal ? ' (' + initialsVal + ')' : '';
   document.getElementById('pl-date').textContent = dateStr;
