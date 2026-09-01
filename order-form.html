@@ -1251,7 +1251,16 @@ function populatePrintLayout() {
   var _displayRef = (_r2 && !refVal.includes(_r2)) ? refVal + ' & ' + _r2 : refVal;
   document.getElementById('pl-ref').textContent  = _displayRef;
   var _r2el = document.getElementById('pl-ref2');
-  if (_r2el) _r2el.style.display = 'none';
+  var _r2valEl = document.getElementById('pl-ref2-val');
+  var _ref2Manual = (document.getElementById('ref-no-2') || {}).value || '';
+  if (_r2el) {
+    if (_ref2Manual) {
+      if (_r2valEl) _r2valEl.textContent = _ref2Manual;
+      _r2el.style.display = '';
+    } else {
+      _r2el.style.display = 'none';
+    }
+  }
   var initialsVal = document.getElementById('initials').value || '';
   if (document.getElementById('pl-initials')) document.getElementById('pl-initials').textContent = initialsVal ? ' (' + initialsVal + ')' : '';
   document.getElementById('pl-date').textContent = dateStr;
@@ -3756,7 +3765,9 @@ function uploadToDrive(accessToken, btn) {
   window.scrollTo(0, 0);
   var refNo = document.getElementById('ref-no').value || 'REF';
   var _ref2 = window._mergedRef2 || '';
-  var refLabel = (_ref2 && !refNo.includes(_ref2)) ? refNo + ' & ' + _ref2 : refNo;
+  var _ref2b = (document.getElementById('ref-no-2') || {}).value || '';
+  var _secondRef = _ref2 || _ref2b;
+  var refLabel = (_secondRef && !refNo.includes(_secondRef)) ? refNo + ' & ' + _secondRef : refNo;
   var companyFull = document.getElementById('client-company').value || 'Client';
   var company = companyFull.split(/[,\n]/)[0].trim();
     var isOoh = (window.formType === 'OOH');
@@ -3820,7 +3831,7 @@ function uploadToDrive(accessToken, btn) {
             var _signed = (document.getElementById('signed') || {}).value || '';
             if (_signed) sendAccountsEmail(refNo, companyFull, user, data.id);
 // auto-save to history list on successful Drive upload
-              (function(){ var _u = currentUser(); var _fd = captureFormData(); if (window._mergedRef2) { _fd.ref = _fd.ref + ' & ' + window._mergedRef2; doSaveHistory(_u, _fd); } else { addToHistory(); } })();
+              (function(){ var _u = currentUser(); var _fd = captureFormData(); var _r2b = (document.getElementById('ref-no-2') || {}).value || ''; if (window._mergedRef2 || _r2b) { var _sec = window._mergedRef2 || _r2b; if (_sec && !_fd.ref.includes(_sec)) _fd.ref = _fd.ref + ' & ' + _sec; doSaveHistory(_u, _fd); } else { addToHistory(); } })();
       var driveUrl = 'https://drive.google.com/drive/folders/' + orderFolderId;
       if (confirm('✅ Both files saved to Google Drive!' + folder + '\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename + '\n\nClick OK to open the Drive folder.')) { window.open(driveUrl, '_blank'); }
     } else {
