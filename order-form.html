@@ -1248,19 +1248,12 @@ function populatePrintLayout() {
   var dateStr = dateVal ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB') : '';
 
   var _r2 = window._mergedRef2 || '';
-  var _displayRef = (_r2 && !refVal.includes(_r2)) ? refVal + ' & ' + _r2 : refVal;
+  var _ref2Manual = (document.getElementById('ref-no-2') || {}).value || '';
+  var _secondRef = _r2 || _ref2Manual;
+  var _displayRef = (_secondRef && !refVal.includes(_secondRef)) ? refVal + ' & ' + _secondRef : refVal;
   document.getElementById('pl-ref').textContent  = _displayRef;
   var _r2el = document.getElementById('pl-ref2');
-  var _r2valEl = document.getElementById('pl-ref2-val');
-  var _ref2Manual = (document.getElementById('ref-no-2') || {}).value || '';
-  if (_r2el) {
-    if (_ref2Manual) {
-      if (_r2valEl) _r2valEl.textContent = _ref2Manual;
-      _r2el.style.display = '';
-    } else {
-      _r2el.style.display = 'none';
-    }
-  }
+  if (_r2el) _r2el.style.display = 'none';
   var initialsVal = document.getElementById('initials').value || '';
   if (document.getElementById('pl-initials')) document.getElementById('pl-initials').textContent = initialsVal ? ' (' + initialsVal + ')' : '';
   document.getElementById('pl-date').textContent = dateStr;
