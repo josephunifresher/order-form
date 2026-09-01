@@ -2317,7 +2317,9 @@ function restoreFormData(data) {
   if (!data) return;
   if (data.formType) setFormType(data.formType);
   var setVal = function(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; };
-  setVal('ref-no',         data.ref); validateUniField();
+  var _refParts = (data.ref || '').split(' & ');
+  setVal('ref-no', _refParts[0]); validateUniField();
+  if (_refParts[1]) setVal('ref-no-2', _refParts[1]);
   setVal('order-date',     data.date);
   setVal('initials',       data.initials);
   setVal('client-company', data.company);
