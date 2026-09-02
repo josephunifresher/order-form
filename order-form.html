@@ -1879,7 +1879,7 @@ function checkUniPendingRequest(ref) {
 }
 
 // Submit a reuse request — stores a REUSE: record in order_history
-function requestUniReuse(ref) {
+function requestUniReuse(ref, company) {
   var user = currentUser();
   var reason = prompt('Please give a reason for reusing ' + ref + ' (this will be shown to the admin):');
   if (reason === null) return; // user cancelled
@@ -1901,6 +1901,7 @@ function requestUniReuse(ref) {
       form_data: {
         type:         'uni_reuse_request',
         uni_number:   ref,
+        company:      company || '',
         requested_by: user ? user.name : 'Unknown',
         reason:       reason || '(no reason given)'
       }
@@ -2464,7 +2465,7 @@ function addToHistory() {
             'To reuse this number you need ADMIN APPROVAL.\n\n' +
             'Would you like to submit a reuse request to the admin now?'
           );
-          if (doRequest) requestUniReuse(ref);
+          if (doRequest) requestUniReuse(ref, ex.company || '');
         }
       });
     });
