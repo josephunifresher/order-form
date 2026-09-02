@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Media Ltd â Order Form</title>
+<title>Student Media Ltd – Order Form</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Latho:wght@400;700&display=swap" rel="stylesheet">
-<script>(function(){var _oC=window.confirm,_oO=window.open,_pb=null;window.confirm=function(m){var b=document.createElement('div');b.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:9999;background:#1a73e8;color:#fff;padding:16px 24px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.25);font-family:Lato,Arial,sans-serif;font-size:13px;text-align:center;max-width:520px;width:90%';b.innerHTML='<div style="font-size:15px;font-weight:700;margin-bottom:10px">â Saved to Google Drive!</div><div style="opacity:.9;margin-bottom:14px;line-height:1.5">'+(m||'')+'</div><a id="drv-lnk" href="#" target="_blank" style="display:none;background:#fff;color:#1a73e8;padding:8px 16px;border-radius:6px;font-weight:700;text-decoration:none;margin-right:8px;font-size:13px">ð Open Drive Folder</a><button onclick="this.parentNode.remove()" style="background:rgba(255,255,255,.25);color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px">â Close</button>';_pb=b;document.body.appendChild(b);setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b);_pb=null;},20000);return true;};window.open=function(u,t){if(_pb&&u&&u.indexOf('drive.google.com')!==-1){var l=_pb.querySelector('#drv-lnk');if(l){l.href=u;l.style.display='inline-block';}_pb=null;return null;}return _oO.apply(this,arguments);};})();</script>
+<script>(function(){var _oC=window.confirm,_oO=window.open,_pb=null;window.confirm=function(m){var b=document.createElement('div');b.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:9999;background:#1a73e8;color:#fff;padding:16px 24px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.25);font-family:Lato,Arial,sans-serif;font-size:13px;text-align:center;max-width:520px;width:90%';b.innerHTML='<div style="font-size:15px;font-weight:700;margin-bottom:10px">✅ Saved to Google Drive!</div><div style="opacity:.9;margin-bottom:14px;line-height:1.5">'+(m||'')+'</div><a id="drv-lnk" href="#" target="_blank" style="display:none;background:#fff;color:#1a73e8;padding:8px 16px;border-radius:6px;font-weight:700;text-decoration:none;margin-right:8px;font-size:13px">📂 Open Drive Folder</a><button onclick="this.parentNode.remove()" style="background:rgba(255,255,255,.25);color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px">✕ Close</button>';_pb=b;document.body.appendChild(b);setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b);_pb=null;},20000);return true;};window.open=function(u,t){if(_pb&&u&&u.indexOf('drive.google.com')!==-1){var l=_pb.querySelector('#drv-lnk');if(l){l.href=u;l.style.display='inline-block';}_pb=null;return null;}return _oO.apply(this,arguments);};})();</script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -156,7 +156,7 @@
   .bottom-box:first-child { border-right:1.5px solid var(--grey-border); }
   .bottom-box .box-title { font-family:'Roboto',Arial,sans-serif; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.8px; color:var(--purple-dark); margin-bottom:12px; }
   .partner-badge { display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700; background:var(--purple-lightest); color:var(--purple-dark); border:1.5px solid var(--purple-lighter); border-radius:20px; padding:3px 10px; margin-bottom:10px; text-transform:uppercase; letter-spacing:.3px; }
-  .partner-badge::before { content:"â"; font-size:12px; }
+  .partner-badge::before { content:"✍"; font-size:12px; }
   .adobe-sign-link { display:inline-block; margin-top:6px; font-size:11px; font-weight:700; color:var(--purple); background:var(--purple-lightest); border:1.5px solid var(--purple-lighter); border-radius:6px; padding:4px 10px; text-decoration:none; letter-spacing:.2px; }
   .adobe-sign-link:hover { background:var(--purple-lighter); color:#fff; }
   .adobe-sign-link { display:inline-block; margin-top:6px; font-size:11px; font-weight:700; color:var(--purple); background:var(--purple-lightest); border:1.5px solid var(--purple-lighter); border-radius:6px; padding:4px 10px; text-decoration:none; letter-spacing:.2px; }
@@ -180,7 +180,7 @@
   #print-layout { display:none; }
 
 
-  /* ââ Print / PDF layout styles (always loaded, visibility controlled by JS / @media print) ââ */
+  /* ── Print / PDF layout styles (always loaded, visibility controlled by JS / @media print) ── */
   #print-layout { display:none; font-family:Arial,sans-serif; font-size:10pt; color:#000;   .merge-meta { display:none !important; }
 }
 
@@ -390,7 +390,7 @@
     #print-layout.pl-print-xl .pl-hr        { margin:2pt 0 !important; }
     #print-layout.pl-print-xl .pl-to-row    { margin:3pt 0 2pt !important; }
     #print-layout.pl-print-xl .pl-totals-wrap { margin:1pt 0 3pt !important; }
-    /* XL: notes too long for page 1 â push to page 2 */
+    /* XL: notes too long for page 1 — push to page 2 */
     #print-layout.pl-print-xl .pl-notes-label { page-break-before:always !important; break-before:always !important; }
     #print-layout.pl-print-xl .pl-notes-body p { margin:0; }
   }
@@ -398,7 +398,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-// ââ AUTO-RESTORE SESSION ââ
+// ── AUTO-RESTORE SESSION ──
 (function() {
   try {
     var saved = localStorage.getItem('uf_session');
@@ -437,9 +437,9 @@
 <!-- LOGIN OVERLAY -->
 <div id="login-overlay">
   <div id="login-box">
-    <div style="font-size:28px;margin-bottom:6px;">ð</div>
+    <div style="font-size:28px;margin-bottom:6px;">📋</div>
     <h2>Student Media Ltd</h2>
-    <p>Order Form System â please sign in</p>
+    <p>Order Form System — please sign in</p>
     <div class="user-btns" id="user-btns"></div>
     <input type="password" id="login-pw" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
     <button id="login-btn" onclick="doLogin()">Sign In</button>
@@ -454,7 +454,7 @@
         onkeydown="if(event.key==='Enter')doForgotPw()">
       <button onclick="doForgotPw()"
         style="width:100%;background:var(--purple);color:#fff;border:none;border-radius:30px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Lato',Arial,sans-serif;margin-bottom:6px;">Send Reset Email</button>
-      <a href="#" onclick="hideForgotPw();return false;" style="font-size:11px;color:#aaa;text-decoration:none;">â Back to sign in</a>
+      <a href="#" onclick="hideForgotPw();return false;" style="font-size:11px;color:#aaa;text-decoration:none;">← Back to sign in</a>
       <div id="forgot-msg" style="font-size:12px;min-height:16px;margin-top:6px;"></div>
     </div>
   </div>
@@ -464,7 +464,7 @@
 <div id="history-modal" class="uf-modal-overlay" style="display:none;">
   <div class="uf-modal">
     <div class="uf-modal-head">
-      <h2>ð Order History</h2>
+      <h2>📋 Order History</h2>
       <button class="uf-modal-close" onclick="closeHistory()">Close</button>
     </div>
     <div class="uf-modal-body" id="history-body"></div>
@@ -475,7 +475,7 @@
 <div id="changepw-modal" class="uf-modal-overlay" style="display:none;">
   <div class="uf-modal" style="max-width:380px;">
     <div class="uf-modal-head">
-      <h2>ð Change Password</h2>
+      <h2>🔑 Change Password</h2>
       <button class="uf-modal-close" onclick="closeChangePw()">Close</button>
     </div>
     <div class="uf-modal-body" style="padding:24px;">
@@ -497,7 +497,7 @@
 <div id="admin-modal" class="uf-modal-overlay" style="display:none;">
   <div class="uf-modal">
     <div class="uf-modal-head">
-      <h2>âï¸ Admin Panel</h2>
+      <h2>⚙️ Admin Panel</h2>
       <button class="uf-modal-close" onclick="closeAdmin()">Close</button>
     </div>
     <div class="uf-modal-body" id="admin-body"></div>
@@ -506,22 +506,22 @@
 
 <div id="toolbar">
   <h1>Order Form</h1>
-  <button class="btn-ghost" onclick="location.href='dashboard.html'">ð Dashboard</button>
-  <button class="btn-ghost" onclick="showHistory()">ð History</button>
-  <button class="btn-ghost" id="merge-btn" onclick="showMergeModal()" style="display:none;">ð Merge Order</button>
-  <button class="btn-ghost" id="admin-btn" onclick="showAdmin()" style="display:none;">âï¸ Admin</button>
+  <button class="btn-ghost" onclick="location.href='dashboard.html'">📊 Dashboard</button>
+  <button class="btn-ghost" onclick="showHistory()">📋 History</button>
+  <button class="btn-ghost" id="merge-btn" onclick="showMergeModal()" style="display:none;">🔀 Merge Order</button>
+  <button class="btn-ghost" id="admin-btn" onclick="showAdmin()" style="display:none;">⚙️ Admin</button>
   <div style="flex:1"></div>
   <button class="btn btn-clear" onclick="clearForm()">Clear</button>
   <button class="btn btn-validate" onclick="validateForm()">Check Fields</button>
-  <button class="btn btn-pdf" onclick="printForm()">ð¨ Print / Save PDF</button>
-  <button class="btn btn-drive" id="btn-drive" onclick="saveToDrive()">â Save to Drive</button>
+  <button class="btn btn-pdf" onclick="printForm()">🖨 Print / Save PDF</button>
+  <button class="btn btn-drive" id="btn-drive" onclick="saveToDrive()">☁ Save to Drive</button>
   <div class="toolbar-sep"></div>
   <div class="user-menu">
     <button class="user-menu-btn" onclick="var d=document.getElementById('um-drop');d.classList.toggle('open')">
-      <span id="toolbar-user"></span><span class="arrow">â¾</span>
+      <span id="toolbar-user"></span><span class="arrow">▾</span>
     </button>
     <div class="user-dropdown" id="um-drop">
-      <button onclick="document.getElementById('um-drop').classList.remove('open');showChangePw()">ð Change Password</button>
+      <button onclick="document.getElementById('um-drop').classList.remove('open');showChangePw()">🔑 Change Password</button>
       <hr>
       <button onclick="doLogout()">Sign Out</button>
     </div>
@@ -531,7 +531,7 @@
 <!-- UNI reuse approval modal (shown to admin on login) -->
 <div id="uni-reuse-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10000;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:16px;padding:32px 36px;max-width:520px;width:92%;box-shadow:0 8px 48px rgba(0,0,0,0.35);position:relative;max-height:80vh;overflow-y:auto;">
-    <div style="font-size:32px;text-align:center;margin-bottom:8px;">ð¢</div>
+    <div style="font-size:32px;text-align:center;margin-bottom:8px;">🔢</div>
     <h2 style="font-family:'Roboto',Arial,sans-serif;font-size:18px;color:#702DD7;text-align:center;margin-bottom:4px;">Pending UNI Number Reuse Requests</h2>
     <p style="font-size:12px;color:#888;text-align:center;margin-bottom:20px;">The following users have requested permission to reuse a UNI number that was already issued.</p>
     <div id="uni-reuse-list"></div>
@@ -544,7 +544,7 @@
 <!-- T&C approval modal -->
 <div id="tc-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:14px;padding:32px 36px;max-width:440px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.25);text-align:center;position:relative;">
-    <div style="font-size:36px;margin-bottom:12px;">â ï¸</div>
+    <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
     <p style="color:#c0392b;font-size:15px;font-weight:900;font-family:'Roboto',Arial,sans-serif;line-height:1.5;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">
       HAVE YOU APPROVED THIS WITH FIZZ OR CHRIS??
     </p>
@@ -579,7 +579,7 @@
     <button class="form-type-btn active" id="btn-fst" onclick="setFormType('FST')">FST</button>
     <button class="form-type-btn" id="btn-ooh" onclick="setFormType('OOH')">OOH</button>
   </div>
-  <p class="req-note">* Required fields â complete before sending.</p>
+  <p class="req-note">* Required fields — complete before sending.</p>
 
   <div class="to-desc-row">
     <div class="to-box">
@@ -609,9 +609,9 @@
     <thead>
       <tr>
         <th style="width:47%">Description *</th>
-        <th style="width:16%" class="right">Unit Price (Â£) *</th>
-        <th style="width:8%" class="right">Qty <button type="button" class="info-tip" tabindex="0"><span class="info-tip-popup">Number of units, weeks, months, or placements. Total = Unit Price Ã Qty. Leave blank to count as 1.</span>i</button></th>
-        <th style="width:16%" class="right">Total (Â£)</th>
+        <th style="width:16%" class="right">Unit Price (£) *</th>
+        <th style="width:8%" class="right">Qty <button type="button" class="info-tip" tabindex="0"><span class="info-tip-popup">Number of units, weeks, months, or placements. Total = Unit Price × Qty. Leave blank to count as 1.</span>i</button></th>
+        <th style="width:16%" class="right">Total (£)</th>
         <th style="width:7%;text-align:center;">Type</th>
         <th style="width:6%"></th>
       </tr>
@@ -625,7 +625,7 @@
     <input type="number" id="discount-pct" min="0" max="100" step="0.01" placeholder="0" oninput="recalc()">
     <span>%</span>
     <span style="color:#bbb">|</span>
-    <span>Â£</span>
+    <span>£</span>
     <input type="number" id="discount-amt" min="0" step="0.01" placeholder="0.00" oninput="recalc()">
   </div>
   <div class="discount-wrap" style="margin-top:4px;">
@@ -639,10 +639,10 @@
     </select>
   </div>
   <div id="payment-terms-warning" style="display:none;margin-top:6px;padding:8px 12px;background:#fff0f0;border-left:4px solid #e74c3c;font-size:12px;color:#c0392b;font-weight:600;line-height:1.5;">
-    â ï¸ NON-STANDARD PAYMENT TERMS â This change must be approved by Fizz or Chris before issuing.
+    ⚠️ NON-STANDARD PAYMENT TERMS — This change must be approved by Fizz or Chris before issuing.
   </div>
   <div id="vat-warning">
-    <span>â ï¸ VAT REMOVED â Only do this if the partner is VAT exempt. Confirm with Fizz or Chris before saving.</span>
+    <span>⚠️ VAT REMOVED — Only do this if the partner is VAT exempt. Confirm with Fizz or Chris before saving.</span>
   </div>
   <div class="vat-rate-wrap" id="vat-rate-wrap">
     <label style="display:flex;align-items:center;gap:5px;cursor:pointer;color:#666;font-size:12px;">
@@ -655,14 +655,14 @@
   </div>
   <div class="totals-wrap">
     <table class="totals-table">
-      <tr><td>NET:</td><td id="net-total">Â£0.00</td></tr>
-      <tr id="instalment-fee-row" style="display:none"><td style="color:#702DD7;font-weight:600;">Instalment Admin Fee:</td><td id="instalment-fee-display" style="text-align:right;color:#702DD7;font-weight:600;">Â£40.00 + VAT</td></tr>
+      <tr><td>NET:</td><td id="net-total">£0.00</td></tr>
+      <tr id="instalment-fee-row" style="display:none"><td style="color:#702DD7;font-weight:600;">Instalment Admin Fee:</td><td id="instalment-fee-display" style="text-align:right;color:#702DD7;font-weight:600;">£40.00 + VAT</td></tr>
       <tr class="discount-row" id="discount-row" style="display:none">
         <td id="discount-label-cell">Discount:</td>
-        <td id="discount-display" style="text-align:right">âÂ£0.00</td>
+        <td id="discount-display" style="text-align:right">–£0.00</td>
       </tr>
-      <tr><td id="vat-label">VAT (20%):</td><td id="vat-total">Â£0.00</td></tr>
-      <tr class="total-row"><td>TOTAL:</td><td id="grand-total">Â£0.00</td></tr>
+      <tr><td id="vat-label">VAT (20%):</td><td id="vat-total">£0.00</td></tr>
+      <tr class="total-row"><td>TOTAL:</td><td id="grand-total">£0.00</td></tr>
     </table>
   </div>
 
@@ -684,7 +684,7 @@
       <div class="notes-area" id="campaign-notes" contenteditable="true" spellcheck="true">Full Site Takeover and Retargeting &ndash; <span style="color:#e74c3c;font-weight:bold;">CITY NAME</span><br>KPIs: 25,000 impressions (across digital display &amp; social retargeting) &amp; 300+ click-throughs per month.</div>
       <span class="error-label" id="err-campaign-notes">Campaign notes are required</span>
       <div style="margin-top:12px;">
-        <label style="font-size:11px;font-weight:700;color:var(--purple-dark);text-transform:uppercase;letter-spacing:.5px;">Additional Info <span style="font-size:10px;font-weight:400;color:#888;">(e.g. No dates have been agreed)</span><small style="display:block;font-weight:600;font-size:10px;color:#c0392b;margin-top:3px;">&#9888; Internal only â not shown on order form</small></label>
+        <label style="font-size:11px;font-weight:700;color:var(--purple-dark);text-transform:uppercase;letter-spacing:.5px;">Additional Info <span style="font-size:10px;font-weight:400;color:#888;">(e.g. No dates have been agreed)</span><small style="display:block;font-weight:600;font-size:10px;color:#c0392b;margin-top:3px;">&#9888; Internal only – not shown on order form</small></label>
         <textarea id="additional-info" rows="3" style="width:100%;margin-top:4px;border:1px solid var(--purple-lighter);border-radius:6px;padding:8px;font-size:12px;font-family:'Lato',Arial,sans-serif;resize:vertical;box-sizing:border-box;" placeholder="Any additional notes or caveats..."></textarea>
       </div>
     </div>
@@ -698,7 +698,7 @@
             <th>End</th>
             <th style="text-align:center">Duration <button type="button" id="dur-mode-btn" onclick="toggleDurMode()" title="Switch to weeks view" style="background:var(--purple-lighter);border:none;border-radius:8px;cursor:pointer;font-size:9px;padding:1px 5px;color:var(--purple-dark);font-weight:700;vertical-align:middle;margin-left:2px;">Wks</button></th>
             <th>Notes</th>
-            <th style="text-align:center" title="Subject to change â tick if these dates are estimated and may change">STC <button type="button" class="info-tip" tabindex="0" style="font-size:8px;width:12px;height:12px;"><span class="info-tip-popup">Subject to Change â tick this if the dates for this phase are estimated and may change. A note will appear on the printed form.</span>i</button></th>
+            <th style="text-align:center" title="Subject to change — tick if these dates are estimated and may change">STC <button type="button" class="info-tip" tabindex="0" style="font-size:8px;width:12px;height:12px;"><span class="info-tip-popup">Subject to Change — tick this if the dates for this phase are estimated and may change. A note will appear on the printed form.</span>i</button></th>
             <th style="width:50px;text-align:center;">UNI</th><th style="width:50px;text-align:center;">Type</th>
             <th style="width:18px;"></th>
           </tr>
@@ -707,7 +707,7 @@
         <tfoot>
           <tr>
             <td colspan="4" style="text-align:right;padding-right:8px;font-size:12px;">Total Duration:</td>
-            <td class="camp-total-val" id="total-camp-months" style="text-align:center;">â</td>
+            <td class="camp-total-val" id="total-camp-months" style="text-align:center;">—</td>
             <td></td>
             <td style="padding-left:6px;">
               <button type="button" onclick="addCampDateRow()" title="Add another campaign phase"
@@ -715,10 +715,10 @@
             </td>
           </tr>
           <tr>
-            <td colspan="7" style="text-align:right;padding-right:8px;font-size:11px;color:#666;">FST Total: <strong id="total-fst-months">â</strong> &nbsp;&nbsp; OOH Total: <strong id="total-ooh-months">â</strong></td>
+            <td colspan="7" style="text-align:right;padding-right:8px;font-size:11px;color:#666;">FST Total: <strong id="total-fst-months">—</strong> &nbsp;&nbsp; OOH Total: <strong id="total-ooh-months">—</strong></td>
           </tr>
         
-          <tr><td colspan="7" style="text-align:left;padding:2px 6px 4px;"><button type="button" id="grp-loc-btn" onclick="toggleGroupByLoc()" style="background:none;border:1px solid var(--purple-light,#c4a9e2);border-radius:6px;cursor:pointer;font-size:10px;padding:2px 8px;color:var(--purple-dark,#4a1a8a);">â Group by location</button> <button type="button" onclick="sortCampDateRows()" style="background:none;border:1px solid var(--purple-light,#c4a9e2);border-radius:6px;cursor:pointer;font-size:10px;padding:2px 8px;color:var(--purple-dark,#4a2c8c);font-family:'Lato',Arial,sans-serif;margin-left:6px;">&#8593; Sort by date</button></td></tr></tfoot>
+          <tr><td colspan="7" style="text-align:left;padding:2px 6px 4px;"><button type="button" id="grp-loc-btn" onclick="toggleGroupByLoc()" style="background:none;border:1px solid var(--purple-light,#c4a9e2);border-radius:6px;cursor:pointer;font-size:10px;padding:2px 8px;color:var(--purple-dark,#4a1a8a);">⊞ Group by location</button> <button type="button" onclick="sortCampDateRows()" style="background:none;border:1px solid var(--purple-light,#c4a9e2);border-radius:6px;cursor:pointer;font-size:10px;padding:2px 8px;color:var(--purple-dark,#4a2c8c);font-family:'Lato',Arial,sans-serif;margin-left:6px;">&#8593; Sort by date</button></td></tr></tfoot>
       </table>
       <span class="error-label" id="err-camp-months" style="display:block;margin-top:5px;">Please enter at least one campaign date range</span>
     </div>
@@ -733,8 +733,8 @@
             <button type="button" class="accred-btn" id="accred-no-btn" onclick="setAccred('no')">No</button>
           </div>
         </div>
-        <div style="margin:8px 0 4px;font-size:12px;color:#555;">ð Always check the <a href="https://docs.google.com/spreadsheets/d/1dCToA6fflF8zrIyStX1TWqZhpFsheD0JcVPDTwrM0cU/edit?gid=441023848#gid=441023848" target="_blank" rel="noopener" style="color:var(--purple);font-weight:700;">Partner Map</a> before confirming or declining accreditation.
-          <button type="button" onclick="togglePartnerMap()" id="pm-toggle-btn" style="margin-left:10px;background:var(--purple);color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;font-family:inherit;">ð View Partner Map</button>
+        <div style="margin:8px 0 4px;font-size:12px;color:#555;">📋 Always check the <a href="https://docs.google.com/spreadsheets/d/1dCToA6fflF8zrIyStX1TWqZhpFsheD0JcVPDTwrM0cU/edit?gid=441023848#gid=441023848" target="_blank" rel="noopener" style="color:var(--purple);font-weight:700;">Partner Map</a> before confirming or declining accreditation.
+          <button type="button" onclick="togglePartnerMap()" id="pm-toggle-btn" style="margin-left:10px;background:var(--purple);color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;font-family:inherit;">📋 View Partner Map</button>
         </div>
         <div id="partner-map-panel" style="display:none;margin-top:8px;border:1px solid var(--purple-light);border-radius:8px;overflow:hidden;">
           <div style="background:var(--purple);display:flex;align-items:center;justify-content:space-between;padding:6px 12px;">
@@ -751,7 +751,6 @@
             <div class="accred-field-row"><label for="accred-city">City</label><div style="display:flex;align-items:center;gap:6px;"><input type="text" id="accred-city" list="accred-city-list" placeholder="e.g. Manchester" oninput="checkAccredOther('city');populatePrintLayout();checkAccredMap()" style="flex:1;"><button type="button" onclick="document.getElementById('accred-city').value='National';populatePrintLayout();" style="background:var(--purple-lighter);border:none;border-radius:6px;padding:3px 8px;color:var(--purple-dark);font-weight:700;cursor:pointer;font-size:11px;white-space:nowrap;">National</button></div><datalist id="accred-city-list"><option value="National"><option value="Aberdeen"><option value="Bath"><option value="Birmingham"><option value="Brighton"><option value="Bristol"><option value="Cambridge"><option value="Cardiff"><option value="Coventry"><option value="Dublin"><option value="Dundee"><option value="Durham"><option value="Edinburgh"><option value="Exeter"><option value="Glasgow"><option value="Leeds"><option value="Leicester"><option value="Liverpool"><option value="London"><option value="Manchester"><option value="Newcastle"><option value="Norwich"><option value="Nottingham"><option value="Oxford"><option value="Plymouth"><option value="Portsmouth"><option value="Reading"><option value="Sheffield"><option value="Southampton"><option value="Stirling"><option value="Swansea"><option value="York"><option value="Other"></datalist><input type="text" id="accred-city-other" placeholder="Please specify city..." style="display:none;margin-top:4px;width:100%;font-size:13px;border:none;border-bottom:1.5px solid var(--purple-lighter);outline:none;padding:2px 4px;font-family:'Lato',Arial,sans-serif;" oninput="populatePrintLayout()"></div>
             <div class="accred-field-row"><label for="accred-category">Category</label><input type="text" id="accred-category" list="accred-category-list" placeholder="e.g. Things to do" oninput="checkAccredOther('category');populatePrintLayout();checkAccredMap()"><datalist id="accred-category-list"><option value="PBSA"><option value="Lettings"><option value="Restaurant"><option value="Gym"><option value="Nightlife / Venue"><option value="Fitness Activity"><option value="Things to do"><option value="Recruitment Part Time"><option value="Recruitment Full Time"><option value="Taxi"><option value="Transport"><option value="Travel - Holidays"><option value="Beauty"><option value="Retail - Fashion"><option value="Golf Retailer"><option value="Health"><option value="Higher Education"><option value="Other"></datalist><input type="text" id="accred-category-other" placeholder="Please specify category..." style="display:none;margin-top:4px;width:100%;font-size:13px;border:none;border-bottom:1.5px solid var(--purple-lighter);outline:none;padding:2px 4px;font-family:'Lato',Arial,sans-serif;" oninput="populatePrintLayout()"></div>
           </div>
-          <div id="accred-map-warn" style="display:none;margin-top:8px;padding:7px 10px;border-radius:6px;background:#f8f4fe;border:1px solid var(--purple-lighter);"></div>
           <div id="accred-map-warn" style="display:none;margin-top:8px;padding:7px 10px;border-radius:6px;background:#f8f4fe;border:1px solid var(--purple-lighter);"></div>
         </div>
         <div id="accred-no-panel" class="accred-panel" style="display:none">
@@ -785,7 +784,7 @@
         <span style="font-size:11px;color:#888;font-style:italic">Only if the Partner has requested</span>
         <label id="sales-sheet-reminder" style="display:none;align-items:center;gap:10px;font-size:13px;font-weight:600;cursor:pointer;color:#b45309;margin-top:6px;">
           <input type="checkbox" id="sales-sheet-col-s" style="width:18px;height:18px;accent-color:#f59e0b;cursor:pointer;">
-          â ï¸ Ticked Sales Sheet Column S?
+          ⚠️ Ticked Sales Sheet Column S?
         </label>
               <div id="pay-monthly-notes-row" style="display:none;margin-top:10px;">
                         <label style="font-size:12px;font-weight:600;margin-bottom:4px;display:block;">Instalment Details <span style="color:#888;font-style:italic;font-weight:400;">(for Accounts)</span></label>
@@ -806,7 +805,7 @@
     <div class="bottom-box partner-box">
       <div class="box-title">Campaign Contact Information</div>
       <div class="partner-badge">Partner completes via Adobe Sign</div>
-      <a href="https://acrobat.adobe.com/?promoid=LQLZSXQR&locale=en-US&mv=other&mv2=tab" target="_blank" rel="noopener" class="adobe-sign-link">â Open Adobe Sign â</a>
+      <a href="https://acrobat.adobe.com/?promoid=LQLZSXQR&locale=en-US&mv=other&mv2=tab" target="_blank" rel="noopener" class="adobe-sign-link">✍ Open Adobe Sign ↗</a>
       <div class="field-row"><label>Signed For and On Behalf Of</label><input type="text" id="signed-for" placeholder="Left blank for partner"></div>
       <div class="field-row"><label>Job Title</label><input type="text" id="job-title" placeholder="Left blank for partner"></div>
       <div class="field-row"><label>Print Name</label><input type="text" id="print-name" placeholder="Left blank for partner"></div>
@@ -828,11 +827,11 @@
           <input type="color" value="#e74c3c" onchange="fmtTc('foreColor',this.value)" style="width:20px;height:16px;">
         </label>
       </span>
-      <button type="button" onclick="fmtTc('insertUnorderedList')" title="Bullet list">â°</button>
-      <button type="button" onclick="fmtTc('removeFormat')" title="Clear formatting" style="font-size:10px;">â Clear</button>
+      <button type="button" onclick="fmtTc('insertUnorderedList')" title="Bullet list">☰</button>
+      <button type="button" onclick="fmtTc('removeFormat')" title="Clear formatting" style="font-size:10px;">✕ Clear</button>
     </div>
     <button type="button" id="tc-lock-btn" onclick="toggleTcEdit()" style="background:none;border:1.5px solid var(--purple-lighter);border-radius:20px;padding:4px 14px;font-size:11px;color:var(--purple-dark);cursor:pointer;font-family:'Lato',Arial,sans-serif;display:flex;align-items:center;gap:5px;margin-left:auto;">
-      <span id="tc-lock-icon">ð</span> <span id="tc-lock-label">Edit T&amp;Cs</span><span id="tc-unlock-time" style="font-size:11px;color:var(--purple-dark);margin-left:8px;font-style:italic;"></span>
+      <span id="tc-lock-icon">🔒</span> <span id="tc-lock-label">Edit T&amp;Cs</span><span id="tc-unlock-time" style="font-size:11px;color:var(--purple-dark);margin-left:8px;font-style:italic;"></span>
     </button>
   </div>
   <div class="tc-box" id="tc-box">
@@ -866,7 +865,7 @@
       <div class="cl-group-title">Description</div>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl4"><span>Each line has a city / location</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl5"><span>Each line has correct qty / unit count</span></label>
-      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl6"><span>IF AGENCY â confirmed who campaign is running for</span></label>
+      <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl6"><span>IF AGENCY — confirmed who campaign is running for</span></label>
       <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl7"><span>NETT matches the sales sheet</span></label>
     </div>
     <div class="cl-group">
@@ -898,7 +897,7 @@
   <span class="error-label" id="err-checklist" style="margin-top:6px;">Please tick all checklist items and enter your name before saving</span>
 
   <div class="last-updated-bar">
-    <span id="last-editor-badge" class="last-editor-badge" style="display:none;">âï¸ Last edited by <b id="last-editor-name"></b></span>
+    <span id="last-editor-badge" class="last-editor-badge" style="display:none;">✏️ Last edited by <b id="last-editor-name"></b></span>
     Last updated: <span id="last-updated-display"></span>
   </div>
 </div>
@@ -1026,12 +1025,12 @@
 
 </div>
 
-<!-- CHECKLIST â separate hidden div, generates its own PDF -->
+<!-- CHECKLIST — separate hidden div, generates its own PDF -->
 <div id="pl-checklist" style="display:none;font-family:Arial,sans-serif;font-size:10pt;color:#000;">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2pt solid #702DD7;padding-bottom:8pt;margin-bottom:14pt;">
     <div>
       <div style="font-size:18pt;font-weight:bold;color:#702DD7;letter-spacing:1pt;">ORDER CHECKLIST</div>
-      <div style="font-size:9pt;margin-top:3pt;color:#555;">Internal quality check â to be completed with every order form</div>
+      <div style="font-size:9pt;margin-top:3pt;color:#555;">Internal quality check — to be completed with every order form</div>
     </div>
     <div style="text-align:right;font-size:9pt;color:#333;">
       <div><strong>UNI:</strong> <span id="pl-cl-ref"></span></div>
@@ -1078,8 +1077,8 @@ function addRow() {
   var tr = document.createElement('tr');
   tr.id = 'row-' + id;
   var defaultDesc = (window.formType === 'OOH')
-    ? 'University Digital Screen â x <span style="color:#e74c3c;font-weight:bold;">NUMBER</span> in locations as per agreed spreadsheet'
-    : 'Full Site Takeover + Social Retargeting â <span style="color:#e74c3c;font-weight:bold;">CITY</span>';
+    ? 'University Digital Screen – x <span style="color:#e74c3c;font-weight:bold;">NUMBER</span> in locations as per agreed spreadsheet'
+    : 'Full Site Takeover + Social Retargeting – <span style="color:#e74c3c;font-weight:bold;">CITY</span>';
   var defaultErrMsg = (window.formType === 'OOH')
     ? 'Replace NUMBER, MONTH YEAR and DURATION with actual values'
     : defaultErrMsg;
@@ -1094,7 +1093,7 @@ function addRow() {
           '<span class="desc-color-btn"><label title="Text colour">A<input type="color" value="#e74c3c" onchange="fmtDescColor(this)" style="width:18px;height:14px;"></label></span>' +
         '</div>' +
         '<div class="item-desc" contenteditable="true" spellcheck="true">' + defaultDesc + '</div>' +
-        '<span class="error-label" id="err-desc-' + id + '">Description required â replace CITY with actual city</span>' +
+        '<span class="error-label" id="err-desc-' + id + '">Description required — replace CITY with actual city</span>' +
       '</div>' +
     '</td>' +
     '<td class="price-cell">' +
@@ -1104,11 +1103,11 @@ function addRow() {
     '<td class="qty-cell">' +
       '<input type="number" placeholder="" step="1" min="1" class="item-qty" oninput="recalc()">' +
     '</td>' +
-    '<td class="total-cell" id="row-total-' + id + '">Â£0.00</td>' +
+    '<td class="total-cell" id="row-total-' + id + '">£0.00</td>' +
     '<td style="text-align:center;padding:2px 4px;"><select class="type-select" style="font-size:11px;border:1px solid #ccc;border-radius:4px;padding:2px 4px;width:58px;" onchange="recalc()"><option value="FST">FST</option><option value="OOH">OOH</option></select></td>' +
     '<td style="text-align:center;vertical-align:middle;white-space:nowrap;">' +
-      '<button class="dup-row-btn" onclick="duplicateRow(' + id + ')" title="Duplicate row">â§</button>' +
-      '<button class="remove-row-btn" onclick="removeRow(' + id + ')" title="Remove">Ã</button>' +
+      '<button class="dup-row-btn" onclick="duplicateRow(' + id + ')" title="Duplicate row">⧉</button>' +
+      '<button class="remove-row-btn" onclick="removeRow(' + id + ')" title="Remove">×</button>' +
     '</td>';
   tbody.appendChild(tr);
   recalc();
@@ -1159,7 +1158,7 @@ function updatePaymentTerms() {
   var sel  = document.getElementById('payment-terms');
   var days = sel ? sel.value : '30';
   if (days !== '30' && days !== 'receipt') {
-    var ok = confirm('â ï¸ APPROVAL REQUIRED\n\nHave you checked with Fizz or Chris before changing the payment terms?\n\nThis CANNOT be changed without their approval.\n\nClick OK only if you have received explicit approval.');
+    var ok = confirm('⚠️ APPROVAL REQUIRED\n\nHave you checked with Fizz or Chris before changing the payment terms?\n\nThis CANNOT be changed without their approval.\n\nClick OK only if you have received explicit approval.');
     if (!ok) {
       if (sel) sel.value = '30';
       return;
@@ -1223,14 +1222,14 @@ function recalc() {
     var rowTotal = price * qty;
     net += rowTotal;
     var cell = document.getElementById('row-total-' + id);
-    if (cell) cell.textContent = 'Â£' + rowTotal.toFixed(2);
+    if (cell) cell.textContent = '£' + rowTotal.toFixed(2);
   });
 
   var discPct  = parseFloat(document.getElementById('discount-pct').value) || 0;
   var discAmt  = parseFloat(document.getElementById('discount-amt').value) || 0;
   var discount = discAmt > 0 ? discAmt : (discPct > 0 ? net * discPct / 100 : 0);
 
-  // Instalment admin fee: Â£40 added after discount, before VAT
+  // Instalment admin fee: £40 added after discount, before VAT
   var _pmChecked = document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked;
   var instalmentFee = _pmChecked ? 40 : 0;
   var _ifRow = document.getElementById('instalment-fee-row');
@@ -1241,7 +1240,7 @@ function recalc() {
   var discRow = document.getElementById('discount-row');
   if (discount > 0) {
     discRow.style.display = '';
-    document.getElementById('discount-display').textContent = '-Â£' + discount.toFixed(2);
+    document.getElementById('discount-display').textContent = '-£' + discount.toFixed(2);
     var lbl = discPct > 0 ? 'Discount (' + discPct + '%):' : 'Discount:';
     document.getElementById('discount-label-cell').textContent = lbl;
   } else {
@@ -1251,9 +1250,9 @@ function recalc() {
   var vat   = netAfter * vatRate / 100;
   var grand = netAfter + vat;
 
-  document.getElementById('net-total').textContent   = 'Â£' + net.toFixed(2);
-  document.getElementById('vat-total').textContent   = 'Â£' + vat.toFixed(2);
-  document.getElementById('grand-total').textContent = 'Â£' + grand.toFixed(2);
+  document.getElementById('net-total').textContent   = '£' + net.toFixed(2);
+  document.getElementById('vat-total').textContent   = '£' + vat.toFixed(2);
+  document.getElementById('grand-total').textContent = '£' + grand.toFixed(2);
   document.getElementById('vat-label').textContent   = 'VAT (' + vatRate + '%):';
 }
 
@@ -1277,7 +1276,7 @@ function populatePrintLayout() {
   document.getElementById('pl-client-company').textContent = document.getElementById('client-company').value || '';
   document.getElementById('pl-client-address').textContent = document.getElementById('client-address').value || '';
 
-  // Line items â scan rows to see if any have a qty set
+  // Line items — scan rows to see if any have a qty set
   var anyQty = false;
   document.querySelectorAll('#items-body tr').forEach(function(tr) {
     var q = tr.querySelector('.item-qty');
@@ -1316,9 +1315,9 @@ function populatePrintLayout() {
     var row = document.createElement('tr');
     row.innerHTML =
       '<td>' + desc + '</td>' +
-      '<td class="r">' + (price ? 'Â£' + price.toFixed(2) : '') + '</td>' +
+      '<td class="r">' + (price ? '£' + price.toFixed(2) : '') + '</td>' +
       (anyQty ? '<td class="r">' + (qty || '') + '</td>' : '') +
-      '<td class="r bold">' + (total ? 'Â£' + total.toFixed(2) : '') + '</td>';
+      '<td class="r bold">' + (total ? '£' + total.toFixed(2) : '') + '</td>';
     plBody.appendChild(row);
   });
 
@@ -1351,7 +1350,7 @@ function populatePrintLayout() {
   tfoot.appendChild(makeTotRow('NET:', document.getElementById('net-total').textContent, false, false));
 
   if (document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked) {
-    tfoot.appendChild(makeTotRow('Instalment Admin Fee:', 'Â£40.00 + VAT', false, false));
+    tfoot.appendChild(makeTotRow('Instalment Admin Fee:', '£40.00 + VAT', false, false));
   }
 
   var discAmt2 = parseFloat(document.getElementById('discount-amt').value) || 0;
@@ -1382,7 +1381,7 @@ function populatePrintLayout() {
     if (accredState && accredState.answer === 'yes') {
       var _accCity = (function(){var v=document.getElementById('accred-city');return v&&v.value==='Other'?((document.getElementById('accred-city-other')||{}).value||'Other'):((v||{}).value||'');})();
       var _accCat  = (function(){var v=document.getElementById('accred-category');return v&&v.value==='Other'?((document.getElementById('accred-category-other')||{}).value||'Other'):((v||{}).value||'');})();
-      if (plAccredText) plAccredText.textContent = (_accCity || 'â') + ' â ' + (_accCat || 'â');
+      if (plAccredText) plAccredText.textContent = (_accCity || '—') + ' — ' + (_accCat || '—');
       plAccredWrap.style.display = 'block';
     } else { plAccredWrap.style.display = 'none'; }
   }
@@ -1405,11 +1404,11 @@ function populatePrintLayout() {
     var idx = tr.dataset.cdIdx;
     var sv = (document.getElementById('cs' + idx) || {}).value || '';
     var ev = (document.getElementById('ce' + idx) || {}).value || '';
-    var mv = (document.getElementById('cm' + idx) || {}).textContent || 'â';
+    var mv = (document.getElementById('cm' + idx) || {}).textContent || '—';
     var nv = (document.getElementById('cn' + idx) || {}).value || '';
     var stcEl = document.getElementById('stc' + idx);
     var stcChecked = stcEl && stcEl.checked;
-    if (sv && ev && mv !== 'â') {
+    if (sv && ev && mv !== '—') {
       campRowNum++;
       var sDate = fmtDateShort(sv);
       var eDate = fmtDateShort(ev);
@@ -1465,11 +1464,11 @@ function validateForm() {
     if (errEl) errEl.classList.toggle('show', bad);
     if (bad) valid = false;
   }
-  // Your fields only â partner fields left blank for Adobe Sign
+  // Your fields only — partner fields left blank for Adobe Sign
   check('initials', 'err-initials');
   check('client-company', 'err-client-company');
   check('client-address', 'err-client-address');
-  // campaign-notes is a contenteditable div â check innerText and that CITY NAME has been replaced
+  // campaign-notes is a contenteditable div — check innerText and that CITY NAME has been replaced
   var notesEl = document.getElementById('campaign-notes');
   var notesErrEl = document.getElementById('err-campaign-notes');
   var notesText = notesEl.innerText.trim();
@@ -1487,10 +1486,10 @@ function validateForm() {
   dateEl.classList.toggle('error', !dateEl.value.trim());
   if (!refEl.value.trim() || !dateEl.value.trim()) valid = false;
 
-  // Campaign dates â must have at least one valid date range
+  // Campaign dates — must have at least one valid date range
   calcCampaignMonths();
   var campTotalEl = document.getElementById('total-camp-months');
-  var campMonthsBad = !campTotalEl.dataset.durMonths && campTotalEl.textContent === 'â';
+  var campMonthsBad = !campTotalEl.dataset.durMonths && campTotalEl.textContent === '—';
   var campMonthsErrEl = document.getElementById('err-camp-months');
   campTotalEl.style.color = campMonthsBad ? '#e74c3c' : '';
   if (campMonthsErrEl) campMonthsErrEl.classList.toggle('show', campMonthsBad);
@@ -1515,7 +1514,7 @@ function validateForm() {
     if (badDesc || badPrice) valid = false;
   });
 
-  // City match check â extract city from notes and each description row and warn if they differ
+  // City match check — extract city from notes and each description row and warn if they differ
   if (valid) {
     var notesFirstLine = document.getElementById('campaign-notes').innerText.split('\n')[0] || '';
     var notesCity = extractCityFromText(notesFirstLine);
@@ -1532,7 +1531,7 @@ function validateForm() {
       });
       if (cityMismatch) {
         var proceed = confirm(
-          'â ï¸ City Mismatch Detected\n\n' +
+          '⚠️ City Mismatch Detected\n\n' +
           'The city in the Campaign Notes ("' + notesCity + '") does not match the city in the Description.\n\n' +
           'Please check both fields are using the same city before saving.\n\n' +
           'Click OK to save anyway, or Cancel to go back and fix it.'
@@ -1542,18 +1541,18 @@ function validateForm() {
     }
   }
 
-  // Checklist is advisory only â does not block saving
+  // Checklist is advisory only — does not block saving
 
   var banner = document.getElementById('validation-banner');
   if (valid) {
     banner.style.cssText = 'background:#d4edda;color:#155724;border:1.5px solid #c3e6cb;font-weight:normal';
-    banner.textContent = 'â All required fields complete â ready to print or save.';
+    banner.textContent = '✓ All required fields complete — ready to print or save.';
     banner.classList.add('show');
     setTimeout(function() { banner.classList.remove('show'); }, 4000);
   } else {
     var missing = document.querySelectorAll('.error').length;
     banner.style.cssText = 'background:#fff0f0;color:#7a1010;border:2px solid #e05252;font-weight:700;font-size:14px';
-    banner.textContent = missing > 0 ? missing + ' required field' + (missing !== 1 ? 's are' : ' is') + ' missing or incomplete â fields highlighted in red must be filled before you can print or save.' : 'Please complete the credit limit checklist before you can print or save.';
+    banner.textContent = missing > 0 ? missing + ' required field' + (missing !== 1 ? 's are' : ' is') + ' missing or incomplete — fields highlighted in red must be filled before you can print or save.' : 'Please complete the credit limit checklist before you can print or save.';
     banner.classList.add('show');
     var first = document.querySelector('.error');
     if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
@@ -1576,7 +1575,7 @@ document.addEventListener('input', function(e) {
     if (remaining === 0) {
       banner.classList.remove('show');
     } else if (banner.classList.contains('show')) {
-      banner.textContent = 'ð« ' + remaining + ' required field' + (remaining !== 1 ? 's are' : ' is') + ' missing or incomplete â fields highlighted in red must be filled before you can print or save.';
+      banner.textContent = '🚫 ' + remaining + ' required field' + (remaining !== 1 ? 's are' : ' is') + ' missing or incomplete — fields highlighted in red must be filled before you can print or save.';
     }
   }
 });
@@ -1610,18 +1609,18 @@ function updateLastUpdated() {
   localStorage.setItem('orderFormLastUpdated', str);
 }
 
-// Set last updated â today's date on load, updates on every edit
+// Set last updated — today's date on load, updates on every edit
 updateLastUpdated();
   document.getElementById('camp-dates-tbody').innerHTML = '';
   campDatesCount = 0;
   addCampDateRow(); addCampDateRow(); addCampDateRow(); addCampDateRow(); addCampDateRow();
-  document.getElementById('total-camp-months').textContent = 'â';
+  document.getElementById('total-camp-months').textContent = '—';
   document.getElementById('initials').value = '';
   document.getElementById('initials').classList.remove('error');
   document.getElementById('err-initials').classList.remove('show');
 }
 
-// âââ Password recovery from email link ââââââââââââââââââââââââââââââââââââââ
+// ─── Password recovery from email link ──────────────────────────────────────
 (function() {
   var hash = window.location.hash;
   if (!hash || hash.indexOf('type=recovery') === -1) return;
@@ -1648,7 +1647,7 @@ updateLastUpdated();
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(50,30,80,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;';
     overlay.innerHTML =
       '<div style="background:#fff;border-radius:18px;padding:40px 44px;width:360px;box-shadow:0 12px 48px rgba(0,0,0,.35);text-align:center;">' +
-        '<div style="font-size:28px;margin-bottom:8px;">ð</div>' +
+        '<div style="font-size:28px;margin-bottom:8px;">🔑</div>' +
         '<h2 style="font-family:Roboto,Arial,sans-serif;font-size:20px;color:#5b2d8e;margin-bottom:6px;">Set New Password</h2>' +
         '<p style="font-size:12px;color:#888;margin-bottom:18px;">Choose a new password for your account.</p>' +
         '<input type="password" id="rec-pw1" placeholder="New password" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px 14px;font-size:14px;font-family:Lato,Arial,sans-serif;outline:none;margin-bottom:10px;box-sizing:border-box;">' +
@@ -1680,24 +1679,24 @@ function doRecoverySet(tok) {
   var msg = document.getElementById('rec-msg');
   if (!pw1 || pw1.length < 6) { msg.style.color='#e74c3c'; msg.textContent='Password must be at least 6 characters.'; return; }
   if (pw1 !== pw2) { msg.style.color='#e74c3c'; msg.textContent='Passwords do not match.'; return; }
-  msg.style.color='#888'; msg.textContent='Savingâ¦';
+  msg.style.color='#888'; msg.textContent='Saving…';
   fetch(SB_URL + '/auth/v1/user', {
     method: 'PUT',
     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
     body: JSON.stringify({ password: pw1 })
   }).then(function(r) { if(!r.ok){return r.text().then(function(t){var e={};try{e=JSON.parse(t);}catch(x){}throw new Error(e.msg||e.error_description||'Password reset link has expired. Please request a new one.');});} return r.json(); }).then(function(data) {
-    if (data.error) { msg.style.color='#e74c3c'; msg.textContent = data.error || 'Error â please try again.'; return; }
-    msg.style.color='#27ae60'; msg.textContent='â Password updated!';
+    if (data.error) { msg.style.color='#e74c3c'; msg.textContent = data.error || 'Error — please try again.'; return; }
+    msg.style.color='#27ae60'; msg.textContent='✅ Password updated!';
     setTimeout(function() {
       var ov = document.getElementById('recovery-overlay');
       if (ov) ov.remove();
       var loginOv = document.getElementById('login-overlay');
       if (loginOv) loginOv.style.display = 'flex';
     }, 1500);
-  })['catch'](function(e) { msg.style.color='#e74c3c'; msg.textContent=(e&&e.message)?e.message:'Network error â please try again.'; });
+  })['catch'](function(e) { msg.style.color='#e74c3c'; msg.textContent=(e&&e.message)?e.message:'Network error — please try again.'; });
 }
 
-// âââ Page load setup ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Page load setup ────────────────────────────────────────────────────────
 addRow();
 addCampDateRow(); addCampDateRow(); addCampDateRow(); addCampDateRow(); addCampDateRow();
 document.getElementById('order-date').value = new Date().toISOString().split('T')[0];
@@ -1718,39 +1717,39 @@ function updateLastUpdated() {
   var badge = document.getElementById('last-editor-badge');
   var nameEl = document.getElementById('last-editor-name');
   if (badge && nameEl && editorName) {
-    nameEl.textContent = editorName + ' â ' + str;
+    nameEl.textContent = editorName + ' — ' + str;
     badge.style.display = 'inline-flex';
   }
 }
 updateLastUpdated();
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════════════════════════════
 // USER / LOGIN / SESSION SYSTEM
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 // SUPABASE CONFIG
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════════════════════════════
 var SB_URL = 'https://jyljjlaqogqpsdtvseqf.supabase.co';
 var SB_KEY = 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW';
 var SUPER_ADMIN = 'Joseph'; // Cannot be deleted or demoted
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════════════════════════════
 // UNI NUMBER MANAGEMENT
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════════════════════════════
 
 // Validate format: UNI followed by exactly 5 digits
 function isValidUniFormat(ref) {
   return /^UNI\d{5}$/.test(ref);
 }
 
-// Initialise the UNI field on page load â validates any pre-filled value
+// Initialise the UNI field on page load — validates any pre-filled value
 function initUniNumber() {
   var el = document.getElementById('ref-no');
   if (!el) return;
   if (el.value && el.value !== '') validateUniBlur();
 }
 
-// Validate the UNI field â format only (called on every keystroke)
+// Validate the UNI field — format only (called on every keystroke)
 function validateUniField() {
   var el = document.getElementById('ref-no');
   var st = document.getElementById('uni-status');
@@ -1759,17 +1758,17 @@ function validateUniField() {
   el.value = val;
   if (!val) { st.textContent = ''; el.style.borderColor = ''; return; }
   if (!isValidUniFormat(val)) {
-    st.textContent = 'â  Must be UNI + 5 digits';
+    st.textContent = '⚠ Must be UNI + 5 digits';
     st.style.color = '#e74c3c';
     el.style.borderColor = '#e74c3c';
     return;
   }
-  st.textContent = 'â¦';
+  st.textContent = '…';
   st.style.color = '#aaa';
   el.style.borderColor = '';
 }
 
-// Full check including database lookup â called on blur
+// Full check including database lookup — called on blur
 function validateUniBlur() {
   var el = document.getElementById('ref-no');
   var st = document.getElementById('uni-status');
@@ -1778,25 +1777,25 @@ function validateUniBlur() {
   el.value = val;
   if (!val) { st.textContent = ''; el.style.borderColor = ''; return; }
   if (!isValidUniFormat(val)) {
-    st.textContent = 'â  Must be UNI + 5 digits';
+    st.textContent = '⚠ Must be UNI + 5 digits';
     st.style.color = '#e74c3c';
     el.style.borderColor = '#e74c3c';
     return;
   }
-  st.textContent = 'Checkingâ¦';
+  st.textContent = 'Checking…';
   st.style.color = '#aaa';
   checkUniExists(val).then(function(existing) {
     if (existing && existing.length > 0) {
-      st.textContent = 'â Already used';
+      st.textContent = '✗ Already used';
       st.style.color = '#e74c3c';
       el.style.borderColor = '#e74c3c';
     } else {
-      st.textContent = 'â';
+      st.textContent = '✓';
       st.style.color = '#27ae60';
       el.style.borderColor = '#27ae60';
     }
   })['catch'](function() {
-    st.textContent = 'â';
+    st.textContent = '✓';
     st.style.color = '#27ae60';
     el.style.borderColor = '';
   });
@@ -1811,12 +1810,12 @@ function validateUniField2() {
   el.value = val;
   if (!val) { st.textContent = ''; el.style.borderColor = ''; return; }
   if (!isValidUniFormat(val)) {
-    st.textContent = 'â  Must be UNI + 5 digits';
+    st.textContent = '⚠ Must be UNI + 5 digits';
     st.style.color = '#e74c3c';
     el.style.borderColor = '#e74c3c';
     return;
   }
-  st.textContent = 'â¦';
+  st.textContent = '…';
   st.style.color = '#aaa';
   el.style.borderColor = '';
 }
@@ -1828,25 +1827,25 @@ function validateUniBlur2() {
   el.value = val;
   if (!val) { st.textContent = ''; el.style.borderColor = ''; return; }
   if (!isValidUniFormat(val)) {
-    st.textContent = 'â  Must be UNI + 5 digits';
+    st.textContent = '⚠ Must be UNI + 5 digits';
     st.style.color = '#e74c3c';
     el.style.borderColor = '#e74c3c';
     return;
   }
-  st.textContent = 'Checkingâ¦';
+  st.textContent = 'Checking…';
   st.style.color = '#aaa';
   checkUniExists(val).then(function(existing) {
     if (existing && existing.length > 0) {
-      st.textContent = 'â Already used';
+      st.textContent = '✗ Already used';
       st.style.color = '#e74c3c';
       el.style.borderColor = '#e74c3c';
     } else {
-      st.textContent = 'â';
+      st.textContent = '✓';
       st.style.color = '#27ae60';
       el.style.borderColor = '#27ae60';
     }
   })['catch'](function() {
-    st.textContent = 'â';
+    st.textContent = '✓';
     st.style.color = '#27ae60';
     el.style.borderColor = '';
   });
@@ -1879,7 +1878,7 @@ function checkUniPendingRequest(ref) {
     ['catch'](function() { return null; });
 }
 
-// Submit a reuse request â stores a REUSE: record in order_history
+// Submit a reuse request — stores a REUSE: record in order_history
 function requestUniReuse(ref) {
   var user = currentUser();
   var reason = prompt('Please give a reason for reusing ' + ref + ' (this will be shown to the admin):');
@@ -1897,7 +1896,7 @@ function requestUniReuse(ref) {
     body: JSON.stringify({
       user_name: user ? user.name : 'Unknown',
       ref:       'REUSE:' + ref,
-      company:   'â³ UNI Reuse Request',
+      company:   '⟳ UNI Reuse Request',
       total:     '',
       form_data: {
         type:         'uni_reuse_request',
@@ -1907,9 +1906,9 @@ function requestUniReuse(ref) {
       }
     })
   }).then(function() {
-    alert('â Reuse request submitted for ' + ref + '.\n\nAn admin will review it at their next login. You will receive verbal confirmation once approved.');
+    alert('✅ Reuse request submitted for ' + ref + '.\n\nAn admin will review it at their next login. You will receive verbal confirmation once approved.');
   })['catch'](function() {
-    alert('Could not submit request â please check your connection.');
+    alert('Could not submit request — please check your connection.');
   });
 }
 
@@ -1923,7 +1922,7 @@ function consumeUniApproval(approvedId) {
   })['catch'](function() {});
 }
 
-// Check for pending UNI reuse requests â called after admin login
+// Check for pending UNI reuse requests — called after admin login
 function checkPendingUniReuseRequests() {
   fetch(SB_URL + '/rest/v1/order_history?ref=like.REUSE:*&select=id,user_name,saved_at,form_data&order=saved_at.asc', {
     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
@@ -1950,9 +1949,9 @@ function showUniReuseModal(requests) {
       '<div style="font-size:12px;color:#555;margin-bottom:10px;font-style:italic;">Reason: ' + (fd.reason || '(none given)') + '</div>' +
       '<div style="display:flex;gap:8px;">' +
       '<button onclick="adminApproveReuse(' + req.id + ',\'' + (fd.uni_number || '') + '\')" ' +
-        'style="background:#27ae60;color:#fff;border:none;border-radius:16px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:\'Lato\',Arial,sans-serif;">â Approve</button>' +
+        'style="background:#27ae60;color:#fff;border:none;border-radius:16px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:\'Lato\',Arial,sans-serif;">✅ Approve</button>' +
       '<button onclick="adminRejectReuse(' + req.id + ',\'' + (fd.uni_number || '') + '\')" ' +
-        'style="background:#e74c3c;color:#fff;border:none;border-radius:16px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:\'Lato\',Arial,sans-serif;">â Reject</button>' +
+        'style="background:#e74c3c;color:#fff;border:none;border-radius:16px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:\'Lato\',Arial,sans-serif;">❌ Reject</button>' +
       '</div></div>';
   });
   listEl.innerHTML = html;
@@ -1983,7 +1982,7 @@ function adminApproveReuse(requestId, uniNumber) {
       body: JSON.stringify({
         user_name: adminUser ? adminUser.name : 'Admin',
         ref:       'APPROVED:' + uniNumber,
-        company:   'â UNI Reuse Approved',
+        company:   '✓ UNI Reuse Approved',
         total:     '',
         form_data: {
           type:        'uni_reuse_approved',
@@ -1993,14 +1992,14 @@ function adminApproveReuse(requestId, uniNumber) {
       })
     });
   }).then(function() {
-    alert('â Approved! ' + uniNumber + ' can now be reused. The user can proceed with their order.');
+    alert('✅ Approved! ' + uniNumber + ' can now be reused. The user can proceed with their order.');
     // Refresh the modal list
     checkPendingUniReuseRequests();
     closeUniReuseModal();
-  })['catch'](function() { alert('Error approving â please try again.'); });
+  })['catch'](function() { alert('Error approving — please try again.'); });
 }
 
-// ââ Import historical UNI numbers from spreadsheet âââââââââââââââââââââââââââ
+// ── Import historical UNI numbers from spreadsheet ───────────────────────────
 function importHistoricalUnis() {
   var user = currentUser();
   if (!user || !isAdminUser(user)) { alert('Admin login required.'); return; }
@@ -2047,13 +2046,13 @@ function adminRejectReuse(requestId, uniNumber) {
     method: 'DELETE',
     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + token, 'Prefer': '' }
   }).then(function() {
-    alert('â Reuse request for ' + uniNumber + ' has been rejected. Please inform the user verbally.');
+    alert('❌ Reuse request for ' + uniNumber + ' has been rejected. Please inform the user verbally.');
     checkPendingUniReuseRequests();
     closeUniReuseModal();
-  })['catch'](function() { alert('Error rejecting â please try again.'); });
+  })['catch'](function() { alert('Error rejecting — please try again.'); });
 }
 
-// âââ sbFetch: uses JWT when logged in, anon key otherwise ââââââââââââââââââââ
+// ─── sbFetch: uses JWT when logged in, anon key otherwise ────────────────────
 function sbFetch(path, method, body, extraHeaders) {
   var session = currentUser();
   var token = (session && session.access_token) ? session.access_token : SB_KEY;
@@ -2086,7 +2085,7 @@ function currentUser() {
 
 function isAdminUser(u) { return u && (u.role === 'admin' || u.role === 'super_admin'); }
 
-// Build user buttons from profiles table (names only â no passwords exposed)
+// Build user buttons from profiles table (names only — no passwords exposed)
 function buildLoginBtns() {
   var wrap = document.getElementById('user-btns');
   if (!wrap) return;
@@ -2104,7 +2103,7 @@ function buildLoginBtns() {
       wrap.appendChild(btn);
     });
   })['catch'](function() {
-    wrap.innerHTML = '<span style="color:#e74c3c;font-size:11px;">Could not load users â check connection</span>';
+    wrap.innerHTML = '<span style="color:#e74c3c;font-size:11px;">Could not load users — check connection</span>';
   });
 }
 buildLoginBtns();
@@ -2114,17 +2113,17 @@ function doLogin() {
   var pw  = document.getElementById('login-pw').value;
   var err = document.getElementById('login-err');
   if (!activeBtn) { err.textContent = 'Please select a user'; return; }
-  err.textContent = 'Signing inâ¦';
+  err.textContent = 'Signing in…';
   // Look up their email from profiles, then authenticate via Supabase Auth
   sbFetch('profiles?name=eq.' + encodeURIComponent(activeBtn.dataset.name) + '&select=email,name,role,initials,drive_folder_id')
     .then(function(rows) {
       if (!rows || !rows.length) { err.textContent = 'User not found'; return; }
       var profile = rows[0];
-      if (!profile.email) { err.textContent = 'Account not configured â contact admin'; return; }
+      if (!profile.email) { err.textContent = 'Account not configured — contact admin'; return; }
       return sbAuth('token?grant_type=password', { email: profile.email, password: pw })
         .then(function(data) {
           if (data.error || !data.access_token) {
-            err.textContent = 'Incorrect password â please try again';
+            err.textContent = 'Incorrect password — please try again';
             return;
           }
           sessionStorage.setItem('uf_session', JSON.stringify({
@@ -2137,7 +2136,7 @@ function doLogin() {
             refresh_token:   data.refresh_token
           }));
           document.getElementById('login-overlay').style.display = 'none';
-          document.getElementById('toolbar-user').textContent = 'ð¤ ' + profile.name;
+          document.getElementById('toolbar-user').textContent = '👤 ' + profile.name;
           if (isAdminUser(profile)) {
             document.getElementById('admin-btn').style.display = '';
             document.getElementById('merge-btn').style.display = '';
@@ -2149,7 +2148,7 @@ function doLogin() {
             if (initEl && !initEl.value) initEl.value = profile.initials.toUpperCase();
           }
         });
-    })['catch'](function() { err.textContent = 'Connection error â please try again'; });
+    })['catch'](function() { err.textContent = 'Connection error — please try again'; });
 }
 
 function showChangePw() {
@@ -2169,7 +2168,7 @@ function doChangePw() {
   if (newPw !== confirm) { err.textContent = 'Passwords do not match'; return; }
   var session = currentUser();
   if (!session || !session.access_token) { err.textContent = 'Not logged in'; return; }
-  err.textContent = 'Updatingâ¦';
+  err.textContent = 'Updating…';
   fetch(SB_URL + '/auth/v1/user', {
     method: 'PUT',
     headers: {
@@ -2182,8 +2181,8 @@ function doChangePw() {
     .then(function(data) {
       if (data.error) { err.textContent = 'Error: ' + data.error.message; return; }
       closeChangePw();
-      alert('â Password updated successfully!');
-    })['catch'](function() { err.textContent = 'Connection error â please try again'; });
+      alert('✅ Password updated successfully!');
+    })['catch'](function() { err.textContent = 'Connection error — please try again'; });
 }
 
 function doLogout() {
@@ -2209,7 +2208,7 @@ function doLogout() {
   var u = currentUser();
   if (u) {
     document.getElementById('login-overlay').style.display = 'none';
-    document.getElementById('toolbar-user').textContent = 'ð¤ ' + u.name;
+    document.getElementById('toolbar-user').textContent = '👤 ' + u.name;
     if (isAdminUser(u)) {
       document.getElementById('admin-btn').style.display = '';
       document.getElementById('merge-btn').style.display = '';
@@ -2416,9 +2415,9 @@ function restoreFormData(data) {
   window.scrollTo(0, 0);
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// ORDER HISTORY â Supabase backed
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════════════════════════════
+// ORDER HISTORY — Supabase backed
+// ═══════════════════════════════════════════════════════════════════════════════
 function addToHistory() {
   var user = currentUser();
   var fd = captureFormData();
@@ -2426,41 +2425,41 @@ function addToHistory() {
 
   var ref = fd.ref ? fd.ref.trim().toUpperCase() : '';
 
-  // ââ UNI format validation ââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // ── UNI format validation ──────────────────────────────────────────────────
   if (ref && !isValidUniFormat(ref)) {
-    alert('â ï¸ UNI Number format is invalid.\n\nIt must start with UNI followed by exactly 5 digits (e.g. UNI02500).\n\nPlease correct it before saving.');
+    alert('⚠️ UNI Number format is invalid.\n\nIt must start with UNI followed by exactly 5 digits (e.g. UNI02500).\n\nPlease correct it before saving.');
     return;
   }
 
-  // ââ Duplicate UNI check ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // ── Duplicate UNI check ────────────────────────────────────────────────────
   if (!ref) {
     doSaveHistory(user, fd); return;
   }
 
   checkUniExists(ref).then(function(existing) {
     if (!existing || existing.length === 0) {
-      // No duplicate â save normally
+      // No duplicate — save normally
       doSaveHistory(user, fd);
       return;
     }
-    // Duplicate found â check if admin has pre-approved reuse
+    // Duplicate found — check if admin has pre-approved reuse
     checkUniApproved(ref).then(function(approvedRec) {
       if (approvedRec) {
-        // Admin approved â consume the token and save
+        // Admin approved — consume the token and save
         consumeUniApproval(approvedRec.id);
         doSaveHistory(user, fd);
         return;
       }
-      // Not approved â check if a request is already pending
+      // Not approved — check if a request is already pending
       checkUniPendingRequest(ref).then(function(pending) {
         var ex = existing[0];
         var usedBy = ex.user_name || 'someone';
         var usedDate = ex.saved_at ? new Date(ex.saved_at).toLocaleDateString('en-GB') : 'unknown date';
         if (pending) {
-          alert('â ï¸ UNI Number ' + ref + ' has already been used (by ' + usedBy + ' on ' + usedDate + ').\n\nYou already have a PENDING reuse request with the admin.\n\nPlease wait for admin approval before proceeding.');
+          alert('⚠️ UNI Number ' + ref + ' has already been used (by ' + usedBy + ' on ' + usedDate + ').\n\nYou already have a PENDING reuse request with the admin.\n\nPlease wait for admin approval before proceeding.');
         } else {
           var doRequest = confirm(
-            'ð« UNI Number ' + ref + ' has already been issued!\n\n' +
+            '🚫 UNI Number ' + ref + ' has already been issued!\n\n' +
             'Originally used by: ' + usedBy + ' on ' + usedDate + '\n\n' +
             'To reuse this number you need ADMIN APPROVAL.\n\n' +
             'Would you like to submit a reuse request to the admin now?'
@@ -2470,14 +2469,14 @@ function addToHistory() {
       });
     });
   })['catch'](function() {
-    // Network error â allow save rather than block
+    // Network error — allow save rather than block
     doSaveHistory(user, fd);
   });
 }
 
 function doSaveHistory(user, fd) {
   if (fd && (parseFloat(fd.discountPct) > 0 || parseFloat(fd.discountAmt) > 0)) {
-    var _dMsg = parseFloat(fd.discountPct) > 0 ? 'Discount: ' + fd.discountPct + '%' : 'Â£' + parseFloat(fd.discountAmt).toFixed(2) + ' discount';
+    var _dMsg = parseFloat(fd.discountPct) > 0 ? 'Discount: ' + fd.discountPct + '%' : '£' + parseFloat(fd.discountAmt).toFixed(2) + ' discount';
     sendAlertEmail('Discount Applied', (fd.ref || '') + ' - ' + (fd.company || ''), (user && user.name) || '', _dMsg, EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk');
   }
   if (window._editingOrderId) {
@@ -2526,12 +2525,12 @@ function renderHistoryRows(history, inAdmin) {
       var loadFn = inAdmin ? 'loadFromHistory(' + h.id + ');closeAdmin();' : 'loadFromHistory(' + h.id + ')';
       var delFn  = inAdmin ? 'deleteHistory(' + h.id + ',true)' : 'deleteHistory(' + h.id + ',false)';
       html += '<div class="hist-row" onclick="' + loadFn + '">' +
-        '<span class="hist-ref">'  + (h.ref     || 'â') + '</span>' +
-        '<span class="hist-co">'   + (h.company || 'â') + '</span>' +
+        '<span class="hist-ref">'  + (h.ref     || '—') + '</span>' +
+        '<span class="hist-co">'   + (h.company || '—') + '</span>' +
         '<span class="hist-amt">'  + (h.total   || '') + '</span>' +
         '<span class="hist-user">' + h.user_name + '</span>' +
         '<span class="hist-date">' + dateStr + '</span>' +
-        '<button class="hist-del" onclick="event.stopPropagation();' + delFn + '" title="Delete">Ã</button>' +
+        '<button class="hist-del" onclick="event.stopPropagation();' + delFn + '" title="Delete">×</button>' +
         '</div>';
     });
   });
@@ -2541,7 +2540,7 @@ function renderHistoryRows(history, inAdmin) {
 function showHistory() {
   var user = currentUser();
   var body = document.getElementById('history-body');
-  body.innerHTML = '<div class="hist-empty">Loadingâ¦</div>';
+  body.innerHTML = '<div class="hist-empty">Loading…</div>';
   document.getElementById('history-modal').style.display = 'flex';
   var query = 'order_history?order=saved_at.desc';
   if (!isAdminUser(user)) query += '&user_name=eq.' + encodeURIComponent(user ? user.name : '');
@@ -2556,7 +2555,7 @@ function loadFromHistory(id) {
   sbFetch('order_history?id=eq.' + id).then(function(rows) {
     if (!rows || !rows.length || !rows[0].form_data) return;
     var h = rows[0];
-    if (!confirm('Load "' + h.ref + ' â ' + h.company + '"?\nThis will replace your current form.')) return;
+    if (!confirm('Load "' + h.ref + ' — ' + h.company + '"?\nThis will replace your current form.')) return;
     closeHistory(); closeAdmin();
     restoreFormData(h.form_data);
     window._editingOrderId = h.id;
@@ -2609,12 +2608,12 @@ function deleteHistory(id, inAdmin) {
   if (!confirm('Delete this history entry?')) return;
   sbFetch('order_history?id=eq.' + id, 'DELETE', null, { 'Prefer': '' })
     .then(function() { inAdmin ? renderAdminBody() : showHistory(); })
-    ['catch'](function() { alert('Could not delete â please try again.'); });
+    ['catch'](function() { alert('Could not delete — please try again.'); });
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// ADMIN PANEL â Supabase backed
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════════════════════════════
+// ADMIN PANEL — Supabase backed
+// ═══════════════════════════════════════════════════════════════════════════════
 function showAdmin() {
   renderAdminBody();
   document.getElementById('admin-modal').style.display = 'flex';
@@ -2623,7 +2622,7 @@ function closeAdmin() { document.getElementById('admin-modal').style.display = '
 
 function renderAdminBody() {
   var currentU = currentUser();
-  document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Loadingâ¦</div>';
+  document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Loading…</div>';
   Promise.all([
     sbFetch('profiles?order=name&select=id,name,role,email,initials,drive_folder_id'),
     sbFetch('order_history?order=saved_at.desc'),
@@ -2654,7 +2653,7 @@ function renderAdminBody() {
         '<button class="adm-btn" style="font-size:11px;" onclick="adminSaveInitials(\'' + u.id + '\')">Save</button>';
       if (u.email && !isSuperAdmin) {
         html += '<button class="adm-btn" style="background:#f39c12;font-size:11px;" ' +
-          'onclick="adminResetPw(\'' + u.email + '\',\'' + u.name + '\')">ð§ Reset PW</button>';
+          'onclick="adminResetPw(\'' + u.email + '\',\'' + u.name + '\')">📧 Reset PW</button>';
       }
       if (!isSuperAdmin && !isMe) {
         html += '<button class="adm-btn danger" onclick="adminDeleteUser(\'' + u.id + '\',\'' + u.name + '\')">Delete</button>';
@@ -2668,21 +2667,21 @@ function renderAdminBody() {
       '<select class="adm-inp" id="adm-new-role"><option value="user">User</option><option value="admin">Admin</option></select>' +
       '<button class="adm-btn" onclick="adminAddUser()">Add User</button>' +
       '</div></div>';
-    // ââ UNI Reuse Requests section ââââââââââââââââââââââââââââââââââââââââââ
+    // ── UNI Reuse Requests section ──────────────────────────────────────────
     var reuseRows = (history || []).filter(function(h) { return /^REUSE:/i.test(h.ref || ''); });
     if (reuseRows.length > 0) {
       html += '<div class="adm-section" style="border:2px solid #e74c3c;border-radius:10px;padding:14px 16px;margin-bottom:16px;">';
-      html += '<h3 style="color:#c0392b;margin-top:0;">ð¢ Pending UNI Number Reuse Requests (' + reuseRows.length + ')</h3>';
+      html += '<h3 style="color:#c0392b;margin-top:0;">🔢 Pending UNI Number Reuse Requests (' + reuseRows.length + ')</h3>';
       reuseRows.forEach(function(req) {
         var fd = req.form_data || {};
         var dt = new Date(req.saved_at).toLocaleDateString('en-GB');
         html += '<div style="background:#fff5f5;border-radius:8px;padding:10px 14px;margin-bottom:10px;">' +
           '<strong style="color:#702DD7;">' + (fd.uni_number || req.ref) + '</strong>' +
-          ' â requested by <strong>' + (fd.requested_by || req.user_name) + '</strong> on ' + dt + '<br>' +
-          '<em style="color:#555;font-size:12px;">Reason: ' + (fd.reason || 'â') + '</em><br>' +
+          ' — requested by <strong>' + (fd.requested_by || req.user_name) + '</strong> on ' + dt + '<br>' +
+          '<em style="color:#555;font-size:12px;">Reason: ' + (fd.reason || '—') + '</em><br>' +
           '<div style="margin-top:8px;display:flex;gap:8px;">' +
-          '<button class="adm-btn" style="background:#27ae60;" onclick="adminApproveReuse(' + req.id + ',\'' + (fd.uni_number || '') + '\');renderAdminBody();">â Approve</button>' +
-          '<button class="adm-btn danger" onclick="adminRejectReuse(' + req.id + ',\'' + (fd.uni_number || '') + '\');renderAdminBody();">â Reject</button>' +
+          '<button class="adm-btn" style="background:#27ae60;" onclick="adminApproveReuse(' + req.id + ',\'' + (fd.uni_number || '') + '\');renderAdminBody();">✅ Approve</button>' +
+          '<button class="adm-btn danger" onclick="adminRejectReuse(' + req.id + ',\'' + (fd.uni_number || '') + '\');renderAdminBody();">❌ Reject</button>' +
           '</div></div>';
       });
       html += '</div>';
@@ -2701,7 +2700,7 @@ function renderAdminBody() {
       html += renderHistoryRows(history, true);
     }
     // Transmission log
-    html += '<div class="adm-section"><h3>ð¡ Transmission Log â Google Drive Uploads</h3>';
+    html += '<div class="adm-section"><h3>📡 Transmission Log — Google Drive Uploads</h3>';
     if (!driveLog.length) {
       html += '<div class="hist-empty">No Drive uploads recorded yet.</div>';
     } else {
@@ -2720,27 +2719,27 @@ function renderAdminBody() {
         var typeColour = entry.file_type && entry.file_type.indexOf('Checklist') !== -1 ? '#27ae60' : '#702DD7';
         html += '<tr style="border-bottom:1px solid var(--purple-lightest);">' +
           '<td style="padding:5px 8px;color:#555;">' + dateStr + '</td>' +
-          '<td style="padding:5px 8px;font-weight:700;">' + (entry.user_name || 'â') + '</td>' +
-          '<td style="padding:5px 8px;color:var(--purple);font-weight:700;">' + (entry.ref || 'â') + '</td>' +
-          '<td style="padding:5px 8px;">' + (entry.company || 'â') + '</td>' +
-          '<td style="padding:5px 8px;font-size:11px;color:#777;">' + (entry.filename || 'â') + '</td>' +
-          '<td style="padding:5px 8px;"><span style="background:' + typeColour + '22;color:' + typeColour + ';border-radius:10px;padding:2px 8px;font-size:11px;font-weight:700;">' + (entry.file_type || 'â') + '</span></td>' +
+          '<td style="padding:5px 8px;font-weight:700;">' + (entry.user_name || '—') + '</td>' +
+          '<td style="padding:5px 8px;color:var(--purple);font-weight:700;">' + (entry.ref || '—') + '</td>' +
+          '<td style="padding:5px 8px;">' + (entry.company || '—') + '</td>' +
+          '<td style="padding:5px 8px;font-size:11px;color:#777;">' + (entry.filename || '—') + '</td>' +
+          '<td style="padding:5px 8px;"><span style="background:' + typeColour + '22;color:' + typeColour + ';border-radius:10px;padding:2px 8px;font-size:11px;font-weight:700;">' + (entry.file_type || '—') + '</span></td>' +
           '</tr>';
       });
       html += '</tbody></table>';
     }
     html += '</div>';
-    // ââ T&C Editor ââ
-    html += '<div class="adm-section"><h3>ð Terms &amp; Conditions</h3>';
+    // ── T&C Editor ──
+    html += '<div class="adm-section"><h3>📋 Terms &amp; Conditions</h3>';
     html += '<div style="margin-bottom:8px;display:flex;gap:4px;flex-wrap:wrap;">';
     html += '<button type="button" onclick="document.getElementById(\'adm-tc-editor\').focus();document.execCommand(\'bold\',false,null)" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;font-weight:700;font-size:12px;">B</button>';
     html += '<button type="button" onclick="document.getElementById(\'adm-tc-editor\').focus();document.execCommand(\'italic\',false,null)" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;font-style:italic;font-size:12px;">I</button>';
     html += '<button type="button" onclick="document.getElementById(\'adm-tc-editor\').focus();document.execCommand(\'underline\',false,null)" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;text-decoration:underline;font-size:12px;">U</button>';
-    html += '<button type="button" onclick="document.getElementById(\'adm-tc-editor\').focus();document.execCommand(\'removeFormat\',false,null)" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;font-size:11px;color:#888;">â Clear</button>';
+    html += '<button type="button" onclick="document.getElementById(\'adm-tc-editor\').focus();document.execCommand(\'removeFormat\',false,null)" style="padding:3px 10px;border:1px solid #ddd;border-radius:5px;background:#fff;cursor:pointer;font-size:11px;color:#888;">✕ Clear</button>';
     html += '</div>';
-    html += '<div id="adm-tc-editor" contenteditable="true" spellcheck="false" style="min-height:220px;border:1.5px solid #ddd;border-radius:8px;padding:14px 16px;font-size:12.5px;line-height:1.7;font-family:\'Lato\',Arial,sans-serif;color:#222;background:#fafafa;outline:none;margin-bottom:10px;"><em style=\"color:#aaa\">Loadingâ¦</em></div>';
+    html += '<div id="adm-tc-editor" contenteditable="true" spellcheck="false" style="min-height:220px;border:1.5px solid #ddd;border-radius:8px;padding:14px 16px;font-size:12.5px;line-height:1.7;font-family:\'Lato\',Arial,sans-serif;color:#222;background:#fafafa;outline:none;margin-bottom:10px;"><em style=\"color:#aaa\">Loading…</em></div>';
     html += '<div style="display:flex;gap:8px;align-items:center;">';
-    html += '<button onclick="saveAdminTc()" style="padding:6px 20px;border-radius:20px;border:none;background:var(--purple);color:#fff;font-size:12px;cursor:pointer;font-weight:700;">ð¾ Save T&amp;Cs</button>';
+    html += '<button onclick="saveAdminTc()" style="padding:6px 20px;border-radius:20px;border:none;background:var(--purple);color:#fff;font-size:12px;cursor:pointer;font-weight:700;">💾 Save T&amp;Cs</button>';
     html += '<span id="adm-tc-status" style="font-size:12px;font-weight:600;"></span>';
     html += '</div>';
     html += '<p style="font-size:11px;color:#888;margin-top:8px;">Changes update the T&amp;Cs on the order form for all users.</p>';
@@ -2749,12 +2748,12 @@ function renderAdminBody() {
     document.getElementById('admin-body').innerHTML = html;
     setTimeout(loadAdminTc, 50);
   })['catch'](function() {
-    document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Could not load data â check connection.</div>';
+    document.getElementById('admin-body').innerHTML = '<div class="hist-empty">Could not load data — check connection.</div>';
   });
 }
 
 // Extract a bare Drive folder ID from either a raw ID or a full Drive URL.
-// e.g. "https://drive.google.com/drive/u/0/folders/1ABC..." â "1ABC..."
+// e.g. "https://drive.google.com/drive/u/0/folders/1ABC..." → "1ABC..."
 function loadAdminTc() {
   var el = document.getElementById('adm-tc-editor');
   if (!el) return;
@@ -2771,7 +2770,7 @@ function saveAdminTc() {
   if (!el || !statusEl) return;
   var html = el.innerHTML.trim();
   if (!html) { alert('T&C content is empty.'); return; }
-  statusEl.style.color = '#888'; statusEl.textContent = 'Savingâ¦';
+  statusEl.style.color = '#888'; statusEl.textContent = 'Saving…';
   var tmp = document.createElement('div');
   tmp.innerHTML = html;
   var paras = Array.from(tmp.querySelectorAll('p'));
@@ -2783,7 +2782,7 @@ function saveAdminTc() {
     sbFetch('settings', 'POST', { key: 'tc_screen', value: html }, { 'Prefer': 'resolution=merge-duplicates,return=representation' }),
     sbFetch('settings', 'POST', { key: 'tc_print_cols', value: printCols }, { 'Prefer': 'resolution=merge-duplicates,return=representation' })
   ]).then(function() {
-    statusEl.style.color = 'green'; statusEl.textContent = 'â Saved!';
+    statusEl.style.color = 'green'; statusEl.textContent = '✓ Saved!';
   })['catch'](function() { statusEl.style.color = 'red'; statusEl.textContent = 'Error saving.'; });
 }
 
@@ -2805,7 +2804,7 @@ function adminSaveInitials(id) {
   if (fidInp && drive_folder_id !== raw) fidInp.value = drive_folder_id;
   var patch = { initials: initials, drive_folder_id: drive_folder_id };
   sbFetch('profiles?id=eq.' + id, 'PATCH', patch, { 'Prefer': '' })
-    .then(function() { alert('â Saved! Folder ID: ' + (drive_folder_id || '(none)')); })
+    .then(function() { alert('✅ Saved! Folder ID: ' + (drive_folder_id || '(none)')); })
     ['catch'](function() { alert('Could not save.'); });
 }
 
@@ -2832,18 +2831,18 @@ function doForgotPw() {
   var email = (document.getElementById('forgot-email').value || '').trim();
   var msg = document.getElementById('forgot-msg');
   if (!email || !email.includes('@')) { msg.style.color = '#e74c3c'; msg.textContent = 'Please enter a valid email address.'; return; }
-  msg.style.color = '#888'; msg.textContent = 'Sendingâ¦';
+  msg.style.color = '#888'; msg.textContent = 'Sending…';
   fetch(SB_URL + '/auth/v1/recover', {
     method: 'POST',
     headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: email })
   }).then(function() {
     msg.style.color = '#27ae60';
-    msg.textContent = 'â Reset link sent â check your inbox.';
+    msg.textContent = '✅ Reset link sent — check your inbox.';
     document.getElementById('forgot-email').value = '';
   })['catch'](function() {
     msg.style.color = '#e74c3c';
-    msg.textContent = 'Could not send reset email â please try again.';
+    msg.textContent = 'Could not send reset email — please try again.';
   });
 }
 
@@ -2854,12 +2853,12 @@ function adminResetPw(email, name) {
     headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: email })
   }).then(function() {
-    alert('â Password reset email sent to ' + email);
+    alert('✅ Password reset email sent to ' + email);
   })['catch'](function() { alert('Could not send reset email.'); });
 }
 
 function adminDeleteUser(id, name) {
-  alert('To delete ' + name + ', go to:\nSupabase Dashboard â Authentication â Users\nFind ' + name + ' â click Â·Â·Â· â Delete user\n\nThis requires the Supabase dashboard for security reasons.');
+  alert('To delete ' + name + ', go to:\nSupabase Dashboard → Authentication → Users\nFind ' + name + ' → click ··· → Delete user\n\nThis requires the Supabase dashboard for security reasons.');
 }
 
 function adminAddUser() {
@@ -2876,16 +2875,16 @@ function adminAddUser() {
   }).then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.error) { alert('Could not create user: ' + data.error.message); return; }
-      if (!data.user && !data.id) { alert('Could not create user â email may already exist.'); return; }
+      if (!data.user && !data.id) { alert('Could not create user — email may already exist.'); return; }
       // Update profile with correct name and role (trigger may have used email prefix)
       var uid = (data.user || data).id;
       return sbFetch('profiles?id=eq.' + uid, 'PATCH', { name: name, role: role, email: email }, { 'Prefer': '' })
         .then(function() {
-          alert('â User "' + name + '" created successfully!');
+          alert('✅ User "' + name + '" created successfully!');
           renderAdminBody();
           buildLoginBtns();
         });
-    })['catch'](function() { alert('Failed to create user â please try again.'); });
+    })['catch'](function() { alert('Failed to create user — please try again.'); });
 }
 
 function adminClearHistory() {
@@ -2894,7 +2893,7 @@ function adminClearHistory() {
     .then(function() { renderAdminBody(); })['catch'](function() { alert('Clear failed.'); });
 }
 
-// âââ Checklist progress counter ââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Checklist progress counter ──────────────────────────────────────────────
 function updateClProgress() {
       var allChecks = Array.from(document.querySelectorAll('.cl-check'));
       var visChecks = allChecks.filter(function(cb) { return cb.offsetParent !== null; });
@@ -2911,7 +2910,7 @@ function updateClProgress() {
     });
     updateClProgress();
 
-    // âââ EmailJS Configuration âââââââââââââââââââââââââââââââââââââââââ
+    // ─── EmailJS Configuration ─────────────────────────────────────────
     // Set these values from your EmailJS dashboard (emailjs.com)
     // Service ID: Email & Settings > Add New Service
     // Template ID: Email Templates > Create New Template
@@ -2925,7 +2924,7 @@ function updateClProgress() {
       emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
     }
 
-    // âââ Accreditation Scheme âââââââââââââââââââââââââââââââââââââââââ
+    // ─── Accreditation Scheme ─────────────────────────────────────────
     var accredState = { answer: null, pending: null };
 
     function checkAccredOther(field) {
@@ -2940,81 +2939,7 @@ function updateClProgress() {
   if (!panel) return;
   var open = panel.style.display !== 'none';
   panel.style.display = open ? 'none' : 'block';
-  btn.textContent = open ? 'ð View Partner Map' : 'â Hide Partner Map';
-}
-function openPartnerMapFullscreen() {
-  var fs = document.getElementById('pm-fullscreen');
-  if (!fs) return;
-  fs.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-function closePartnerMapFullscreen() {
-  var fs = document.getElementById('pm-fullscreen');
-  if (fs) fs.style.display = 'none';
-  document.body.style.overflow = '';
-}
-var _partnerMapData = null;
-function loadPartnerMapData(cb) {
-  if (_partnerMapData) { cb && cb(_partnerMapData); return; }
-  fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vQmvO1z8uzdgtJ5UoeM8YLPS_ZYbYFDPjoAY68wh_ifheTGJ77OuNKyA9Jnhav5ZHebqLh8cODT4YEf/pub?gid=555597068&single=true&output=csv')
-    .then(function(r){ return r.text(); })
-    .then(function(csv) {
-      var rows = csv.split(/\r?\n/).map(function(line){
-        var cells=[],cur='',inQ=false;
-        for(var i=0;i<line.length;i++){var c=line[i];if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){cells.push(cur.trim());cur='';}else{cur+=c;}}
-        cells.push(cur.trim());
-        return cells;
-      });
-      var headers = rows[3] || [];
-      var data = {};
-      for(var ri=4;ri<rows.length;ri++){
-        var row=rows[ri];
-        var city=(row[1]||'').replace(/^[",\s]+/,'').trim();
-        if(!city) continue;
-        data[city.toLowerCase()]={};
-        for(var ci=2;ci<headers.length;ci++){
-          var cat=(headers[ci]||'').trim();
-          var val=(row[ci]||'').trim();
-          if(cat) data[city.toLowerCase()][cat.toLowerCase()]=val;
-        }
-      }
-      _partnerMapData=data;
-      cb && cb(data);
-    }).catch(function(){ _partnerMapData={}; cb && cb({}); });
-}
-function checkAccredMap() {
-  var cityEl=document.getElementById('accred-city');
-  var catEl=document.getElementById('accred-category');
-  var warnEl=document.getElementById('accred-map-warn');
-  if(!warnEl||!cityEl||!catEl) return;
-  var city=cityEl.value.trim();
-  var cat=catEl.value.trim();
-  if(!city||!cat){warnEl.style.display='none';return;}
-  loadPartnerMapData(function(data){
-    var cityKey=city.toLowerCase();
-    var catKey=cat.toLowerCase();
-    var cityData=data[cityKey];
-    if(!cityData){
-      warnEl.innerHTML='<span style="color:#888;font-size:12px;">ℹ️ '+city+' not found in Partner Map — check manually.</span>';
-      warnEl.style.display='block';return;
-    }
-    var matched=null,matchedVal='';
-    for(var k in cityData){
-      if(k===catKey||k.indexOf(catKey)===0||catKey.indexOf(k)===0){
-        matched=k;matchedVal=cityData[k];break;
-      }
-    }
-    if(matched===null){
-      warnEl.innerHTML='<span style="color:#888;font-size:12px;">ℹ️ '+cat+' not in Partner Map categories — check manually.</span>';
-      warnEl.style.display='block';return;
-    }
-    if(matchedVal){
-      warnEl.innerHTML='<span style="color:#c0392b;font-size:12px;font-weight:700;">⚠️ Already allocated: <em>'+matchedVal+'</em> holds '+cat+' in '+city+'. Check the Partner Map before confirming.</span>';
-    } else {
-      warnEl.innerHTML='<span style="color:#27ae60;font-size:12px;font-weight:700;">✅ No current allocation for '+cat+' in '+city+'. Looks clear to offer!</span>';
-    }
-    warnEl.style.display='block';
-  });
+  btn.textContent = open ? '📋 View Partner Map' : '✕ Hide Partner Map';
 }
 function openPartnerMapFullscreen() {
   var fs = document.getElementById('pm-fullscreen');
@@ -3115,7 +3040,7 @@ function setAccred(val) {
             var city = boldEl ? boldEl.textContent.trim() : '';
             if (!city || city === 'CITY NAME' || city === 'CITY') {
               var t = firstDesc.textContent;
-              var di = Math.max(t.lastIndexOf('â'), t.lastIndexOf('â'), t.lastIndexOf('-'));
+              var di = Math.max(t.lastIndexOf('–'), t.lastIndexOf('—'), t.lastIndexOf('-'));
               if (di !== -1) city = t.slice(di+1).trim();
             }
             if (city && city !== 'CITY NAME' && city !== 'CITY') cityInp.value = city;
@@ -3163,10 +3088,10 @@ function setAccred(val) {
       if (accredState.answer !== 'no') { clGroup.style.display = 'none'; updateClProgress(); return; }
       clGroup.style.display = 'block';
       var infoText = 'Not offered. ';
-      var lbl16    = 'Accreditation: Not offered â status confirmed';
+      var lbl16    = 'Accreditation: Not offered — status confirmed';
       if (accredState.pending === 'yes') {
         infoText += 'Status: Pending (max 5 days).';
-        lbl16 = 'Accreditation: Pending (max 5 days) â confirmed';
+        lbl16 = 'Accreditation: Pending (max 5 days) — confirmed';
       } else if (accredState.pending === 'no') {
         var reasonEl = document.querySelector('[name=accred-reason]:checked');
         var reasonMap = { 'city-allocated':'City already allocated', 'category-taken':'Category already taken', 'other':'Other' };
@@ -3175,7 +3100,7 @@ function setAccred(val) {
             ? ((document.getElementById('accred-other-reason')||{}).value||'Other')
             : (reasonMap[reasonEl.value]||reasonEl.value);
           infoText += 'Reason: ' + reasonText + '.';
-          lbl16 = 'Accreditation: Not offered (' + reasonText + ') â confirmed';
+          lbl16 = 'Accreditation: Not offered (' + reasonText + ') — confirmed';
         } else { infoText += 'Reason: not yet specified.'; }
       } else { infoText += 'Pending status not yet selected.'; }
       if (clInfo)  clInfo.textContent  = infoText;
@@ -3184,7 +3109,7 @@ function setAccred(val) {
       updateClProgress();
     }
 
-    // âââ Pay in Instalments âââââââââââââââââââââââââââââââââââââââââââââââââââ
+    // ─── Pay in Instalments ───────────────────────────────────────────────────
     function payMonthlyChanged() {
       var checked = document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked;
       var clGroup = document.getElementById('pay-monthly-cl-group');
@@ -3200,7 +3125,7 @@ function setAccred(val) {
       populatePrintLayout();
     }
 
-// âââ Populate checklist print page âââââââââââââââââââââââââââââââââââââââââââ
+// ─── Populate checklist print page ───────────────────────────────────────────
 var CL_ITEMS = {
   group1: [
     { id:'cl1', label:'Correct UNI number(s) added top right' },
@@ -3210,7 +3135,7 @@ var CL_ITEMS = {
   group2: [
     { id:'cl4', label:'Each line has a city / location' },
     { id:'cl5', label:'Each line has correct qty / unit count' },
-    { id:'cl6', label:'IF AGENCY â confirmed who campaign is running for' },
+    { id:'cl6', label:'IF AGENCY — confirmed who campaign is running for' },
     { id:'cl7', label:'NETT matches the sales sheet' }
   ],
   group3: [
@@ -3236,7 +3161,7 @@ function populateChecklistPrint() {
       row.style.cssText = 'display:flex;align-items:flex-start;gap:6pt;margin-bottom:6pt;font-size:9pt;';
       var tick = document.createElement('span');
       tick.style.cssText = 'font-size:12pt;line-height:1;flex-shrink:0;color:' + (checked ? '#27ae60' : '#e74c3c') + ';';
-      tick.textContent = checked ? 'â' : 'â';
+      tick.textContent = checked ? '✓' : '✗';
       var lbl = document.createElement('span');
       lbl.style.cssText = 'line-height:1.4;color:#222;';
       lbl.textContent = item.label;
@@ -3288,7 +3213,7 @@ function populateChecklistPrint() {
     }
   }
 
-// âââ Campaign duration helpers ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Campaign duration helpers ────────────────────────────────────────────────
 // Returns exact { months, weeks, days, totalDays } between two date strings, or null if invalid.
 function calcDuration(startVal, endVal) {
   var sd = new Date(startVal + 'T00:00:00');
@@ -3310,17 +3235,17 @@ function calcDuration(startVal, endVal) {
 
 // Formats a duration object as a compact string e.g. "2m 1w 3d"
 function durationLabel(d) {
-  if (!d) return 'â';
+  if (!d) return '—';
   var parts = [];
   if (d.months > 0) parts.push(d.months + 'm');
   if (d.weeks  > 0) parts.push(d.weeks  + 'w');
   if (d.days   > 0) parts.push(d.days   + 'd');
-  return parts.length ? parts.join(' ') : (d.months === 0 && d.weeks === 0 && d.days === 0 ? '< 1d' : 'â');
+  return parts.length ? parts.join(' ') : (d.months === 0 && d.weeks === 0 && d.days === 0 ? '< 1d' : '—');
 }
 
 // Formats a total-days count as pure weeks e.g. "9w 3d"
 function durationLabelWeeks(totalDays) {
-  if (totalDays === null || totalDays === undefined) return 'â';
+  if (totalDays === null || totalDays === undefined) return '—';
   if (totalDays === 0) return '< 1d';
   var w = Math.floor(totalDays / 7);
   var d = totalDays % 7;
@@ -3342,7 +3267,7 @@ function toggleDurMode() {
   calcCampaignMonths();
 }
 
-// Sums an array of duration objects, normalising daysâweeks but NOT weeksâmonths
+// Sums an array of duration objects, normalising days→weeks but NOT weeks→months
 // (months stay as exact calendar months, sub-month remainder shown as w/d)
 function sumDurations(durs) {
   var tm = 0, tw = 0, td = 0;
@@ -3351,7 +3276,7 @@ function sumDurations(durs) {
   return { months: tm, weeks: tw, days: td };
 }
 
-// âââ Campaign date months ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Campaign date months ────────────────────────────────────────────────────
 function toggleGroupByLoc() {
   var btn = document.getElementById('grp-loc-btn');
   var tbody = document.getElementById('camp-dates-tbody');
@@ -3365,7 +3290,7 @@ function toggleGroupByLoc() {
       if (row) tbody.appendChild(row);
     });
     btn.dataset.grouped = '0';
-    btn.textContent = 'â Group by location';
+    btn.textContent = '⊞ Group by location';
     btn.style.background = 'none';
   } else {
     var rows = Array.from(tbody.querySelectorAll('tr[data-cd-idx]'));
@@ -3389,7 +3314,7 @@ function toggleGroupByLoc() {
       tbody.appendChild(row);
     });
     btn.dataset.grouped='1';
-    btn.textContent='â Ungroup';
+    btn.textContent='⊟ Ungroup';
     btn.style.background='var(--purple-lighter,#f3eaff)';
   }
 }
@@ -3437,7 +3362,7 @@ function sortCampDateRows() {
     var eEl = document.getElementById('ce' + idx);
     if (!sEl || !eEl || !sEl.value || !eEl.value) return;
     var cmEl = document.getElementById('cm' + idx);
-    if (cmEl) cmEl.textContent = 'â';
+    if (cmEl) cmEl.textContent = '—';
     var dur = calcDuration(sEl.value, eEl.value);
     if (!dur) return;
     if (cmEl) {
@@ -3471,9 +3396,9 @@ function sortCampDateRows() {
   var fe = document.getElementById('total-fst-months');
   var oe = document.getElementById('total-ooh-months');
   if (!phases.length) {
-    totalEl.textContent = campDurMode === 'weeks' ? '0w' : 'â';
-    if (fe) fe.textContent = 'â';
-    if (oe) oe.textContent = 'â';
+    totalEl.textContent = campDurMode === 'weeks' ? '0w' : '—';
+    if (fe) fe.textContent = '—';
+    if (oe) oe.textContent = '—';
     return;
   }
   var allDays = mergeAndCalc(phases);
@@ -3485,8 +3410,8 @@ function sortCampDateRows() {
   var m = Math.floor(allDays / 30), rem = allDays - m * 30, w = Math.floor(rem / 7), d = rem % 7;
   var combinedM = fstTotalM + Math.floor((oohDays + fstTotalD) / 30), combinedD = (oohDays + fstTotalD) % 30;
   totalEl.textContent = campDurMode === 'weeks' ? durationLabelWeeks(allDays) : durationLabel({months: combinedM, weeks: 0, days: combinedD});
-  if (fe) fe.textContent = (fstTotalM || fstTotalD) ? durationLabel({ months: fstTotalM, weeks: 0, days: fstTotalD }) : 'â';
-  if (oe) oe.textContent = oohDays ? fmtDays(oohDays) : 'â';
+  if (fe) fe.textContent = (fstTotalM || fstTotalD) ? durationLabel({ months: fstTotalM, weeks: 0, days: fstTotalD }) : '—';
+  if (oe) oe.textContent = oohDays ? fmtDays(oohDays) : '—';
 }
 
 function addCampDateRow(startVal, endVal, notesVal, stcVal) {
@@ -3500,14 +3425,14 @@ function addCampDateRow(startVal, endVal, notesVal, stcVal) {
     '<td class="cd-num" style="font-size:11px;padding:3px 4px;">' + rowNum + '</td>' +
     '<td><input type="date" id="cs' + idx + '" class="camp-start" style="width:100%;font-size:11px;padding:2px 3px;"></td>' +
     '<td><input type="date" id="ce' + idx + '" class="camp-end" style="width:100%;font-size:11px;padding:2px 3px;"></td>' +
-    '<td class="months-cell" id="cm' + idx + '" style="text-align:center;font-weight:700;color:var(--purple);min-width:40px;">â</td>' +
+    '<td class="months-cell" id="cm' + idx + '" style="text-align:center;font-weight:700;color:var(--purple);min-width:40px;">—</td>' +
     '<td><input type="text" id="cn' + idx + '" class="notes-input" placeholder="Optional notes" style="width:100%;font-size:11px;padding:2px 4px;border:none;border-bottom:1px solid var(--purple-lighter);background:transparent;font-family:\'Lato\',Arial,sans-serif;outline:none;min-width:70px;"></td>' +
     '<td class="stc-cell" style="text-align:center;"><input type="checkbox" id="stc' + idx + '" class="stc-check" title="Subject to change"></td>' +
     '<td style="text-align:center;padding:0 2px;"><select id="cu'+idx+'" class="uni-select" style="font-size:10px;border:1px solid #ccc;border-radius:4px;padding:1px 2px;width:64px;" onchange="calcCampaignMonths()"><option value="1">UNI 1</option><option value="2">UNI 2</option><option value="both">Both</option></select></td>' +
     '<td style="text-align:center;padding:0 2px;"><select class="cd-type-select" style="font-size:10px;border:1px solid #ccc;border-radius:4px;padding:1px 2px;width:48px;" onchange="calcCampaignMonths()"><option value="FST">FST</option><option value="OOH">OOH</option></select></td>' +
     '<td style="padding:0 2px;"><button type="button" onclick="removeCampDateRow(this)" title="Remove this phase" ' +
       'style="background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:0 3px;" ' +
-      'onmouseover="this.style.color=\'#e74c3c\'" onmouseout="this.style.color=\'#bbb\'">Ã</button></td>';
+      'onmouseover="this.style.color=\'#e74c3c\'" onmouseout="this.style.color=\'#bbb\'">×</button></td>';
 
   if (startVal) document.createElement('input'); // placeholder so next lines work
   tbody.appendChild(tr);
@@ -3527,7 +3452,7 @@ function addCampDateRow(startVal, endVal, notesVal, stcVal) {
         var sd = new Date(startEl.value + 'T00:00:00');
         var ed = new Date(endEl.value   + 'T00:00:00');
         if (ed < sd) {
-          alert('â ï¸ Date Error\n\nThe end date (' + ed.toLocaleDateString('en-GB') + ') is before the start date (' + sd.toLocaleDateString('en-GB') + ').\n\nPlease correct the dates â a campaign cannot end before it starts.');
+          alert('⚠️ Date Error\n\nThe end date (' + ed.toLocaleDateString('en-GB') + ') is before the start date (' + sd.toLocaleDateString('en-GB') + ').\n\nPlease correct the dates — a campaign cannot end before it starts.');
           endEl.value = '';
           calcCampaignMonths();
           return;
@@ -3539,9 +3464,9 @@ function addCampDateRow(startVal, endVal, notesVal, stcVal) {
       var today = new Date(); today.setHours(0,0,0,0);
       var oneMonthAgo = new Date(today); oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
       if (entered < oneMonthAgo) {
-        alert('â ï¸ Date Check Required\n\nThe date you entered (' + entered.toLocaleDateString('en-GB') + ') is more than one month in the past.\n\nCampaign dates should not be in the past â please check this is correct.');
+        alert('⚠️ Date Check Required\n\nThe date you entered (' + entered.toLocaleDateString('en-GB') + ') is more than one month in the past.\n\nCampaign dates should not be in the past — please check this is correct.');
       } else if (inp.classList.contains('camp-start') && entered < today) {
-        alert('â ï¸ Start Date Has Already Passed\n\nThe start date (' + entered.toLocaleDateString('en-GB') + ') is in the past.\n\nIf this campaign has already started, that\'s fine â just double-check the dates are correct.');
+        alert('⚠️ Start Date Has Already Passed\n\nThe start date (' + entered.toLocaleDateString('en-GB') + ') is in the past.\n\nIf this campaign has already started, that\'s fine — just double-check the dates are correct.');
       }
     });
   });
@@ -3563,7 +3488,7 @@ function removeCampDateRow(btn) {
   calcCampaignMonths();
 }
 
-// âââ Date formatter: "1-Jun-2026" ââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Date formatter: "1-Jun-2026" ────────────────────────────────────────────
 var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function fmtDateShort(dateStr) {
   var d = new Date(dateStr + 'T00:00:00');
@@ -3571,10 +3496,10 @@ function fmtDateShort(dateStr) {
   return d.getDate() + '-' + MONTH_NAMES[d.getMonth()] + '-' + d.getFullYear();
 }
 
-// âââ City extraction helper âââââââââââââââââââââââââââââââââââââââââââââââââââ
-// Extracts the city name from text like "Full Site Takeover â Manchester"
+// ─── City extraction helper ───────────────────────────────────────────────────
+// Extracts the city name from text like "Full Site Takeover – Manchester"
 function extractCityFromText(text) {
-  var match = text.match(/[ââ-]\s*(.+)$/);
+  var match = text.match(/[–—-]\s*(.+)$/);
   if (!match) return '';
   var city = match[1].trim();
   // Ignore if it's still a placeholder
@@ -3583,7 +3508,7 @@ function extractCityFromText(text) {
   return city.substring(0, 30).trim();
 }
 
-// âââ Rich text formatting ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Rich text formatting ────────────────────────────────────────────────────
 function fmt(cmd, val) {
   document.getElementById('campaign-notes').focus();
   document.execCommand(cmd, false, val || null);
@@ -3604,7 +3529,7 @@ function fmtDescBlack(btn) {
   document.execCommand('foreColor', false, '#000000');
 }
 
-// âââ T&C password lock ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── T&C password lock ────────────────────────────────────────────────────────
 var TC_UNLOCKED = false;
 function toggleTcEdit() {
   if (TC_UNLOCKED) {
@@ -3628,7 +3553,7 @@ function tcUnlock() {
   box.style.borderColor = 'var(--purple)';
   toolbar.style.display = 'flex';
   box.focus();
-  icon.textContent  = 'ð';
+  icon.textContent  = '🔓';
   label.textContent = 'Lock T&Cs';
   TC_UNLOCKED = true;
   var _tct = new Date();
@@ -3640,7 +3565,7 @@ function tcModalConfirm() {
   document.getElementById('tc-modal-overlay').style.display = 'none';
   var user = currentUser();
   if (user && user.role === 'admin') {
-    // Admins skip the password â go straight in
+    // Admins skip the password — go straight in
     tcUnlock();
       sendAlertEmail('T\u0026Cs unlocked', '', (user && user.name) || '', '', EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk');
   } else {
@@ -3662,7 +3587,7 @@ function tcLock() {
   box.style.background  = '';
   box.style.borderColor = '';
   toolbar.style.display = 'none';
-  icon.textContent  = 'ð';
+  icon.textContent  = '🔒';
   label.textContent = 'Edit T&Cs';
   TC_UNLOCKED = false;
 }
@@ -3686,7 +3611,7 @@ document.addEventListener('keydown', function(e) {
   }
 }, true);
 
-// Click on a coloured span inside a contenteditable â auto-select the whole span
+// Click on a coloured span inside a contenteditable → auto-select the whole span
 // This makes it easy to click CITY NAME / CITY and immediately replace or turn it black
 document.addEventListener('click', function(e) {
   var target = e.target;
@@ -3704,7 +3629,7 @@ document.addEventListener('click', function(e) {
   sel.addRange(range);
 }, false);
 
-// âââ Google Drive configuration âââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Google Drive configuration ─────────────────────────────────────────────
 // Paste your Client ID below after setting up in Google Cloud Console
 var GDRIVE_CONFIG = {
   clientId:          '978032756141-8ch9id7gvdhvp2qke5lqf0vts453vur2.apps.googleusercontent.com',
@@ -3722,7 +3647,7 @@ var EMAILJS_CONFIG = {
 
 
 
-// âââ Checklist auto-save to Drive ââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Checklist auto-save to Drive ────────────────────────────────────────────
 var _driveToken   = null;  // cached token for the session
 var _lastClState  = null;  // snapshot of checklist when last saved
 
@@ -3737,7 +3662,7 @@ function getClState() {
 function doChecklistUpload(token) {
   _driveToken = token;
   var currentState = getClState();
-  if (currentState === _lastClState) return; // Nothing changed â skip
+  if (currentState === _lastClState) return; // Nothing changed — skip
   populateChecklistPrint();
   var refNo   = document.getElementById('ref-no').value || 'REF';
   var company = (document.getElementById('client-company').value || 'Client').split(/[,\n]/)[0].trim();
@@ -3767,10 +3692,10 @@ function doChecklistUpload(token) {
 function autoSaveChecklist() {
   if (!GDRIVE_CONFIG.clientId || GDRIVE_CONFIG.clientId.indexOf('PASTE_') === 0) return;
   if (_driveToken) {
-    // Already authenticated this session â upload silently
+    // Already authenticated this session — upload silently
     doChecklistUpload(_driveToken);
   } else {
-    // Need to authenticate â this requires a user gesture so it's safe here
+    // Need to authenticate — this requires a user gesture so it's safe here
     try {
       var tc = google.accounts.oauth2.initTokenClient({
         client_id: GDRIVE_CONFIG.clientId,
@@ -3778,7 +3703,7 @@ function autoSaveChecklist() {
         callback: function(r) { if (!r.error) doChecklistUpload(r.access_token); }
       });
       tc.requestAccessToken();
-    } catch(e) { /* Google not loaded yet â skip */ }
+    } catch(e) { /* Google not loaded yet — skip */ }
   }
 }
 
@@ -3789,16 +3714,16 @@ function saveToDrive() {
     return;
   }
   var btn = document.getElementById('btn-drive');
-  btn.disabled = true; btn.textContent = 'Uploadingâ¦';
+  btn.disabled = true; btn.textContent = 'Uploading…';
 
-  // Safety timeout â if nothing happens in 60s, reset the button
+  // Safety timeout — if nothing happens in 60s, reset the button
   var resetTimer = setTimeout(function() {
-    btn.disabled = false; btn.textContent = 'â Save to Drive';
+    btn.disabled = false; btn.textContent = '☁ Save to Drive';
   }, 60000);
 
   function resetBtn(errMsg) {
     clearTimeout(resetTimer);
-    btn.disabled = false; btn.textContent = 'â Save to Drive';
+    btn.disabled = false; btn.textContent = '☁ Save to Drive';
     if (errMsg) alert(errMsg);
   }
 
@@ -3808,7 +3733,7 @@ function saveToDrive() {
     error_callback: function(err) {
       // Fired when the popup is closed/dismissed or blocked
       if (err && err.type === 'popup_closed') {
-        resetBtn(null); // silent reset â user just closed the popup
+        resetBtn(null); // silent reset — user just closed the popup
       } else {
         resetBtn('Google sign-in was cancelled or blocked.\nPlease allow the pop-up and try again.');
       }
@@ -3892,7 +3817,7 @@ function sendAccountsEmail(refNo, companyFull, user, driveFileId) {
   var dateTime = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
   emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
   var params = {
-    subject:   (refNo ? refNo + ' â ' : '') + 'New Order Form - ' + companyFull,
+    subject:   (refNo ? refNo + ' – ' : '') + 'New Order Form - ' + companyFull,
     to_email:  EMAILJS_CONFIG.ownerEmail + ',' + EMAILJS_CONFIG.accountsEmail,
     company:   companyFull,
     contact:   refNo,
@@ -3911,7 +3836,7 @@ function sendAlertEmail(subject, company, filledBy, msg, toEmail) {
   emailjs.init({publicKey: EMAILJS_CONFIG.publicKey});
   emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
     to_email: toEmail || (EMAILJS_CONFIG.ownerEmail+',felicity@unifresher.co.uk,'+EMAILJS_CONFIG.accountsEmail),
-    subject: (_ref ? _ref + ' â ' : '') + (subject || ''),
+    subject: (_ref ? _ref + ' – ' : '') + (subject || ''),
     company: subject || '',
     contact: company || '',
     filled_by: filledBy || '',
@@ -3947,7 +3872,7 @@ function uploadToDrive(accessToken, btn) {
                : (document.getElementById('initials').value || '').toUpperCase().trim();
   var storedFolderId = user && user.drive_folder_id ? parseDriveFolderId(user.drive_folder_id) : '';
 
-  btn.textContent = 'â Uploadingâ¦';
+  btn.textContent = '☁ Uploading…';
 
   var orderBlob, clBlob, orderFolderId, clFolderId, orderFileId;
 
@@ -3990,9 +3915,9 @@ function uploadToDrive(accessToken, btn) {
     return driveUploadBlob(clBlob, checklistFilename, accessToken, clFolderId);
   })
   .then(function(data) {
-    btn.disabled = false; btn.textContent = 'â Save to Drive';
-    var folder = initials ? ' â ' + initials + '/' : '';
-    if (storedFolderId && initials) folder = ' â ' + initials + '/ (direct)';
+    btn.disabled = false; btn.textContent = '☁ Save to Drive';
+    var folder = initials ? ' → ' + initials + '/' : '';
+    if (storedFolderId && initials) folder = ' → ' + initials + '/ (direct)';
     if (data.id) {
       logDriveUpload(refNo, company, checklistFilename, 'Checklist');
             var _signed = (document.getElementById('signed') || {}).value || '';
@@ -4000,20 +3925,20 @@ function uploadToDrive(accessToken, btn) {
 // auto-save to history list on successful Drive upload
               (function(){ var _u = currentUser(); var _fd = captureFormData(); var _r2b = (document.getElementById('ref-no-2') || {}).value || ''; if (window._mergedRef2 || _r2b) { var _sec = window._mergedRef2 || _r2b; if (_sec && !_fd.ref.includes(_sec)) _fd.ref = _fd.ref + ' & ' + _sec; doSaveHistory(_u, _fd); } else { addToHistory(); } })();
       var driveUrl = 'https://drive.google.com/drive/folders/' + orderFolderId;
-      if (confirm('â Both files saved to Google Drive!' + folder + '\n\nð ' + orderFilename + '\nâ ' + checklistFilename + '\n\nClick OK to open the Drive folder.')) { window.open(driveUrl, '_blank'); }
+      if (confirm('✅ Both files saved to Google Drive!' + folder + '\n\n📄 ' + orderFilename + '\n✅ ' + checklistFilename + '\n\nClick OK to open the Drive folder.')) { window.open(driveUrl, '_blank'); }
     } else {
       alert('Order saved but checklist upload failed: ' + JSON.stringify(data));
     }
   })
   ['catch'](function(err) {
-    btn.disabled = false; btn.textContent = 'â Save to Drive';
+    btn.disabled = false; btn.textContent = '☁ Save to Drive';
     alert('Upload failed: ' + (err.message || err));
   });
 }
 
-// âââ Large form detection âââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Large form detection ─────────────────────────────────────────────────────
 // Called AFTER populatePrintLayout() so the print layout elements are populated.
-// Returns true if form content is too long to fit everything on one A4 page â
+// Returns true if form content is too long to fit everything on one A4 page —
 // in which case T&Cs move to page 2.
 function isLargeForm() {
   // Heuristic fallback (used by getPdfHtml path). printForm() uses real measurement.
@@ -4033,7 +3958,7 @@ function isLargeForm() {
   return false;
 }
 
-// âââ Print / PDF âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Print / PDF ─────────────────────────────────────────────────────────────
 function printForm() {
   if (!validateForm()) return;
   calcCampaignMonths();
@@ -4052,7 +3977,7 @@ function printForm() {
     pl.classList.add('pl-print-xl');
     var _nl = pl.querySelector('.pl-notes-label'); if (_nl) { _nl.style.pageBreakBefore = 'always'; _nl.style.breakBefore = 'always'; }
   } else {
-    // Temporarily reveal at A4 width (793px â 210mm at 96dpi) to measure layout height
+    // Temporarily reveal at A4 width (793px ≈ 210mm at 96dpi) to measure layout height
     var savedCss = pl.style.cssText;
     pl.style.cssText = 'display:block!important;visibility:hidden!important;' +
                        'position:fixed!important;top:-9999px!important;' +
@@ -4060,7 +3985,7 @@ function printForm() {
     var tcSection = pl.querySelector('.pl-tc-section');
     // Measure where the bottom of the T&C section falls (offsetTop = where T&Cs start,
     // offsetHeight = how tall the T&C block is). Only force page 2 if the T&Cs
-    // genuinely overflow the A4 page (1123px â 297mm at 96dpi).
+    // genuinely overflow the A4 page (1123px ≈ 297mm at 96dpi).
     var tcTop = tcSection ? tcSection.offsetTop    : 0;
     var tcH   = tcSection ? tcSection.offsetHeight : 0;
     pl.style.cssText = savedCss;
@@ -4094,7 +4019,7 @@ function getPdfHtml() {
       '.pl-please{margin:4pt 0 2pt!important;}' +
       '.pl-field-row{margin-bottom:5pt!important;}' +
       '.pl-signoff-box{padding:6pt 8pt!important;}' +
-      // Page 2: T&Cs get a clean page break and more space â bigger font now they have room
+      // Page 2: T&Cs get a clean page break and more space — bigger font now they have room
       '.pl-tc-section{page-break-before:always!important;padding-top:12pt!important;}' +
       '.pl-tc-title{font-size:11pt!important;margin-bottom:8pt!important;padding-bottom:5pt!important;}' +
       '.pl-tc-cols{gap:20pt!important;}' +
@@ -4137,7 +4062,7 @@ function pdfOpts(filename) {
   };
 }
 
-// âââ Text-based checklist PDF (jsPDF, selectable text) âââââââââââââââââââââââ
+// ─── Text-based checklist PDF (jsPDF, selectable text) ───────────────────────
 function generateTextBasedChecklistBlob(filename) {
   if (!window.jspdf || !window.jspdf.jsPDF) { return Promise.resolve(null); }
   var jsPDF = window.jspdf.jsPDF;
@@ -4146,7 +4071,7 @@ function generateTextBasedChecklistBlob(filename) {
   var pageW  = 210;
   var y = margin;
 
-  // ââ Header ââ
+  // ── Header ──
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(20);
   doc.setTextColor(112, 45, 215);
@@ -4154,7 +4079,7 @@ function generateTextBasedChecklistBlob(filename) {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.setTextColor(85, 85, 85);
-  doc.text('Internal quality check â to be completed with every order form', margin, y + 14);
+  doc.text('Internal quality check — to be completed with every order form', margin, y + 14);
 
   // Right meta block
   var refVal  = (document.getElementById('ref-no')         ? document.getElementById('ref-no').value         : '') || '';
@@ -4180,7 +4105,7 @@ function generateTextBasedChecklistBlob(filename) {
   doc.line(margin, y, pageW - margin, y);
   y += 8;
 
-  // ââ 3 columns ââ
+  // ── 3 columns ──
   var contentW = pageW - margin * 2;
   var colW = contentW / 3;
   var groups = [
@@ -4207,8 +4132,8 @@ function generateTextBasedChecklistBlob(filename) {
       var checked = cb && cb.checked;
       // Tick / cross
       doc.setFont('helvetica', 'bold');
-      if (checked) { doc.setTextColor(39, 174, 96);  doc.text('â', grp.x, cy); }
-      else         { doc.setTextColor(231, 76, 60);  doc.text('â', grp.x, cy); }
+      if (checked) { doc.setTextColor(39, 174, 96);  doc.text('✓', grp.x, cy); }
+      else         { doc.setTextColor(231, 76, 60);  doc.text('✗', grp.x, cy); }
       // Label (wrapped)
       doc.setFont('helvetica', 'normal'); doc.setTextColor(34, 34, 34);
       var lines = doc.splitTextToSize(item.label, colW - 8);
@@ -4221,7 +4146,7 @@ function generateTextBasedChecklistBlob(filename) {
   var maxItems = Math.max(CL_ITEMS.group1.length, CL_ITEMS.group2.length, CL_ITEMS.group3.length);
   y += 10 + maxItems * 6 + 18;
 
-  // ââ Footer ââ
+  // ── Footer ──
   doc.setDrawColor(200, 200, 200); doc.setLineWidth(0.25);
   doc.line(margin, y, pageW - margin, y);
   y += 5;
@@ -4232,7 +4157,7 @@ function generateTextBasedChecklistBlob(filename) {
   return Promise.resolve(doc.output('blob'));
 }
 
-// âââ Text-based PDF generator (selectable text, Google Drive compatible) ââââââ
+// ─── Text-based PDF generator (selectable text, Google Drive compatible) ──────
 // Generates the order form as a real-text PDF using jsPDF + autotable.
 // All text is selectable and copy-pasteable in Drive, Acrobat, etc.
 function generateTextBasedPdfBlob(filename) {
@@ -4246,7 +4171,7 @@ function generateTextBasedPdfBlob(filename) {
       var cW     = pageW - 2 * margin; // content width = 180mm
       var y      = margin;
 
-      // ââ Header ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+      // ── Header ────────────────────────────────────────────────────────────
       var logoImg = document.querySelector('#print-layout .pl-header-left img');
       var headerH = 28; // minimum header height in mm
       if (logoImg && logoImg.src) {
@@ -4290,7 +4215,7 @@ function generateTextBasedPdfBlob(filename) {
 
       y += headerH;
 
-      // ââ TO section ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+      // ── TO section ────────────────────────────────────────────────────────
       doc.setDrawColor(0, 0, 0);
       doc.setLineWidth(0.5);
       doc.line(margin, y, pageW - margin, y);
@@ -4321,7 +4246,7 @@ function generateTextBasedPdfBlob(filename) {
         var screenCount = (document.getElementById('ooh-screen-count') || {}).value || 'N';
         doc.setFontSize(9);
         doc.setFont('helvetica', 'normal');
-        var oohDesc = 'University Digital Screen â x ' + screenCount + ' in locations as per agreed spreadsheet';
+        var oohDesc = 'University Digital Screen – x ' + screenCount + ' in locations as per agreed spreadsheet';
         nLines = doc.splitTextToSize(oohDesc, cW / 2 - 4);
         doc.setTextColor(0, 0, 0);
         doc.text(nLines, rX, y + 4);
@@ -4340,7 +4265,7 @@ function generateTextBasedPdfBlob(filename) {
 
       y += Math.max(coLines.length * 5 + addrRaw.length * 3.5 + 4, nLines.length * 3.2 + 9) + 2;
 
-      // ââ Items table âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+      // ── Items table ───────────────────────────────────────────────────────
       var items = [];
       var anyQty = false;
       document.querySelectorAll('#items-body tr').forEach(function(tr) {
@@ -4360,7 +4285,7 @@ function generateTextBasedPdfBlob(filename) {
         ? [{ dataKey: 'desc' }, { dataKey: 'price' }, { dataKey: 'qty' }, { dataKey: 'total' }]
         : [{ dataKey: 'desc' }, { dataKey: 'price' }, { dataKey: 'total' }];
 
-      // Build head row with explicit per-cell halign â highest-priority style in
+      // Build head row with explicit per-cell halign — highest-priority style in
       // jsPDF-autoTable, cannot be overridden by headStyles.
       var headRow = anyQty
         ? ['Description',
@@ -4372,8 +4297,8 @@ function generateTextBasedPdfBlob(filename) {
            { content: 'Total',      styles: { halign: 'right' } }];
 
       var rows = items.map(function(it) {
-        var r = { desc: it.desc, price: it.price ? 'Â£' + it.price.toFixed(2) : '',
-                  total: it.total ? 'Â£' + it.total.toFixed(2) : '' };
+        var r = { desc: it.desc, price: it.price ? '£' + it.price.toFixed(2) : '',
+                  total: it.total ? '£' + it.total.toFixed(2) : '' };
         if (anyQty) r.qty = it.qty || '';
         return r;
       });
@@ -4405,7 +4330,7 @@ function generateTextBasedPdfBlob(filename) {
 
       y = doc.lastAutoTable.finalY + 1;
 
-      // ââ Totals ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+      // ── Totals ────────────────────────────────────────────────────────────
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
       doc.line(margin, y, pageW - margin, y);
       y += 4;
@@ -4418,13 +4343,13 @@ function generateTextBasedPdfBlob(filename) {
 
       doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
       doc.text('NET:', lX, y, { align: 'right' });
-      doc.text((document.getElementById('net-total')||{}).textContent || 'Â£0.00', rX2, y, { align: 'right' });
+      doc.text((document.getElementById('net-total')||{}).textContent || '£0.00', rX2, y, { align: 'right' });
       y += 5;
 
       if (document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked) {
         doc.setTextColor(112, 45, 215);
         doc.text('Instalment Admin Fee:', lX, y, { align: 'right' });
-        doc.text('Â£40.00 + VAT', rX2, y, { align: 'right' });
+        doc.text('£40.00 + VAT', rX2, y, { align: 'right' });
         doc.setTextColor(0, 0, 0);
         y += 5;
       }
@@ -4438,7 +4363,7 @@ function generateTextBasedPdfBlob(filename) {
       }
 
       doc.text(((document.getElementById('vat-label')||{}).textContent) || 'VAT (20%):', lX, y, { align: 'right' });
-      doc.text((document.getElementById('vat-total')||{}).textContent || 'Â£0.00', rX2, y, { align: 'right' });
+      doc.text((document.getElementById('vat-total')||{}).textContent || '£0.00', rX2, y, { align: 'right' });
       y += 3;
 
       doc.setDrawColor(0,0,0); doc.setLineWidth(0.7);
@@ -4446,10 +4371,10 @@ function generateTextBasedPdfBlob(filename) {
       y += 5;
       doc.setFontSize(12); doc.setFont('helvetica','bold');
       doc.text('TOTAL:', lX, y, { align: 'right' });
-      doc.text((document.getElementById('grand-total')||{}).textContent || 'Â£0.00', rX2, y, { align: 'right' });
+      doc.text((document.getElementById('grand-total')||{}).textContent || '£0.00', rX2, y, { align: 'right' });
       y += 4;
 
-      // ââ Notes âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+      // ── Notes ─────────────────────────────────────────────────────────────
       // Read from the visible campaign-notes div so <br> tags become \n properly.
       // (pl-notes is inside the hidden print layout; textContent on hidden elements
       //  strips <br> silently, concatenating lines like "ManchesterKPIs:".)
@@ -4495,7 +4420,7 @@ function generateTextBasedPdfBlob(filename) {
             doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
             doc.text('Accreditation Scheme:', margin, y); y += 4;
             doc.setFont('helvetica','normal');
-            var _accLine = (_accCity||'â') + ' â ' + (_accCat||'â');
+            var _accLine = (_accCity||'—') + ' — ' + (_accCat||'—');
             var _accLines = doc.splitTextToSize(_accLine, cW);
             doc.text(_accLines, margin, y); y += _accLines.length * 3.5 + 3;
           }
@@ -4505,21 +4430,21 @@ function generateTextBasedPdfBlob(filename) {
           doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
           doc.line(margin, y, pageW - margin, y); y += 4;
           doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(59,130,246);
-          doc.text('â Pay in Instalments', margin, y); y += 5;
+          doc.text('✓ Pay in Instalments', margin, y); y += 5;
           doc.setTextColor(0,0,0); doc.setFont('helvetica','normal');
         }
-        // ââ Campaign dates ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+        // ── Campaign dates ────────────────────────────────────────────────────
       var campRows = [];
       var anyStc   = false;
       document.querySelectorAll('#camp-dates-tbody tr').forEach(function(tr) {
         var idx = tr.dataset.cdIdx;
         var sv = ((document.getElementById('cs'+idx)||{}).value)||'';
         var ev = ((document.getElementById('ce'+idx)||{}).value)||'';
-        var mv = ((document.getElementById('cm'+idx)||{}).textContent)||'â';
+        var mv = ((document.getElementById('cm'+idx)||{}).textContent)||'—';
         var nv = ((document.getElementById('cn'+idx)||{}).value)||'';
         var stcEl = document.getElementById('stc'+idx);
         var stc = stcEl && stcEl.checked;
-        if (sv && ev && mv !== 'â') {
+        if (sv && ev && mv !== '—') {
           campRows.push([(campRows.length+1).toString(),
             fmtDateShort(sv)+(stc?' *':''), fmtDateShort(ev)+(stc?' *':''), mv, nv||'']);
           if (stc) anyStc = true;
@@ -4569,7 +4494,7 @@ function generateTextBasedPdfBlob(filename) {
         }
       }
 
-      // ââ Sign-off boxes ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+      // ── Sign-off boxes ────────────────────────────────────────────────────
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
       doc.line(margin, y, pageW-margin, y);
       y += 5;
@@ -4586,7 +4511,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.rect(margin, y, cW/2, boxH);
       doc.rect(midX, y, cW/2, boxH);
 
-      // Left box â accounts contact
+      // Left box — accounts contact
       var bx = margin + 3;
       var by = y + 5;
       doc.setFontSize(8); doc.setFont('helvetica','bold');
@@ -4600,7 +4525,7 @@ function generateTextBasedPdfBlob(filename) {
         by += 6;
       });
 
-      // Right box â campaign contact
+      // Right box — campaign contact
       bx = midX + 3; by = y + 5;
       doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
       doc.text('CAMPAIGN CONTACT INFORMATION:', bx, by); by += 6;
@@ -4613,7 +4538,7 @@ function generateTextBasedPdfBlob(filename) {
 
       y += boxH + 2;
 
-      // ââ T&Cs: only start a new page when content genuinely won't fit ââââââââ
+      // ── T&Cs: only start a new page when content genuinely won't fit ────────
       // Pre-calculate the exact height using jsPDF's own line-break logic so the
       // decision uses the same measurements as the actual drawing pass.
       var colW2  = (cW - 5) / 2;
@@ -4626,7 +4551,7 @@ function generateTextBasedPdfBlob(filename) {
     var payTermsPhrase = isReceipt ? 'upon receipt of invoice' : 'within ' + payDays + ' days of invoice';
       var tcCol1 = [
         'By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.',
-        'The order value (plus VAT if applicable) is payable within ' + payDays + ' days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin â if your campaign is due to begin in less than ' + payDays + ' days from the invoice date, your payment terms will be shortened accordingly.',
+        'The order value (plus VAT if applicable) is payable within ' + payDays + ' days of invoice and/or return of this confirmation, unless a different date has been stated on the order form or otherwise agreed. Your invoice must be paid and payment cleared before your campaign can begin — if your campaign is due to begin in less than ' + payDays + ' days from the invoice date, your payment terms will be shortened accordingly.',
         'All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested. If you would like to separate your invoice into instalments, these must be paid by Direct Debit and will be due the month prior to each month of the campaign.',
         'The order form together with these terms and conditions constitute all the terms of this contract, and no employee, agent or representative of this company has any right to amend these terms. You are solely responsible for submitting suitable artwork/copy by the date agreed.'
       ];
@@ -4651,7 +4576,7 @@ function generateTextBasedPdfBlob(filename) {
         y += 3;   // breathing room between sign-off boxes and T&Cs
       }
 
-      // ââ T&Cs body âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+      // ── T&Cs body ─────────────────────────────────────────────────────────
       doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
       doc.text('TERMS & CONDITIONS', margin, y);
       y += 3;
@@ -4698,7 +4623,7 @@ function generateTextBasedPdfBlob(filename) {
 
 // For large forms: render page 1 (main content, no T&Cs) and page 2 (T&Cs only)
 // as two separate canvas captures, then stitch into a guaranteed 2-page PDF.
-// Page 1 is ALWAYS exactly one A4 page â if the canvas is taller it is scaled
+// Page 1 is ALWAYS exactly one A4 page — if the canvas is taller it is scaled
 // down so the sign-off box is always on page 1.
 function generateOrderPdfBlob(filename) {
   var largeForm = isLargeForm();
@@ -4722,8 +4647,8 @@ function generateOrderPdfBlob(filename) {
   var page1Html = wrapEl.outerHTML;
 
   // Page 2: T&Cs only.
-  // We use tcEl.innerHTML (NOT outerHTML) so the .pl-tc-section wrapper class â which
-  // carries page-break-before:always â is never in the page2 DOM.  That class is what
+  // We use tcEl.innerHTML (NOT outerHTML) so the .pl-tc-section wrapper class — which
+  // carries page-break-before:always — is never in the page2 DOM.  That class is what
   // causes html2canvas to insert a full blank A4 page of space before the content.
   var outerStyle = wrapEl.getAttribute('style') || '';
   var page2Html = '<div style="' + outerStyle + '">' +
@@ -4777,7 +4702,7 @@ function generateOrderPdfBlob(filename) {
       return html2pdf().set(hOpts).from(p1Canvas).toPdf().get('pdf');
     })
     .then(function(pdf) {
-      // pdf is a real jsPDF instance â page 1 already contains the form content.
+      // pdf is a real jsPDF instance — page 1 already contains the form content.
       // Now append page 2 with the T&Cs canvas.
       pdf.addPage();
       var img2 = c2ref.toDataURL('image/jpeg', 1.0);
@@ -4813,20 +4738,20 @@ function sendPayMonthlyAlert(){
       var notes=(document.getElementById('pay-monthly-notes')||{}).value||'';
   function doSend(){
     emailjs.init({publicKey:EMAILJS_CONFIG.publicKey});
-    emailjs.send('service_a5nfqxx','template_8h5woef',{subject:(uniNo ? uniNo + ' â ' : '') + 'Pay in Instalments - '+company,to_email:'joseph@unifresher.co.uk,accounts@unifresher.co.uk',company:company,contact:uniNo,filled_by:filledBy,date_time:now,form_url:location.href,message:'Pay in Instalments confirmed on order.'+(notes?'\nInstalment details: '+notes:'')});
+    emailjs.send('service_a5nfqxx','template_8h5woef',{subject:(uniNo ? uniNo + ' – ' : '') + 'Pay in Instalments - '+company,to_email:'joseph@unifresher.co.uk,accounts@unifresher.co.uk',company:company,contact:uniNo,filled_by:filledBy,date_time:now,form_url:location.href,message:'Pay in Instalments confirmed on order.'+(notes?'\nInstalment details: '+notes:'')});
   }
   if(typeof emailjs!=='undefined')doSend();
   else{var s=document.querySelector('script[src*="emailjs"]');if(s)s.addEventListener('load',doSend);else setTimeout(doSend,1500);}
 }
 
-// ââ Merge Order âââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── Merge Order ─────────────────────────────────────────────────
 var _mergeOrders = [];
 function showMergeModal() {
   var modal = document.getElementById('merge-modal');
   if (!modal) return;
   modal.style.display = 'flex';
   var listEl = document.getElementById('merge-list');
-  listEl.innerHTML = '<p style="color:#999;font-size:13px;padding:8px;">Loading ordersâ¦</p>';
+  listEl.innerHTML = '<p style="color:#999;font-size:13px;padding:8px;">Loading orders…</p>';
   document.getElementById('merge-search').value = '';
   var user = currentUser();
   var query = 'order_history?order=saved_at.desc&limit=200';
@@ -4848,7 +4773,7 @@ function renderMergeList(orders) {
   list.innerHTML = orders.map(function(o) {
     var dt = o.saved_at ? new Date(o.saved_at).toLocaleDateString('en-GB') : '';
     return '<div class="merge-item" onclick="selectMergeOrder(' + o.id + ',this)">' +
-      '<strong>' + (o.ref||'No ref') + '</strong> â ' + (o.company||'Unknown') +
+      '<strong>' + (o.ref||'No ref') + '</strong> — ' + (o.company||'Unknown') +
       '<span style="float:right;font-size:11px;color:#999;">' + dt + '</span></div>';
   }).join('');
 }
@@ -4877,7 +4802,7 @@ function doMergeOrder() {
   var mergeDates = document.getElementById('merge-dates-cb').checked;
   if (!mergeItems && !mergeDates) { alert('Select at least one section to merge.'); return; }
   var btn = document.getElementById('merge-confirm-btn');
-  if (btn) { btn.textContent = 'Mergingâ¦'; btn.disabled = true; }
+  if (btn) { btn.textContent = 'Merging…'; btn.disabled = true; }
   sbFetch('order_history?id=eq.' + _selectedMergeId + '&select=form_data,ref,company').then(function(rows) {
     if (!rows || !rows[0] || !rows[0].form_data) { alert('Could not load that order.'); closeMergeModal(); return; }
     var fd = rows[0].form_data;
@@ -4909,13 +4834,13 @@ if (fd.notesHtml) {
       if (cn) {
         var ex = cn.innerHTML.trim();
         var sep = ex ? '<span class="merge-meta"><hr style="margin:6px 0;border-color:#ddd;"></span>' : '';
-        var lbl = '<span class="merge-meta"><p style="color:#555;font-size:11px;font-style:italic;margin:2px 0 4px;">â Notes from ' + (rows[0].ref||'merged') + ' â</p></span>';
+        var lbl = '<span class="merge-meta"><p style="color:#555;font-size:11px;font-style:italic;margin:2px 0 4px;">— Notes from ' + (rows[0].ref||'merged') + ' —</p></span>';
         window._mergedRef2 = (rows[0] && rows[0].ref) ? rows[0].ref : '';
         cn.innerHTML = ex + sep + lbl + fd.notesHtml;
       }
     }
         closeMergeModal();
-    alert('â ' + (rows[0].ref||'Order') + ' from ' + (rows[0].company||'unknown') + ' merged in.');
+    alert('✅ ' + (rows[0].ref||'Order') + ' from ' + (rows[0].company||'unknown') + ' merged in.');
   })['catch'](function() {
     alert('Error loading order. Please try again.');
     closeMergeModal();
@@ -4927,11 +4852,11 @@ if (fd.notesHtml) {
 <div id="merge-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:12px;padding:24px;width:560px;max-width:95vw;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.25);">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-      <h3 style="margin:0;font-size:16px;font-weight:700;color:var(--purple-dark);">ð Merge Another Order</h3>
-      <button onclick="closeMergeModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#888;">Ã</button>
+      <h3 style="margin:0;font-size:16px;font-weight:700;color:var(--purple-dark);">🔀 Merge Another Order</h3>
+      <button onclick="closeMergeModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#888;">×</button>
     </div>
-    <p style="margin:0 0 12px;font-size:12px;color:#666;">Select a saved order â its items and/or campaign dates will be appended to the current form.</p>
-    <input type="text" id="merge-search" placeholder="Search by UNI or companyâ¦" oninput="filterMergeList()" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;margin-bottom:8px;">
+    <p style="margin:0 0 12px;font-size:12px;color:#666;">Select a saved order — its items and/or campaign dates will be appended to the current form.</p>
+    <input type="text" id="merge-search" placeholder="Search by UNI or company…" oninput="filterMergeList()" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;margin-bottom:8px;">
     <div id="merge-list" style="flex:1;overflow-y:auto;border:1px solid #e0e0e0;border-radius:6px;padding:4px;min-height:180px;max-height:300px;"></div>
     <div style="margin-top:12px;display:flex;gap:16px;align-items:center;">
       <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="checkbox" id="merge-items-cb" checked> Line items</label>
@@ -4944,17 +4869,6 @@ if (fd.notesHtml) {
   </div>
 </div>
 <style>.merge-item{padding:7px 10px;border-radius:5px;cursor:pointer;font-size:13px;border-bottom:1px solid #f0f0f0;}.merge-item:hover{background:#f5f0ff;}.merge-item.merge-selected{background:#ede7f6;border-left:3px solid var(--purple-dark);padding-left:7px;}</style>
-
-<div id="pm-fullscreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;flex-direction:column;">
-  <div style="background:var(--purple);display:flex;align-items:center;justify-content:space-between;padding:8px 18px;flex-shrink:0;">
-    <span style="color:#fff;font-size:14px;font-weight:700;">Partner Industry Map</span>
-    <div style="display:flex;gap:12px;align-items:center;">
-      <a href="https://docs.google.com/spreadsheets/d/1dCToA6fflF8zrIyStX1TWqZhpFsheD0JcVPDTwrM0cU/edit?gid=441023848" target="_blank" style="color:#fff;font-size:12px;font-weight:600;text-decoration:none;">&#x2197; Open in Sheets</a>
-      <button type="button" onclick="closePartnerMapFullscreen()" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:700;">&#x2715; Close</button>
-    </div>
-  </div>
-  <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQmvO1z8uzdgtJ5UoeM8YLPS_ZYbYFDPjoAY68wh_ifheTGJ77OuNKyA9Jnhav5ZHebqLh8cODT4YEf/pubhtml?gid=555597068&single=true" style="flex:1;width:100%;border:none;" title="Partner Map Fullscreen"></iframe>
-</div>
 
 <div id="pm-fullscreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;flex-direction:column;">
   <div style="background:var(--purple);display:flex;align-items:center;justify-content:space-between;padding:8px 18px;flex-shrink:0;">
