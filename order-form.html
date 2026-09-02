@@ -4402,13 +4402,13 @@ function generateTextBasedPdfBlob(filename) {
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
       doc.line(margin, y, pageW-margin, y);
       y += 5;
-      if (y + 105 > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
+      if (y + 125 > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
 
       doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(0,0,0);
       doc.text('**Please fill in both boxes', margin, y);
       y += 2;
 
-      var boxH = 26;
+      var boxH = 46;
       var midX = margin + cW / 2;
 
       doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
