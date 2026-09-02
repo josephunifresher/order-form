@@ -2528,7 +2528,7 @@ function renderHistoryRows(history, inAdmin) {
         '<span class="hist-ref">'  + (h.ref     || '—') + '</span>' +
         '<span class="hist-co">'   + (h.company || '—') + '</span>' +
         '<span class="hist-amt">'  + (h.total   || '') + '</span>' +
-        '<span class="hist-user">' + h.user_name + '</span>' +
+        '<span class="hist-user">' + (h.user_name === 'currentUser' ? 'Unknown' : (h.user_name || 'Unknown')) + '</span>' +
         '<span class="hist-date">' + dateStr + '</span>' +
         '<button class="hist-del" onclick="event.stopPropagation();' + delFn + '" title="Delete">×</button>' +
         '</div>';
