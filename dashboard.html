@@ -750,7 +750,18 @@ function loadOrders() {
 
   sbFetch('/rest/v1/order_history?' + qs)
   .then(function(r) { return r.json(); })
-  .then(renderTable)
+  .then(function(rows) {
+    rows = rows || [];
+    var reuseRefs = rows.filter(function(r){ return r.ref && r.ref.indexOf('REUSE:')===0; })
+                        .map(function(r){ return r.ref.replace('REUSE:',''); })
+                        .filter(function(ref){ return !rows.find(function(r){ return r.ref===ref; }); });
+    if (!reuseRefs.length) { renderTable(rows); return; }
+    var inList = reuseRefs.join(',');
+    sbFetch('/rest/v1/order_history?ref=in.(' + inList + ')&select=ref,company&order=saved_at.desc')
+    .then(function(r2){ return r2.json(); })
+    .then(function(origRows){ (origRows||[]).forEach(function(o){ rows.push(o); }); renderTable(rows); })
+    ['catch'](function(){ renderTable(rows); });
+  })
   .catch(function() {
     toast('Failed to load orders.');
     document.getElementById('tbl-loading').style.display = 'none';
