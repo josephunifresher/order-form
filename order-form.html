@@ -1853,7 +1853,7 @@ function validateUniBlur2() {
 // Check whether a UNI number already exists as a real order (not a REUSE: record)
 // Uses authenticated session token so RLS allows the read
 function checkUniExists(ref) {
-  return sbFetch('order_history?ref=eq.' + encodeURIComponent(ref) + '&select=id,user_name,saved_at,company')
+  return sbFetch('order_history?ref=eq.' + encodeURIComponent(ref) + '&select=id,user_name,saved_at,company,form_data')
     .then(function(rows) { return (rows || []).filter(function(r) { return !/^REUSE[_:]/i.test(r.ref || ''); }); })
     ['catch'](function() { return []; });
 }
@@ -2528,7 +2528,7 @@ function renderHistoryRows(history, inAdmin) {
         '<span class="hist-ref">'  + (h.ref     || '—') + '</span>' +
         '<span class="hist-co">'   + (h.company || '—') + '</span>' +
         '<span class="hist-amt">'  + (h.total   || '') + '</span>' +
-        '<span class="hist-user">' + (h.user_name === 'currentUser' ? 'Unknown' : (h.user_name || 'Unknown')) + '</span>' +
+        '<span class="hist-user">' + ((!h.user_name || h.user_name === 'currentUser') ? ((h.form_data && h.form_data.initials) || 'Unknown') : h.user_name) + '</span>' +
         '<span class="hist-date">' + dateStr + '</span>' +
         '<button class="hist-del" onclick="event.stopPropagation();' + delFn + '" title="Delete">×</button>' +
         '</div>';
