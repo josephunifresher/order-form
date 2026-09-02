@@ -4400,13 +4400,13 @@ function generateTextBasedPdfBlob(filename) {
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
       doc.line(margin, y, pageW-margin, y);
       y += 5;
-      if (y + 60 > 289) { doc.addPage(); y = margin; }
+      if (y + 50 > 289) { doc.addPage(); y = margin; }
 
       doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(0,0,0);
       doc.text('**Please fill in both boxes', margin, y);
-      y += 3;
+      y += 2;
 
-      var boxH = 32;
+      var boxH = 26;
       var midX = margin + cW / 2;
 
       doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
@@ -4444,8 +4444,8 @@ function generateTextBasedPdfBlob(filename) {
       // Pre-calculate the exact height using jsPDF's own line-break logic so the
       // decision uses the same measurements as the actual drawing pass.
       var colW2  = (cW - 5) / 2;
-      var tcLnH  = 2.2;   // baseline-to-baseline in mm
-      var tcPGap = 0.5;   // gap between paragraphs in mm
+      var tcLnH  = 1.9;   // baseline-to-baseline in mm
+      var tcPGap = 0.3;   // gap between paragraphs in mm
 
       var payDays = (document.getElementById('payment-terms') || {}).value || '30';
     var isReceipt = (payDays === 'receipt');
@@ -4469,22 +4469,22 @@ function generateTextBasedPdfBlob(filename) {
       tcCol1.forEach(function(p) { _h1 += doc.splitTextToSize(p, colW2).length * tcLnH + tcPGap; });
       tcCol2.forEach(function(p) { _h2 += doc.splitTextToSize(p, colW2).length * tcLnH + tcPGap; });
       // 9 = title(4) + separator + 5mm gap; 5 = col-to-bank gap; 8 = two bank detail lines
-      var tcTotalH = 9 + Math.max(_h1, _h2) + 5 + 8;
+      var tcTotalH = 7 + Math.max(_h1, _h2) + 3 + 6;
 
       if (y + tcTotalH > 297 - 8) {
         doc.addPage();
         y = margin;
       } else {
-        y += 6;   // breathing room between sign-off boxes and T&Cs
+        y += 3;   // breathing room between sign-off boxes and T&Cs
       }
 
       // ── T&Cs body ─────────────────────────────────────────────────────────
       doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
       doc.text('TERMS & CONDITIONS', margin, y);
-      y += 4;
+      y += 3;
       doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
       doc.line(margin, y, pageW - margin, y);
-      y += 5;
+      y += 3;
 
       var c1X = margin;
       var c2X = margin + colW2 + 5;
