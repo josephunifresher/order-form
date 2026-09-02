@@ -752,6 +752,7 @@
             <div class="accred-field-row"><label for="accred-category">Category</label><input type="text" id="accred-category" list="accred-category-list" placeholder="e.g. Things to do" oninput="checkAccredOther('category');populatePrintLayout();checkAccredMap()"><datalist id="accred-category-list"><option value="PBSA"><option value="Lettings"><option value="Restaurant"><option value="Gym"><option value="Nightlife / Venue"><option value="Fitness Activity"><option value="Things to do"><option value="Recruitment Part Time"><option value="Recruitment Full Time"><option value="Taxi"><option value="Transport"><option value="Travel - Holidays"><option value="Beauty"><option value="Retail - Fashion"><option value="Golf Retailer"><option value="Health"><option value="Higher Education"><option value="Other"></datalist><input type="text" id="accred-category-other" placeholder="Please specify category..." style="display:none;margin-top:4px;width:100%;font-size:13px;border:none;border-bottom:1.5px solid var(--purple-lighter);outline:none;padding:2px 4px;font-family:'Lato',Arial,sans-serif;" oninput="populatePrintLayout()"></div>
           </div>
           <div id="accred-map-warn" style="display:none;margin-top:8px;padding:7px 10px;border-radius:6px;background:#f8f4fe;border:1px solid var(--purple-lighter);"></div>
+          <div id="accred-map-warn" style="display:none;margin-top:8px;padding:7px 10px;border-radius:6px;background:#f8f4fe;border:1px solid var(--purple-lighter);"></div>
         </div>
         <div id="accred-no-panel" class="accred-panel" style="display:none">
           <div class="accred-sub-question">
@@ -3015,6 +3016,80 @@ function checkAccredMap() {
     warnEl.style.display='block';
   });
 }
+function openPartnerMapFullscreen() {
+  var fs = document.getElementById('pm-fullscreen');
+  if (!fs) return;
+  fs.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closePartnerMapFullscreen() {
+  var fs = document.getElementById('pm-fullscreen');
+  if (fs) fs.style.display = 'none';
+  document.body.style.overflow = '';
+}
+var _partnerMapData = null;
+function loadPartnerMapData(cb) {
+  if (_partnerMapData) { cb && cb(_partnerMapData); return; }
+  fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vQmvO1z8uzdgtJ5UoeM8YLPS_ZYbYFDPjoAY68wh_ifheTGJ77OuNKyA9Jnhav5ZHebqLh8cODT4YEf/pub?gid=555597068&single=true&output=csv')
+    .then(function(r){ return r.text(); })
+    .then(function(csv) {
+      var rows = csv.split(/\r?\n/).map(function(line){
+        var cells=[],cur='',inQ=false;
+        for(var i=0;i<line.length;i++){var c=line[i];if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){cells.push(cur.trim());cur='';}else{cur+=c;}}
+        cells.push(cur.trim());
+        return cells;
+      });
+      var headers = rows[3] || [];
+      var data = {};
+      for(var ri=4;ri<rows.length;ri++){
+        var row=rows[ri];
+        var city=(row[1]||'').replace(/^[",\s]+/,'').trim();
+        if(!city) continue;
+        data[city.toLowerCase()]={};
+        for(var ci=2;ci<headers.length;ci++){
+          var cat=(headers[ci]||'').trim();
+          var val=(row[ci]||'').trim();
+          if(cat) data[city.toLowerCase()][cat.toLowerCase()]=val;
+        }
+      }
+      _partnerMapData=data;
+      cb && cb(data);
+    }).catch(function(){ _partnerMapData={}; cb && cb({}); });
+}
+function checkAccredMap() {
+  var cityEl=document.getElementById('accred-city');
+  var catEl=document.getElementById('accred-category');
+  var warnEl=document.getElementById('accred-map-warn');
+  if(!warnEl||!cityEl||!catEl) return;
+  var city=cityEl.value.trim();
+  var cat=catEl.value.trim();
+  if(!city||!cat){warnEl.style.display='none';return;}
+  loadPartnerMapData(function(data){
+    var cityKey=city.toLowerCase();
+    var catKey=cat.toLowerCase();
+    var cityData=data[cityKey];
+    if(!cityData){
+      warnEl.innerHTML='<span style="color:#888;font-size:12px;">\u2139 '+city+' not found in Partner Map \u2014 check manually.</span>';
+      warnEl.style.display='block';return;
+    }
+    var matched=null,matchedVal='';
+    for(var k in cityData){
+      if(k===catKey||k.indexOf(catKey)===0||catKey.indexOf(k)===0){
+        matched=k;matchedVal=cityData[k];break;
+      }
+    }
+    if(matched===null){
+      warnEl.innerHTML='<span style="color:#888;font-size:12px;">\u2139 '+cat+' not in Partner Map categories \u2014 check manually.</span>';
+      warnEl.style.display='block';return;
+    }
+    if(matchedVal){
+      warnEl.innerHTML='<span style="color:#c0392b;font-size:12px;font-weight:700;">\u26A0 Already allocated: <em>'+matchedVal+'</em> holds '+cat+' in '+city+'. Check the Partner Map before confirming.</span>';
+    } else {
+      warnEl.innerHTML='<span style="color:#27ae60;font-size:12px;font-weight:700;">\u2705 No current allocation for '+cat+' in '+city+'. Looks clear to offer!</span>';
+    }
+    warnEl.style.display='block';
+  });
+}
 function setAccred(val) {
       accredState.answer = val;
       var yBtn = document.getElementById('accred-yes-btn');
@@ -4869,6 +4944,17 @@ if (fd.notesHtml) {
   </div>
 </div>
 <style>.merge-item{padding:7px 10px;border-radius:5px;cursor:pointer;font-size:13px;border-bottom:1px solid #f0f0f0;}.merge-item:hover{background:#f5f0ff;}.merge-item.merge-selected{background:#ede7f6;border-left:3px solid var(--purple-dark);padding-left:7px;}</style>
+
+<div id="pm-fullscreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;flex-direction:column;">
+  <div style="background:var(--purple);display:flex;align-items:center;justify-content:space-between;padding:8px 18px;flex-shrink:0;">
+    <span style="color:#fff;font-size:14px;font-weight:700;">Partner Industry Map</span>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <a href="https://docs.google.com/spreadsheets/d/1dCToA6fflF8zrIyStX1TWqZhpFsheD0JcVPDTwrM0cU/edit?gid=441023848" target="_blank" style="color:#fff;font-size:12px;font-weight:600;text-decoration:none;">&#x2197; Open in Sheets</a>
+      <button type="button" onclick="closePartnerMapFullscreen()" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:700;">&#x2715; Close</button>
+    </div>
+  </div>
+  <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQmvO1z8uzdgtJ5UoeM8YLPS_ZYbYFDPjoAY68wh_ifheTGJ77OuNKyA9Jnhav5ZHebqLh8cODT4YEf/pubhtml?gid=555597068&single=true" style="flex:1;width:100%;border:none;" title="Partner Map Fullscreen"></iframe>
+</div>
 
 <div id="pm-fullscreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;flex-direction:column;">
   <div style="background:var(--purple);display:flex;align-items:center;justify-content:space-between;padding:8px 18px;flex-shrink:0;">
