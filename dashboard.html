@@ -506,6 +506,12 @@ function currentYM() {
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+function getReuseCompany(row, rows) {
+  if (!row.ref || row.ref.indexOf('REUSE:') !== 0) return '';
+  if (row.form_data && row.form_data.company) return row.form_data.company;
+  var orig = (rows||[]).find(function(r){ return r.ref === row.ref.replace('REUSE:','') && r.ref.indexOf('REUSE:') !== 0; });
+  return orig ? orig.company : '';
+}
 function parseAmount(s) {
   if (!s) return 0;
   var n = parseFloat(String(s).replace(/[^0-9.]/g, ''));
@@ -798,7 +804,7 @@ function renderTable(rows) {
     html += '<tr>' +
       '<td>' + fmtDate(row.saved_at) + '</td>' +
       '<td><strong>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? escHtml(row.ref.replace('REUSE:','')) + ' <span style="font-size:10px;background:#fff3e0;color:#e67e22;border:1px solid #f39c12;border-radius:10px;padding:1px 6px;font-weight:600;white-space:nowrap;">Reuse Req</span>' : escHtml(row.ref||'')) + '</strong></td>' +
-      '<td>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? (row.form_data && row.form_data.company ? '<strong>' + escHtml(row.form_data.company) + '</strong> ' : '') + '<span style="color:#e67e22;font-size:11px;">' + escHtml((row.form_data && row.form_data.reason) || '') + '</span><span style="font-size:11px;color:#aaa;margin-left:5px;">by ' + escHtml((row.form_data && row.form_data.requested_by) || row.user_name || '') + '</span>' : escHtml(row.company||'')) + '</td>' +
+      '<td>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? (getReuseCompany(row,rows) ? '<strong>' + escHtml(getReuseCompany(row,rows)) + '</strong> ' : '') + '<span style="color:#e67e22;font-size:11px;">' + escHtml((row.form_data && row.form_data.reason) || '') + '</span><span style="font-size:11px;color:#aaa;margin-left:5px;">by ' + escHtml((row.form_data && row.form_data.requested_by) || row.user_name || '') + '</span>' : escHtml(row.company||'')) + '</td>' +
       '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'—') + '</td>' +
       '<td><strong>' + escHtml(row.total||'—') + '</strong></td>' +
       '<td class="check-cell"><div class="order-checkbox-wrap">' +
@@ -1003,7 +1009,7 @@ function renderRevenue(rows) {
         '<td>' + (i+1) + '</td>' +
         '<td>' + fmtDate(row.saved_at) + '</td>' +
         '<td><strong>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? escHtml(row.ref.replace('REUSE:','')) + ' <span style="font-size:10px;background:#fff3e0;color:#e67e22;border:1px solid #f39c12;border-radius:10px;padding:1px 6px;font-weight:600;white-space:nowrap;">Reuse Req</span>' : escHtml(row.ref||'')) + '</strong></td>' +
-        '<td>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? (row.form_data && row.form_data.company ? '<strong>' + escHtml(row.form_data.company) + '</strong> ' : '') + '<span style="color:#e67e22;font-size:11px;">' + escHtml((row.form_data && row.form_data.reason) || '') + '</span><span style="font-size:11px;color:#aaa;margin-left:5px;">by ' + escHtml((row.form_data && row.form_data.requested_by) || row.user_name || '') + '</span>' : escHtml(row.company||'')) + '</td>' +
+        '<td>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? (getReuseCompany(row,rows) ? '<strong>' + escHtml(getReuseCompany(row,rows)) + '</strong> ' : '') + '<span style="color:#e67e22;font-size:11px;">' + escHtml((row.form_data && row.form_data.reason) || '') + '</span><span style="font-size:11px;color:#aaa;margin-left:5px;">by ' + escHtml((row.form_data && row.form_data.requested_by) || row.user_name || '') + '</span>' : escHtml(row.company||'')) + '</td>' +
         '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'—') + '</td>' +
         '<td><strong>' + escHtml(row.total||'—') + '</strong></td>' +
         '<td>' + badge + '</td>' +
@@ -1253,7 +1259,7 @@ function renderAccred(rows) {
       '<tr>' +
         '<td>' + fmtDate(row.saved_at) + '</td>' +
         '<td><strong>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? escHtml(row.ref.replace('REUSE:','')) + ' <span style="font-size:10px;background:#fff3e0;color:#e67e22;border:1px solid #f39c12;border-radius:10px;padding:1px 6px;font-weight:600;white-space:nowrap;">Reuse Req</span>' : escHtml(row.ref||'')) + '</strong></td>' +
-        '<td>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? (row.form_data && row.form_data.company ? '<strong>' + escHtml(row.form_data.company) + '</strong> ' : '') + '<span style="color:#e67e22;font-size:11px;">' + escHtml((row.form_data && row.form_data.reason) || '') + '</span><span style="font-size:11px;color:#aaa;margin-left:5px;">by ' + escHtml((row.form_data && row.form_data.requested_by) || row.user_name || '') + '</span>' : escHtml(row.company||'')) + '</td>' +
+        '<td>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? (getReuseCompany(row,rows) ? '<strong>' + escHtml(getReuseCompany(row,rows)) + '</strong> ' : '') + '<span style="color:#e67e22;font-size:11px;">' + escHtml((row.form_data && row.form_data.reason) || '') + '</span><span style="font-size:11px;color:#aaa;margin-left:5px;">by ' + escHtml((row.form_data && row.form_data.requested_by) || row.user_name || '') + '</span>' : escHtml(row.company||'')) + '</td>' +
         '<td>' + escHtml(city) + '</td>' +
         '<td>' + escHtml(category) + '</td>' +
         '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'—') + '</td>' +
