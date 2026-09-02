@@ -4287,7 +4287,6 @@ function generateTextBasedPdfBlob(filename) {
       if (_cnEl) {
         var _tmp = document.createElement('div');
         _tmp.innerHTML = _cnEl.innerHTML;
-        _tmp.querySelectorAll('.merge-meta').forEach(function(el) { el.parentNode.removeChild(el); });
         _tmp.querySelectorAll('br').forEach(function(br) {
           br.parentNode.replaceChild(document.createTextNode('\n'), br);
         });
@@ -4401,7 +4400,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
       doc.line(margin, y, pageW-margin, y);
       y += 5;
-      if (y + 26 + 3 + tcTotalH > 289) { doc.addPage(); y = margin; }
+      if (y + 50 > 289) { doc.addPage(); y = margin; }
 
       doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(0,0,0);
       doc.text('**Please fill in both boxes', margin, y);
