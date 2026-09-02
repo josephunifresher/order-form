@@ -3746,7 +3746,7 @@ function sendAlertEmail(subject, company, filledBy, msg, toEmail) {
     filled_by: filledBy || '',
     ref: '',
     date_time: new Date().toLocaleString('en-GB'),
-    form_url: window.location.href,
+    form_url: window._lastDriveUrl || '',
     message: msg || ''
   })['catch'](function() {});
 }
@@ -3813,7 +3813,8 @@ function uploadToDrive(accessToken, btn) {
   })
   .then(function(data) {
     if (!data.id) throw new Error('Order upload failed: ' + JSON.stringify(data)); orderFileId = data.id;
-    logDriveUpload(refNo, company, orderFilename, 'Order');
+    window._lastDriveUrl = 'https://drive.google.com/file/d/' + orderFileId + '/view';
+      logDriveUpload(refNo, company, orderFilename, 'Order');
     // Step 4: upload checklist to initials subfolder
     return driveUploadBlob(clBlob, checklistFilename, accessToken, clFolderId);
   })
@@ -4095,7 +4096,7 @@ function generateTextBasedPdfBlob(filename) {
       // ORDER / REF / Date (top-right)
       var refNo   = (document.getElementById('ref-no') || {}).value || '';
       var refNo2  = (document.getElementById('ref-no-2') || {}).value || '';
-      var refLabel = refNo2 ? refNo + ' & ' + refNo2 : refNo;
+      var refLabel = (refNo2 && !refNo.includes(refNo2)) ? refNo + ' & ' + refNo2 : refNo;
       var dateVal = (document.getElementById('order-date') || {}).value || '';
       var dateStr = dateVal ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB') : '';
       var inits   = (document.getElementById('initials') || {}).value || '';
@@ -4237,6 +4238,9 @@ function generateTextBasedPdfBlob(filename) {
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
       doc.line(margin, y, pageW - margin, y);
       y += 4;
+
+      var _pgH = doc.internal.pageSize.getHeight();
+      if (y + 50 > _pgH - margin) { doc.addPage(); y = margin; }
 
       var lX = pageW - margin - 35;
       var rX2 = pageW - margin - 3; // -3 to match autoTable's 3mm right cell padding
