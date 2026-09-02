@@ -4402,7 +4402,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
       doc.line(margin, y, pageW-margin, y);
       y += 5;
-      if (y + 125 > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
+      if (y + 145 > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
 
       doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(0,0,0);
       doc.text('**Please fill in both boxes', margin, y);
@@ -4446,8 +4446,8 @@ function generateTextBasedPdfBlob(filename) {
       // Pre-calculate the exact height using jsPDF's own line-break logic so the
       // decision uses the same measurements as the actual drawing pass.
       var colW2  = (cW - 5) / 2;
-      var tcLnH  = 1.9;   // baseline-to-baseline in mm
-      var tcPGap = 0.3;   // gap between paragraphs in mm
+      var tcLnH  = 3.5;   // baseline-to-baseline in mm
+      var tcPGap = 2.0;   // gap between paragraphs in mm
 
       var payDays = (document.getElementById('payment-terms') || {}).value || '30';
     var isReceipt = (payDays === 'receipt');
