@@ -1856,7 +1856,10 @@ function validateUniBlur2() {
   })['catch'](function() {
     st.textContent = '✓';
     st.style.color = '#27ae60';
-  
+    el.style.borderColor = '';
+  });
+}
+
 function autoFillRowUnis() {
   var uni1 = (document.getElementById('ref-no') || {}).value || '';
   var uni2 = (document.getElementById('ref-no-2') || {}).value || '';
@@ -1866,8 +1869,6 @@ function autoFillRowUnis() {
     if (i === 0 && uni1) uniEl.value = uni1;
     else if (i === 1 && uni2) uniEl.value = uni2;
     else if (uni1 && !uni2) uniEl.value = uni1;
-  });
-}  el.style.borderColor = '';
   });
 }
 // Check whether a UNI number already exists as a real order (not a REUSE: record)
