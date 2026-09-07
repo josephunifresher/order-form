@@ -568,8 +568,8 @@
     </div>
     <div style="text-align:right">
       <div class="order-tag">ORDER</div>
-      <div class="meta-row"><span><label>UNI Number:</label><input type="text" id="ref-no" placeholder="e.g. UNI02500" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField();" onblur="validateUniBlur()" required title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status" style="margin-left:6px;font-size:10px;"></span></span></div>
-      <div class="meta-row"><span><label>UNI No. 2:</label><input type="text" id="ref-no-2" placeholder="Optional" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField2();" onblur="validateUniBlur2()" title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status-2" style="margin-left:6px;font-size:10px;"></span></span></div>
+      <div class="meta-row"><span><label>UNI Number:</label><input type="text" id="ref-no" placeholder="e.g. UNI02500" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField();autoFillRowUnis();" onblur="validateUniBlur()" required title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status" style="margin-left:6px;font-size:10px;"></span></span></div>
+      <div class="meta-row"><span><label>UNI No. 2:</label><input type="text" id="ref-no-2" placeholder="Optional" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField2();autoFillRowUnis();" onblur="validateUniBlur2()" title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status-2" style="margin-left:6px;font-size:10px;"></span></span></div>
       <div class="meta-row"><span><label>Date:</label><input type="date" id="order-date" required></span></div>
       <div class="meta-row"><span><label>Initials *</label><input type="text" id="initials" placeholder="e.g. JB" maxlength="5" style="width:60px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required><span class="error-label" id="err-initials" style="margin-left:6px;font-size:10px;">Required</span></span></div>
     </div>
@@ -1115,6 +1115,7 @@ function addRow() {
     '</td>';
   tbody.appendChild(tr);
   recalc();
+  autoFillRowUnis();
 }
 
 function removeRow(id) {
@@ -1855,7 +1856,18 @@ function validateUniBlur2() {
   })['catch'](function() {
     st.textContent = '✓';
     st.style.color = '#27ae60';
-    el.style.borderColor = '';
+  
+function autoFillRowUnis() {
+  var uni1 = (document.getElementById('ref-no') || {}).value || '';
+  var uni2 = (document.getElementById('ref-no-2') || {}).value || '';
+  document.querySelectorAll('#items-body tr').forEach(function(tr, i) {
+    var uniEl = tr.querySelector('.item-uni');
+    if (!uniEl || uniEl.value) return; // skip if already filled
+    if (i === 0 && uni1) uniEl.value = uni1;
+    else if (i === 1 && uni2) uniEl.value = uni2;
+    else if (uni1 && !uni2) uniEl.value = uni1;
+  });
+}  el.style.borderColor = '';
   });
 }
 // Check whether a UNI number already exists as a real order (not a REUSE: record)
@@ -2413,6 +2425,7 @@ function restoreFormData(data) {
     // Pad to at least 5 rows if fewer were saved
     while (document.getElementById('camp-dates-tbody').rows.length < 5) addCampDateRow();
   }
+  autoFillRowUnis();
   // Restore checklist
   if (data.checks) {
     Object.keys(data.checks).forEach(function(id) {
