@@ -4317,6 +4317,7 @@ function generateTextBasedPdfBlob(filename) {
       // ── Items table ───────────────────────────────────────────────────────
       var items = [];
       var anyQty = false;
+      var rowUnis = [];
       document.querySelectorAll('#items-body tr').forEach(function(tr) {
         var dEl  = tr.querySelector('.item-desc');
         var uniEl = tr.querySelector('.item-uni');
@@ -4330,6 +4331,7 @@ function generateTextBasedPdfBlob(filename) {
         var total = price * (qty || 1);
         if (!desc && !price) return;
         if (qty) anyQty = true;
+        if (rowUni) rowUnis.push(rowUni);
         items.push({ desc: desc, price: price, qty: qty, total: total });
       });
 
@@ -4457,9 +4459,23 @@ function generateTextBasedPdfBlob(filename) {
         doc.text('Notes:', margin, y);
         y += 4;
         doc.setFont('helvetica','normal');
-        var nl = doc.splitTextToSize(notesText, cW);
-        doc.text(nl, margin, y);
-        y += nl.length * 3.5 + 3;
+        // If multiple UNIs, split notes into paragraphs and label each with its UNI
+        var _notesParagraphs = notesText.split(/\n{2,}/).map(function(p) { return p.trim(); }).filter(Boolean);
+        if (rowUnis.length > 1 && _notesParagraphs.length === rowUnis.length) {
+          _notesParagraphs.forEach(function(para, pi) {
+            doc.setFont('helvetica','bold');
+            doc.text('[' + rowUnis[pi] + ']', margin, y);
+            y += 4;
+            doc.setFont('helvetica','normal');
+            var nl = doc.splitTextToSize(para, cW);
+            doc.text(nl, margin, y);
+            y += nl.length * 3.5 + (pi < _notesParagraphs.length - 1 ? 4 : 3);
+          });
+        } else {
+          var nl = doc.splitTextToSize(notesText, cW);
+          doc.text(nl, margin, y);
+          y += nl.length * 3.5 + 3;
+        }
       }
 
       // Accreditation Scheme (partner-facing, YES path only)
