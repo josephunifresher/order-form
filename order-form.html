@@ -4318,6 +4318,7 @@ function generateTextBasedPdfBlob(filename) {
       var items = [];
       var anyQty = false;
       var rowUnis = [];
+      var uniTotals = {};
       document.querySelectorAll('#items-body tr').forEach(function(tr) {
         var dEl  = tr.querySelector('.item-desc');
         var uniEl = tr.querySelector('.item-uni');
@@ -4331,7 +4332,10 @@ function generateTextBasedPdfBlob(filename) {
         var total = price * (qty || 1);
         if (!desc && !price) return;
         if (qty) anyQty = true;
-        if (rowUni) rowUnis.push(rowUni);
+        if (rowUni) {
+          if (!uniTotals[rowUni]) { rowUnis.push(rowUni); uniTotals[rowUni] = 0; }
+          uniTotals[rowUni] += total;
+        }
         items.push({ desc: desc, price: price, qty: qty, total: total });
       });
 
@@ -4463,8 +4467,13 @@ function generateTextBasedPdfBlob(filename) {
         var _notesParagraphs = notesText.split(/\n{2,}/).map(function(p) { return p.trim(); }).filter(Boolean);
         if (rowUnis.length > 1 && _notesParagraphs.length === rowUnis.length) {
           _notesParagraphs.forEach(function(para, pi) {
+            var _uni = rowUnis[pi];
             doc.setFont('helvetica','bold');
-            doc.text('[' + rowUnis[pi] + ']', margin, y);
+            doc.text('[' + _uni + ']', margin, y);
+            if (uniTotals[_uni]) {
+              var _totStr = 'Net: £' + uniTotals[_uni].toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+              doc.text(_totStr, pageW - margin, y, { align: 'right' });
+            }
             y += 4;
             doc.setFont('helvetica','normal');
             var nl = doc.splitTextToSize(para, cW);
