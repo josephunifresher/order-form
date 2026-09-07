@@ -2285,7 +2285,8 @@ function captureFormData() {
     rows.push({
       descHtml: descEl ? descEl.innerHTML : '',
       price:    (tr.querySelector('.item-price')  || {}).value || '',
-      qty:      (tr.querySelector('.item-qty')    || {}).value || ''
+      qty:      (tr.querySelector('.item-qty')    || {}).value || '',
+      uniRef:   (tr.querySelector('.item-uni')    || {}).value || ''
     });
   });
   var campDates = [];
@@ -2406,6 +2407,7 @@ function restoreFormData(data) {
     var setTrVal = function(cls, val) { var el = tr.querySelector(cls); if (el) el.value = val || ''; };
     setTrVal('.item-price', row.price);
     setTrVal('.item-qty',   row.qty);
+    setTrVal('.item-uni',   row.uniRef);
   });
   // Restore campaign dates (rebuild rows dynamically)
   document.getElementById('camp-dates-tbody').innerHTML = '';
