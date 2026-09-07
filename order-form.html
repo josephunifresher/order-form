@@ -3599,6 +3599,33 @@ function tcLock() {
   icon.textContent  = '🔒';
   label.textContent = 'Edit T&Cs';
   TC_UNLOCKED = false;
+  // Save edited T&Cs to Supabase so they persist across all orders
+  var boxClone = box.cloneNode(true);
+  var titleEl = boxClone.querySelector('.tc-title');
+  var bankEl  = boxClone.querySelector('.bank-details');
+  if (titleEl) titleEl.remove();
+  if (bankEl)  bankEl.remove();
+  var tcScreenHtml = boxClone.innerHTML.trim();
+  // Build two-column print layout
+  var paras = Array.from(box.querySelectorAll('p')).map(function(p){ return '<p>' + p.innerHTML + '</p>'; });
+  var half = Math.ceil(paras.length / 2);
+  var tcPrintCols = '<div class="pl-tc-col">' + paras.slice(0, half).join('') + '</div>' +
+                    '<div class="pl-tc-col">' + paras.slice(half).join('') + '</div>';
+  // Update print layout DOM immediately (so PDF picks it up without reload)
+  var colsEl = document.querySelector('.pl-tc-cols');
+  if (colsEl) colsEl.innerHTML = tcPrintCols;
+  // Persist to Supabase
+  fetch('https://jyljjlaqogqpsdtvseqf.supabase.co/rest/v1/settings', {
+    method: 'POST',
+    headers: { 'apikey': 'sb_publishable_dookrCl78QbFd041YyuMYQ_uRZnSkvW', 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
+    body: JSON.stringify([{ key: 'tc_screen', value: tcScreenHtml }, { key: 'tc_print_cols', value: tcPrintCols }])
+  }).then(function(r){
+    var el = document.getElementById('tc-unlock-time');
+    if (el) { el.textContent = r.ok ? 'Saved ✓' : 'Save failed'; el.style.color = r.ok ? '#27ae60' : '#c0392b'; el.style.display = 'inline'; }
+  })['catch'](function(){
+    var el = document.getElementById('tc-unlock-time');
+    if (el) { el.textContent = 'Save failed'; el.style.color = '#c0392b'; el.style.display = 'inline'; }
+  });
 }
 function fmtTc(cmd, val) {
   document.getElementById('tc-box').focus();
