@@ -4585,13 +4585,36 @@ function generateTextBasedPdfBlob(filename) {
     var isReceipt = (payDays === 'receipt');
     var payTermsLabel = isReceipt ? 'Due on Receipt' : payDays + ' Days';
     var payTermsPhrase = isReceipt ? 'upon receipt of invoice' : 'within ' + payDays + ' days of invoice';
-      var _tcCols = document.querySelectorAll('.pl-tc-col');
+      // Read T&Cs from tc-box (edited or standard) — works whether locked or not
+      var _tcBox = document.getElementById('tc-box');
       var tcCol1 = [], tcCol2 = [];
-      if (_tcCols.length >= 1) {
-        _tcCols[0].querySelectorAll('p').forEach(function(p){ var t=(p.textContent||'').trim(); if(t) tcCol1.push(t); });
-      }
-      if (_tcCols.length >= 2) {
-        _tcCols[1].querySelectorAll('p').forEach(function(p){ var t=(p.textContent||'').trim(); if(t) tcCol2.push(t); });
+      if (_tcBox) {
+        var _tcClone = _tcBox.cloneNode(true);
+        ['.tc-title', '.bank-details'].forEach(function(s){ var e=_tcClone.querySelector(s); if(e) e.remove(); });
+        var _tcParas = Array.from(_tcClone.querySelectorAll('p')).map(function(p){ return (p.textContent||'').trim(); }).filter(Boolean);
+        if (_tcParas.length === 0) {
+          // No <p> tags — treat full text as one block, split at midpoint sentence
+          var _full = (_tcClone.textContent||'').trim();
+          if (_full) {
+            var _mid = Math.floor(_full.length / 2);
+            var _sp = _full.indexOf('. ', _mid);
+            if (_sp === -1) _sp = _mid; else _sp += 2;
+            tcCol1 = [_full.substring(0, _sp).trim()];
+            tcCol2 = [_full.substring(_sp).trim()];
+          }
+        } else if (_tcParas.length === 1) {
+          // One big paragraph — split at midpoint sentence
+          var _full = _tcParas[0];
+          var _mid = Math.floor(_full.length / 2);
+          var _sp = _full.indexOf('. ', _mid);
+          if (_sp === -1) _sp = _mid; else _sp += 2;
+          tcCol1 = [_full.substring(0, _sp).trim()];
+          tcCol2 = [_full.substring(_sp).trim()];
+        } else {
+          var _half = Math.ceil(_tcParas.length / 2);
+          tcCol1 = _tcParas.slice(0, _half);
+          tcCol2 = _tcParas.slice(_half);
+        }
       }
       if (!tcCol1.length) tcCol1 = [
         'By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.',
