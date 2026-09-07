@@ -2314,7 +2314,8 @@ function captureFormData() {
     accredReason:  (function(){ var r=document.querySelector('[name=accred-reason]:checked'); return r ? r.value : ''; })(),
     accredOther:   (document.getElementById('accred-other-reason') || {}).value || '',
     payMonthly:    !!(document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked),
-    formType:     window.formType || 'FST'
+    formType:     window.formType || 'FST',
+    tcBoxHtml:    (function(){ var b=document.getElementById('tc-box'); if(!b) return ''; var c=b.cloneNode(true); var t=c.querySelector('.tc-title'),bk=c.querySelector('.bank-details'); if(t)t.remove(); if(bk)bk.remove(); return c.innerHTML.trim(); })()
   };
 }
 
@@ -2419,6 +2420,22 @@ function restoreFormData(data) {
       if (cb) cb.checked = data.checks[id];
     });
     updateClProgress();
+  }
+  // Restore custom T&Cs saved with this order
+  if (data.tcBoxHtml) {
+    var _tcBox = document.getElementById('tc-box');
+    if (_tcBox) {
+      var _tcTitle = _tcBox.querySelector('.tc-title');
+      var _tcBank  = _tcBox.querySelector('.bank-details');
+      var _tcTitleHtml = _tcTitle ? _tcTitle.outerHTML : '';
+      var _tcBankHtml  = _tcBank  ? _tcBank.outerHTML  : '';
+      _tcBox.innerHTML = _tcTitleHtml + data.tcBoxHtml + _tcBankHtml;
+      // Sync to print layout
+      var _tcParas = Array.from(_tcBox.querySelectorAll('p')).map(function(p){ return '<p>'+p.innerHTML+'</p>'; });
+      var _tcHalf = Math.ceil(_tcParas.length / 2);
+      var _tcCols = document.querySelector('.pl-tc-cols');
+      if (_tcCols) _tcCols.innerHTML = '<div class="pl-tc-col">'+_tcParas.slice(0,_tcHalf).join('')+'</div><div class="pl-tc-col">'+_tcParas.slice(_tcHalf).join('')+'</div>';
+    }
   }
   recalc(); calcCampaignMonths();
   window.scrollTo(0, 0);
