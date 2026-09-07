@@ -1085,6 +1085,10 @@ function addRow() {
   tr.innerHTML =
     '<td>' +
       '<div class="item-desc-wrap">' +
+        '<div style="margin-bottom:3px;display:flex;align-items:center;gap:4px;">' +
+          '<label style="font-size:10px;color:#888;white-space:nowrap;">UNI Ref:</label>' +
+          '<input type="text" class="item-uni" placeholder="e.g. UNI02507" style="font-size:11px;width:110px;text-transform:uppercase;border:1px solid #ddd;border-radius:4px;padding:2px 4px;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,\'\')">' +
+        '</div>' +
         '<div class="desc-toolbar">' +
           '<button type="button" onclick="fmtDesc(this,\'bold\')" title="Bold"><b>B</b></button>' +
           '<button type="button" onclick="fmtDesc(this,\'italic\')" title="Italic"><i>I</i></button>' +
@@ -1127,6 +1131,8 @@ function duplicateRow(id) {
   var descEl   = srcRow.querySelector('.item-desc');
   var priceEl  = srcRow.querySelector('.item-price');
   var qtyEl    = srcRow.querySelector('.item-qty');
+  var uniEl2   = srcRow.querySelector('.item-uni');
+  var uniVal   = uniEl2 ? uniEl2.value : '';
   var descHtml = descEl  ? descEl.innerHTML  : '';
   var price    = priceEl  ? priceEl.value   : '';
   var qty      = qtyEl    ? qtyEl.value     : '';
@@ -1135,6 +1141,8 @@ function duplicateRow(id) {
   var newRow = document.querySelector('#items-body tr:last-child');
   var newDesc = newRow.querySelector('.item-desc');
   if (newDesc) newDesc.innerHTML = descHtml;
+  var newUni = newRow.querySelector('.item-uni');
+  if (newUni) newUni.value = uniVal;
   var setVal = function(cls, val) { var el = newRow.querySelector(cls); if (el) el.value = val; };
   setVal('.item-price', price);
   setVal('.item-qty',   qty);
@@ -4271,7 +4279,10 @@ function generateTextBasedPdfBlob(filename) {
       var anyQty = false;
       document.querySelectorAll('#items-body tr').forEach(function(tr) {
         var dEl  = tr.querySelector('.item-desc');
+        var uniEl = tr.querySelector('.item-uni');
+        var rowUni = uniEl ? uniEl.value.trim() : '';
         var desc = dEl ? (dEl.innerText || dEl.value || '').trim() : '';
+        if (rowUni) desc = '[' + rowUni + '] ' + desc;
         var pEl  = tr.querySelector('.item-price');
         var price = parseFloat(pEl ? pEl.value : 0) || 0;
         var qEl  = tr.querySelector('.item-qty');
