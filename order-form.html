@@ -1945,17 +1945,7 @@ function sendArtworkCharge() {
   var total = cost + vat;
   var fmt = function(n) { return '£' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
   var subject = uni + ' – Artwork Charge – ' + (company || 'Unknown');
-  var message = 'Artwork charge notification
-
-UNI: ' + uni + '
-Company: ' + (company || '—') + '
-Cost (ex VAT): ' + fmt(cost) + '
-VAT (20%): ' + fmt(vat) + '
-Total inc VAT: ' + fmt(total) + (notes ? '
-
-Notes: ' + notes : '') + '
-
-Sent by: ' + (filledBy || '—');
+  var message = 'Artwork charge notification\n\nUNI: ' + uni + '\nCompany: ' + (company || '\u2014') + '\nCost (ex VAT): ' + fmt(cost) + '\nVAT (20%): ' + fmt(vat) + '\nTotal inc VAT: ' + fmt(total) + (notes ? '\n\nNotes: ' + notes : '') + '\n\nSent by: ' + (filledBy || '\u2014');
   if (window.emailjs && window.EMAILJS_CONFIG) {
     emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
     emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
