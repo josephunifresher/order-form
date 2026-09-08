@@ -226,6 +226,7 @@ function sendCharge() {
     + '\n\nSent by: ' + filledBy
     + '\nDate: ' + new Date().toLocaleString('en-GB');
 
+  if (typeof emailjs === 'undefined') { statusEl.style.color='#e74c3c'; statusEl.textContent='EmailJS not loaded'; return; }
   emailjs.init({ publicKey: EMAILJS_KEY });
   emailjs.send(EMAILJS_SVC, EMAILJS_TPL, {
     to_email: ACCOUNTS_EMAIL,
