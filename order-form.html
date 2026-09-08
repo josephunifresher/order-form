@@ -568,8 +568,8 @@
     </div>
     <div style="text-align:right">
       <div class="order-tag">ORDER</div>
-      <div class="meta-row"><span><label>UNI Number:</label><input type="text" id="ref-no" placeholder="e.g. UNI02500" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField();autoFillRowUnis();" onblur="validateUniBlur()" required title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status" style="margin-left:6px;font-size:10px;"></span></span></div>
-      <div class="meta-row"><span><label>UNI No. 2:</label><input type="text" id="ref-no-2" placeholder="Optional" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField2();autoFillRowUnis();" onblur="validateUniBlur2()" title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status-2" style="margin-left:6px;font-size:10px;"></span></span></div>
+      <div class="meta-row"><span><label>UNI Number:</label><input type="text" id="ref-no" placeholder="e.g. UNI02500" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField();autoFillRowUnis();populateArtworkUniDropdown();" onblur="validateUniBlur()" required title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status" style="margin-left:6px;font-size:10px;"></span></span></div>
+      <div class="meta-row"><span><label>UNI No. 2:</label><input type="text" id="ref-no-2" placeholder="Optional" style="width:120px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');validateUniField2();autoFillRowUnis();populateArtworkUniDropdown();" onblur="validateUniBlur2()" title="Format: UNI followed by 5 digits e.g. UNI02500"><span id="uni-status-2" style="margin-left:6px;font-size:10px;"></span></span></div>
       <div class="meta-row"><span><label>Date:</label><input type="date" id="order-date" required></span></div>
       <div class="meta-row"><span><label>Initials *</label><input type="text" id="initials" placeholder="e.g. JB" maxlength="5" style="width:60px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required><span class="error-label" id="err-initials" style="margin-left:6px;font-size:10px;">Required</span></span></div>
     </div>
@@ -791,6 +791,40 @@
                                 <textarea id="pay-monthly-notes" rows="2" placeholder="e.g. Pay over 3 months, split into 2 payments..." style="width:100%;padding:6px 8px;border:1px solid #D8CCF0;border-radius:4px;font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box;"></textarea>
               </div>
               </div>
+
+      <div class="section-title">Artwork Charge</div>
+      <div id="artwork-charge-section" style="padding-bottom:4px;">
+        <div style="font-size:12px;color:#888;font-style:italic;margin-bottom:10px;">Notify Accounts of an artwork production charge for this order.</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;">
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:12px;font-weight:600;">UNI Ref</label>
+            <select id="artwork-uni" style="border:1px solid #D8CCF0;border-radius:4px;padding:5px 8px;font-size:13px;min-width:140px;">
+              <option value="">-- Select UNI --</option>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:12px;font-weight:600;">Cost (ex VAT) £</label>
+            <input type="number" id="artwork-cost" value="150" min="0" step="0.01" style="border:1px solid #D8CCF0;border-radius:4px;padding:5px 8px;font-size:13px;width:100px;" oninput="updateArtworkTotals()">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:12px;color:#888;">VAT (20%)</label>
+            <div id="artwork-vat" style="font-size:13px;padding:6px 0;font-weight:600;color:#555;">£30.00</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:12px;color:#888;">Total inc VAT</label>
+            <div id="artwork-total" style="font-size:14px;padding:6px 0;font-weight:700;color:#702DD7;">£180.00</div>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Notes <span style="color:#888;font-style:italic;font-weight:400;">(optional)</span></label>
+          <textarea id="artwork-notes" rows="2" placeholder="e.g. Logo design, banner artwork&hellip;" style="width:100%;padding:6px 8px;border:1px solid #D8CCF0;border-radius:4px;font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box;"></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <button type="button" onclick="sendArtworkCharge()" style="background:#702DD7;color:#fff;border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;">&#x1F4E7; Send to Accounts</button>
+          <span id="artwork-send-status" style="font-size:12px;"></span>
+        </div>
+      </div>
+
 
       <div class="section-title">Sign-off</div>
   <div class="bottom-boxes">
@@ -1871,6 +1905,77 @@ function autoFillRowUnis() {
     else if (uni1 && !uni2) uniEl.value = uni1;
   });
 }
+
+function populateArtworkUniDropdown() {
+  var sel = document.getElementById('artwork-uni');
+  if (!sel) return;
+  var uni1 = (document.getElementById('ref-no') || {}).value || '';
+  var uni2 = (document.getElementById('ref-no-2') || {}).value || '';
+  var current = sel.value;
+  sel.innerHTML = '<option value="">-- Select UNI --</option>';
+  if (uni1) sel.innerHTML += '<option value="' + uni1 + '">' + uni1 + '</option>';
+  if (uni2) sel.innerHTML += '<option value="' + uni2 + '">' + uni2 + '</option>';
+  if (current && sel.querySelector('option[value="' + current + '"]')) sel.value = current;
+  else if (uni1 && !uni2) sel.value = uni1;
+}
+
+function updateArtworkTotals() {
+  var cost = parseFloat((document.getElementById('artwork-cost') || {}).value) || 0;
+  var vat = cost * 0.2;
+  var total = cost + vat;
+  var fmt = function(n) { return '£' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
+  var vatEl = document.getElementById('artwork-vat');
+  var totEl = document.getElementById('artwork-total');
+  if (vatEl) vatEl.textContent = fmt(vat);
+  if (totEl) totEl.textContent = fmt(total);
+}
+
+function sendArtworkCharge() {
+  var uni     = (document.getElementById('artwork-uni')  || {}).value || '';
+  var cost    = parseFloat((document.getElementById('artwork-cost') || {}).value) || 0;
+  var notes   = (document.getElementById('artwork-notes') || {}).value || '';
+  var company = (document.getElementById('client-company') || {}).value || '';
+  var user    = currentUser ? currentUser() : null;
+  var filledBy = user ? user.name : '';
+  var statusEl = document.getElementById('artwork-send-status');
+  if (!uni)  { if (statusEl) { statusEl.style.color = '#e74c3c'; statusEl.textContent = '⚠ Please select a UNI ref'; } return; }
+  if (!cost) { if (statusEl) { statusEl.style.color = '#e74c3c'; statusEl.textContent = '⚠ Please enter a cost'; } return; }
+  if (statusEl) { statusEl.style.color = '#888'; statusEl.textContent = 'Sending…'; }
+  var vat   = cost * 0.2;
+  var total = cost + vat;
+  var fmt = function(n) { return '£' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
+  var subject = uni + ' – Artwork Charge – ' + (company || 'Unknown');
+  var message = 'Artwork charge notification
+
+UNI: ' + uni + '
+Company: ' + (company || '—') + '
+Cost (ex VAT): ' + fmt(cost) + '
+VAT (20%): ' + fmt(vat) + '
+Total inc VAT: ' + fmt(total) + (notes ? '
+
+Notes: ' + notes : '') + '
+
+Sent by: ' + (filledBy || '—');
+  if (window.emailjs && window.EMAILJS_CONFIG) {
+    emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+    emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+      to_email: EMAILJS_CONFIG.accountsEmail,
+      subject: subject,
+      message: message,
+      filled_by: filledBy,
+      date_time: new Date().toLocaleString('en-GB'),
+      form_url: location.href
+    }).then(function() {
+      if (statusEl) { statusEl.style.color = '#27ae60'; statusEl.textContent = '✓ Sent to Accounts'; }
+    })['catch'](function(err) {
+      if (statusEl) { statusEl.style.color = '#e74c3c'; statusEl.textContent = '✗ Failed — try again'; }
+      console.warn('Artwork charge email failed:', err);
+    });
+  } else {
+    if (statusEl) { statusEl.style.color = '#e74c3c'; statusEl.textContent = '✗ Email service not ready'; }
+  }
+}
+
 // Check whether a UNI number already exists as a real order (not a REUSE: record)
 // Uses authenticated session token so RLS allows the read
 function checkUniExists(ref) {
@@ -2429,6 +2534,7 @@ function restoreFormData(data) {
     while (document.getElementById('camp-dates-tbody').rows.length < 5) addCampDateRow();
   }
   autoFillRowUnis();
+  populateArtworkUniDropdown();
   // Restore checklist
   if (data.checks) {
     Object.keys(data.checks).forEach(function(id) {
