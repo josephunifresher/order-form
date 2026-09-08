@@ -232,6 +232,8 @@ function sendCharge() {
     to_email: ACCOUNTS_EMAIL,
     subject: uni + ' \u2013 Artwork Charge \u2013 ' + company,
     message: msg,
+    company: company,
+    contact: uni,
     filled_by: filledBy,
     date_time: new Date().toLocaleString('en-GB'),
     form_url: location.href
