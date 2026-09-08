@@ -148,14 +148,14 @@ function sbAuth(path, body) {
 }
 
 function currentUser() {
-  try { return JSON.parse(sessionStorage.getItem('uf_session')); } catch(e) { return null; }
+  try { return JSON.parse(localStorage.getItem('uf_session')); } catch(e) { return null; }
 }
 
 function isAdminUser(u) { return u && (u.role === 'admin' || u.role === 'super_admin'); }
 
 // Build user buttons from profiles table (names only — no passwords exposed)
 function currentUser() {
-  try { return JSON.parse(sessionStorage.getItem('uf_session')); } catch(e) { return null; }
+  try { return JSON.parse(localStorage.getItem('uf_session')); } catch(e) { return null; }
 }
 
 function isAdminUser(u) { return u && (u.role === 'admin' || u.role === 'super_admin'); }
@@ -201,7 +201,7 @@ function doLogin() {
             err.textContent = 'Incorrect password — please try again';
             return;
           }
-          sessionStorage.setItem('uf_session', JSON.stringify({
+          localStorage.setItem('uf_session', JSON.stringify({
             id:              data.user.id,
             name:            profile.name,
             role:            profile.role,
