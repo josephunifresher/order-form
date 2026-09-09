@@ -686,7 +686,7 @@
       <span class="error-label" id="err-campaign-notes">Campaign notes are required</span>
       <div style="margin-top:12px;">
         <label style="font-size:11px;font-weight:700;color:var(--purple-dark);text-transform:uppercase;letter-spacing:.5px;">Additional Info <span style="font-size:10px;font-weight:400;color:#888;">(e.g. No dates have been agreed)</span><small style="display:block;font-weight:600;font-size:10px;color:#c0392b;margin-top:3px;">&#9888; Internal only – not shown on order form</small></label>
-        <textarea id="additional-info" rows="3" style="width:100%;margin-top:4px;border:1px solid var(--purple-lighter);border-radius:6px;padding:8px;font-size:12px;font-family:'Lato',Arial,sans-serif;resize:vertical;box-sizing:border-box;" placeholder="Any additional notes or caveats..."></textarea>
+        <textarea id="additional-info" rows="3" style="width:100%;margin-top:4px;border:1px solid var(--purple-lighter);border-radius:6px;padding:8px;font-size:12px;font-family:'Lato',Arial,sans-serif;resize:vertical;box-sizing:border-box;" placeholder="Any additional notes or caveats..." oninput="updateAdditionalInfoChecklist()"></textarea>
       </div>
     </div>
     <div class="dates-col">
@@ -923,6 +923,10 @@
         <div class="cl-group-title">Pay in Instalments</div>
         <label class="cl-item-row"><input type="checkbox" class="cl-check" id="cl17" onchange="cl17Changed()"><span>Pay in Instalments confirmed on order</span></label>
         <label class="cl-item-row" id="cl-sales-col-s-row" style="display:none"><input type="checkbox" class="cl-check" id="cl-sales-col-s" onchange="updateClProgress()"><span>Sales Sheet Column S ticked</span></label>
+      </div>
+      <div id="cl-additional-info-display" style="display:none;margin:10px 0 6px;padding:8px 10px;background:#fffbf0;border-left:3px solid #e67e22;border-radius:3px;">
+        <div style="font-size:11px;font-weight:700;color:#c0392b;margin-bottom:4px;">⚠ ADDITIONAL INFO (Internal Only — not on order form)</div>
+        <div id="cl-additional-info-text" style="font-size:12px;color:#555;white-space:pre-wrap;line-height:1.5;"></div>
       </div>
       <div class="cl-footer">
     <label for="cl-by">Checked by:</label>
@@ -1415,8 +1419,9 @@ function populatePrintLayout() {
   var _aiText = document.getElementById('pl-additional-info-text');
   if (_aiEl && _aiWrap && _aiText) {
     var _aiVal = (_aiEl.value || '').trim();
-    if (_aiVal) { _aiText.textContent = _aiVal; _aiWrap.style.display = 'block'; }
-    else { _aiWrap.style.display = 'none'; }
+    _aiText.textContent = _aiVal;
+    _aiWrap.style.display = 'none'; // Internal only — never shown on printed order form or PDF
+    updateAdditionalInfoChecklist(_aiVal);
   }
   // Accreditation print
   var plAccredWrap = document.getElementById('pl-accred-wrap');
@@ -3965,20 +3970,32 @@ function sendAccountsEmail(refNo, companyFull, user, driveFileId) {
   var now = new Date();
   var dateTime = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
   emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+  var _addlInfo = (document.getElementById('additional-info') || {}).value || '';
   var params = {
     subject:   (refNo ? refNo + ' – ' : '') + 'New Order Form - ' + companyFull,
-    to_email:  EMAILJS_CONFIG.ownerEmail + ',' + EMAILJS_CONFIG.accountsEmail,
+    to_email:  EMAILJS_CONFIG.ownerEmail + ',adam@unifresher.co.uk,' + EMAILJS_CONFIG.accountsEmail,
     company:   companyFull,
     contact:   refNo,
     filled_by: memberName,
     date_time: dateTime,
     form_url:  driveLink,
     message: 'A new order has been submitted and uploaded to Google Drive.',
+    additional_info: _addlInfo ? '⚠ Additional Info (Internal):
+' + _addlInfo : ''
 };
   emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, params)
     .then(function() { console.log('Accounts email sent.'); })
     ['catch'](function(err) { console.warn('Accounts email failed:', err); });
 }
+function updateAdditionalInfoChecklist(val) {
+  var disp = document.getElementById('cl-additional-info-display');
+  var txt  = document.getElementById('cl-additional-info-text');
+  if (!disp || !txt) return;
+  var v = (val !== undefined ? val : (document.getElementById('additional-info') || {}).value || '').trim();
+  txt.textContent = v;
+  disp.style.display = v ? 'block' : 'none';
+}
+
 function sendAlertEmail(subject, company, filledBy, msg, toEmail) {
   if (!window.emailjs || !EMAILJS_CONFIG) return;
   var _ref = (document.getElementById('ref-no') || {}).value || '';
