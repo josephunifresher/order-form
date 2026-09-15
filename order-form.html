@@ -3854,6 +3854,7 @@ function autoSaveChecklist() {
       var tc = google.accounts.oauth2.initTokenClient({
         client_id: GDRIVE_CONFIG.clientId,
         scope: 'https://www.googleapis.com/auth/drive',
+        login_hint: (currentUser() || {}).email || '',
         callback: function(r) { if (!r.error) doChecklistUpload(r.access_token); }
       });
       tc.requestAccessToken();
@@ -3885,7 +3886,8 @@ function saveToDrive() {
     client_id: GDRIVE_CONFIG.clientId,
     scope: 'https://www.googleapis.com/auth/drive',
     error_callback: function(err) {
-      // Fired when the popup is closed/dismissed or blocked
+      // Fired when    login_hint: (currentUser() || {}).email || '',
+ the popup is closed/dismissed or blocked
       if (err && err.type === 'popup_closed') {
         resetBtn(null); // silent reset — user just closed the popup
       } else {
