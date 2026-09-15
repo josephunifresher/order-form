@@ -186,7 +186,19 @@
       .header { flex-direction: column; align-items: flex-start; }
       .campaign-card { grid-template-columns: 1fr; }
     }
-  </style>
+  
+    /* ── DELETE REQUEST ── */
+    .btn-req-delete { background: var(--red-bg); color: var(--red); border: 1.5px solid #e8a89e; border-radius: 6px; padding: 5px 10px; font-size: .74rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; transition: opacity .15s; white-space: nowrap; }
+    .btn-req-delete:hover { opacity: .8; }
+    .btn-approve-del { background: var(--red); color: #fff; border: none; border-radius: 6px; padding: 5px 10px; font-size: .74rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; margin-bottom: 4px; display: block; width: 100%; white-space: nowrap; }
+    .btn-approve-del:hover { opacity: .85; }
+    .btn-reject-del { background: #eee; color: #555; border: none; border-radius: 6px; padding: 5px 10px; font-size: .74rem; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; display: block; width: 100%; }
+    .btn-reject-del:hover { background: #ddd; }
+    tr.delete-requested-row td { background: #fff5f5 !important; }
+    tr.delete-requested-row:hover td { background: #ffe8e8 !important; }
+    .del-req-badge { font-size: .7rem; color: var(--red); font-weight: 700; display: block; margin-bottom: 5px; white-space: nowrap; }
+    .del-pending-badge { font-size: .74rem; color: var(--amber); font-weight: 700; }
+</style>
 </head>
 <body>
 
@@ -262,7 +274,9 @@
         <div class="card green">   <div class="card-value" id="c-signed">—</div> <div class="card-label">Form Signed</div></div>
         <div class="card amber">   <div class="card-value" id="c-pending">—</div><div class="card-label">Awaiting Signature</div></div>
         <div class="card red">     <div class="card-value" id="c-due">—</div>    <div class="card-label">Verification Due / Overdue</div></div>
-      </div>
+      
+      <div class="card red" id="card-del-pending" style="display:none"><div class="card-value" id="c-del-pending">0</div><div class="card-label">Pending Delete Requests</div></div>
+    </div>
       <div class="table-wrap">
         <div id="tbl-loading" class="loading"><div class="spinner"></div>Loading…</div>
         <table id="orders-table" style="display:none">
@@ -271,7 +285,8 @@
             <th style="text-align:center">ORDER FORM<br>SENT</th>
             <th style="text-align:center">ORDER FORM<br>SIGNED</th>
             <th style="text-align:center">Partner Verification<br>Timer</th>
-          </tr></thead>
+          
+            <th style="text-align:center">Actions</th></tr></thead>
           <tbody id="orders-body"></tbody>
         </table>
         <div id="no-data" class="no-data" style="display:none">No orders found for this period.</div>
@@ -637,6 +652,7 @@ function onLoggedIn() {
   document.getElementById('user-label').textContent = name;
   if (_isAdmin) {
     document.getElementById('admin-wrap').style.display = 'block';
+    var _cdp = document.getElementById('card-del-pending'); if(_cdp) _cdp.style.display = '';
     document.querySelectorAll('.view-tab.admin-only').forEach(function(el) {
       el.style.display = 'block';
     });
@@ -781,19 +797,21 @@ function renderTable(rows) {
 
   if (rows.length === 0) {
     document.getElementById('no-data').style.display = 'block';
-    updateCards(0,0,0,0,0); return;
+    updateCards(0,0,0,0,0,0); return;
   }
 
-  var total = rows.length, sent = 0, signed = 0, pending = 0, due = 0;
+  var total = rows.length, sent = 0, signed = 0, pending = 0, due = 0, delPending = 0;
   var now = new Date(); now.setHours(0,0,0,0);
   var html = '';
 
   rows.forEach(function(row) {
     var fd       = row.form_data || {};
     var isSent   = !!fd.sent_at;
+    var isDelReq = !!fd.delete_requested;
     var isSigned = !!fd.signed_at;
     var followup = fd.partner_followup_date || null;
 
+    if (isDelReq) delPending++;
     if (isSent)   sent++;
     if (isSigned) signed++;
     else          pending++;
@@ -832,15 +850,16 @@ function renderTable(rows) {
 
   document.getElementById('orders-body').innerHTML = html;
   document.getElementById('orders-table').style.display = 'table';
-  updateCards(total, sent, signed, pending, due);
+  updateCards(total, sent, signed, pending, due, delPending);
 }
 
-function updateCards(total, sent, signed, pending, due) {
+function updateCards(total, sent, signed, pending, due, delPending) {
   document.getElementById('c-total').textContent   = total;
   document.getElementById('c-sent').textContent    = sent;
   document.getElementById('c-signed').textContent  = signed;
   document.getElementById('c-pending').textContent = pending;
   document.getElementById('c-due').textContent     = due;
+  if (_isAdmin) { var dp = document.getElementById('c-del-pending'); if(dp) dp.textContent = delPending||0; }
 }
 
 /* ══ MARK SENT / SIGNED ══ */
@@ -1266,8 +1285,24 @@ function renderAccred(rows) {
     var due      = fd.accreditation_due || fd.accred_due || fd.partner_followup_date || null;
     var status   = fd.accreditation_status || fd.accred_status || 'pending';
 
-    html +=
-      '<tr>' +
+
+    // Action cell
+    var actionCell = '';
+    if (_isAdmin) {
+      if (isDelReq) {
+        actionCell = '<span class="del-req-badge">⚠ Requested by ' + escHtml(fd.delete_requested_by||'?') + '</span>' +
+          '<button class="btn-approve-del" onclick="approveDelete(\'' + row.id + '\',\'' + escHtml(row.ref||'?') + '\')">&#x2713; Approve Delete</button>' +
+          '<button class="btn-reject-del" onclick="rejectDelete(\'' + row.id + '\',\'' + escHtml(row.ref||'?') + '\')">&#x2717; Reject</button>';
+      }
+    } else {
+      if (isDelReq) {
+        actionCell = '<span class="del-pending-badge">⏳ Awaiting admin approval</span>';
+      } else {
+        actionCell = '<button class="btn-req-delete" onclick="requestDelete(\'' + row.id + '\',\'' + escHtml(row.ref||'?') + '\')">Request Delete</button>';
+      }
+    }
+    var rowClass = isDelReq ? ' class="delete-requested-row"' : '';
+    html += '<tr' + rowClass + '>' +
         '<td>' + fmtDate(row.saved_at) + '</td>' +
         '<td><strong>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? escHtml(row.ref.replace('REUSE:','')) + ' <span style="font-size:10px;background:#fff3e0;color:#e67e22;border:1px solid #f39c12;border-radius:10px;padding:1px 6px;font-weight:600;white-space:nowrap;">Reuse Req</span>' : escHtml(row.ref||'')) + '</strong></td>' +
         '<td>' + (row.ref && row.ref.indexOf('REUSE:')===0 ? (getReuseCompany(row,rows) ? '<strong>' + escHtml(getReuseCompany(row,rows)) + '</strong> ' : '') + '<span style="color:#e67e22;font-size:11px;">' + escHtml((row.form_data && row.form_data.reason) || '') + '</span><span style="font-size:11px;color:#aaa;margin-left:5px;">by ' + escHtml((row.form_data && row.form_data.requested_by) || row.user_name || '') + '</span>' : escHtml(row.company||'')) + '</td>' +
@@ -1276,6 +1311,7 @@ function renderAccred(rows) {
         '<td style="font-size:.78rem;color:#666">' + escHtml(row.user_name||'—') + '</td>' +
         '<td><span class="countdown due-soon">' + escHtml(status) + '</span></td>' +
         '<td>' + (due ? countdownTag(due) : '—') + '</td>' +
+      '<td style="text-align:center">' + actionCell + '</td>' +
       '</tr>';
   });
   document.getElementById('accred-body').innerHTML = html;
@@ -1433,6 +1469,70 @@ function saveTcToSupabase() {
     statusEl.style.color = 'green'; statusEl.textContent = '✓ Saved — changes will appear on the order form next load.';
   })['catch'](function(e) { statusEl.style.color = 'red'; statusEl.textContent = 'Error: ' + (e.message || String(e)); });
 }
+
+/* ── REQUEST DELETE (non-admin) ── */
+function requestDelete(id, ref) {
+  if (!confirm('Request deletion of order ' + ref + '?\n\nAn admin will need to approve before it is permanently deleted.')) return;
+  var by = (_session && _session.user.user_metadata && _session.user.user_metadata.full_name) || (_session && _session.user.email) || 'Unknown';
+  sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data')
+  .then(function(r) { return r.json(); })
+  .then(function(rows) {
+    var fd = (rows[0] && rows[0].form_data) || {};
+    fd.delete_requested = true;
+    fd.delete_requested_by = by;
+    fd.delete_requested_at = new Date().toISOString();
+    return sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id), {
+      method: 'PATCH', body: JSON.stringify({ form_data: fd })
+    });
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('patch failed');
+    toast('Delete request submitted — awaiting admin approval.');
+    loadOrders();
+  })
+  .catch(function(e) { toast('Error: ' + (e.message || 'Could not submit request.')); });
+}
+
+/* ── APPROVE DELETE (admin only) ── */
+function approveDelete(id, ref) {
+  if (!confirm('Permanently delete order ' + ref + '?\n\nThis CANNOT be undone.')) return;
+  sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id), {
+    method: 'DELETE',
+    headers: { 'Prefer': 'return=minimal' }
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('delete failed ' + r.status);
+    toast('Order ' + ref + ' permanently deleted.');
+    loadOrders();
+  })
+  .catch(function(e) { toast('Error: ' + (e.message || 'Could not delete order.')); });
+}
+
+/* ── REJECT DELETE REQUEST (admin only) ── */
+function rejectDelete(id, ref) {
+  if (!confirm('Reject the delete request for order ' + ref + '?')) return;
+  var by = (_session && _session.user.user_metadata && _session.user.user_metadata.full_name) || (_session && _session.user.email) || 'Unknown';
+  sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id) + '&select=form_data')
+  .then(function(r) { return r.json(); })
+  .then(function(rows) {
+    var fd = (rows[0] && rows[0].form_data) || {};
+    delete fd.delete_requested;
+    delete fd.delete_requested_by;
+    delete fd.delete_requested_at;
+    fd.delete_rejected_by = by;
+    fd.delete_rejected_at = new Date().toISOString();
+    return sbFetch('/rest/v1/order_history?id=eq.' + encodeURIComponent(id), {
+      method: 'PATCH', body: JSON.stringify({ form_data: fd })
+    });
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('patch failed');
+    toast('Delete request for ' + ref + ' rejected.');
+    loadOrders();
+  })
+  .catch(function(e) { toast('Error: ' + (e.message || 'Could not reject request.')); });
+}
+
 </script>
 </body>
 </html>
