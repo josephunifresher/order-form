@@ -3885,9 +3885,9 @@ function saveToDrive() {
   var tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: GDRIVE_CONFIG.clientId,
     scope: 'https://www.googleapis.com/auth/drive',
+    login_hint: (currentUser() || {}).email || '',
     error_callback: function(err) {
-      // Fired when    login_hint: (currentUser() || {}).email || '',
- the popup is closed/dismissed or blocked
+      // Fired when the popup is closed/dismissed or blocked
       if (err && err.type === 'popup_closed') {
         resetBtn(null); // silent reset — user just closed the popup
       } else {
