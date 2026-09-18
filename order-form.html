@@ -4936,6 +4936,7 @@ function generateOrderPdfBlob(filename) {
     return html2pdf().set(pdfOpts(filename)).from(getPdfHtml(), 'string').outputPdf('blob');
   }
 
+  doc.addPage();
   // Split HTML: page 1 has everything except the T&Cs section
   var fullHtml = getPdfHtml();
   var tmp = document.createElement('div');
