@@ -2923,7 +2923,7 @@ function loadAdminTc() {
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     el.innerHTML = (rows && rows[0] && rows[0].value) ? rows[0].value : '<p>No T&Cs saved yet.</p>';
-  })['catch'](function() { el.innerHTML = '<p>By confirming this order digitally, you confirm that you have full authority to enter into this contract, which is binding on your company, partnership, business or proprietor if a sole trader.</p><p>The order value (plus VAT if applicable) is payable within 30 days of invoice and/or return of this confirmation. Your invoice must be paid and payment cleared before your campaign can begin.</p><p>All invoices are created for the full amount of the order form and due in one payment, unless monthly instalments are specifically requested.</p><p>The order form together with these terms and conditions constitute all terms of this contract. You are solely responsible for submitting suitable artwork/copy by the date agreed.</p><p>Materials must be supplied as JPG, PNG or GIF for Online Ads; Word Document for content.</p><p>If you fail to supply copy by the due date you will be responsible for paying for the advertising space even if your advertisement does not appear.</p><p>KPIs are averaged per month. Student Media Ltd will not be in breach if monthly KPIs are not met so long as total KPIs are met by campaign end.</p><p>Late payment attracts interest at 8% above Bank of England base rate. Student Media Ltd may cancel or pause your campaign if payment terms are not met. This contract is governed by the laws of England and Wales.</p>'; });
+  })['catch'](function() { var _tc = document.querySelector('#print-layout .pl-tc-section'); el.innerHTML = _tc ? _tc.innerHTML : ''; });
 }
 
 function saveAdminTc() {
@@ -3907,7 +3907,7 @@ function saveToDrive() {
     error_callback: function(err) {
       // Fired when the popup is closed/dismissed or blocked
       if (err && err.type === 'popup_closed') {
-        resetBtn(null); // silent reset — user just closed the popup
+        resetBtn('Google sign-in window closed. If you see an \u201cunverified app\u201d warning, click Advanced → Go to the app to continue.');
       } else {
         resetBtn('Google sign-in was cancelled or blocked.\nPlease allow the pop-up and try again.');
       }
@@ -4132,6 +4132,7 @@ function uploadToDrive(accessToken, btn) {
   })
   ['catch'](function(err) {
     btn.disabled = false; btn.textContent = '☁ Save to Drive';
+    console.error('Drive upload error:', err);
     alert('Upload failed: ' + (err.message || err));
   });
 }
@@ -4949,22 +4950,29 @@ function generateOrderPdfBlob(filename) {
 
   tcEl.parentNode.removeChild(tcEl);
   var page1Html = wrapEl.outerHTML;
+  var signoffEl = wrapEl.querySelector('.pl-signoff-wrap');
+  var signoffHtml = signoffEl ? signoffEl.outerHTML : '';
+  if (signoffEl) signoffEl.parentNode.removeChild(signoffEl);
 
   // Page 2: T&Cs only.
   // We use tcEl.innerHTML (NOT outerHTML) so the .pl-tc-section wrapper class — which
   // carries page-break-before:always — is never in the page2 DOM.  That class is what
   // causes html2canvas to insert a full blank A4 page of space before the content.
   var outerStyle = wrapEl.getAttribute('style') || '';
+  var styleEl = wrapEl.querySelector('style');
+  var baseStyles = styleEl ? styleEl.outerHTML : '';
   var page2Html = '<div style="' + outerStyle + '">' +
-    '<style>' +
-    '.pl-tc-title{font-weight:bold;font-size:11pt;padding-bottom:5pt;margin-bottom:8pt;border-bottom:1pt solid #000;}' +
-    '.pl-tc-cols{display:flex;gap:10pt;}' +
-    '.pl-tc-col{flex:1;font-size:5.5pt;line-height:1.2;}' +
-    '.pl-tc-col p{margin-bottom:0.5pt;}' +
-    '.pl-bank{font-size:7pt;color:#444;border-top:0.5pt solid #ccc;padding-top:3pt;margin-top:8pt;line-height:1.6;}' +
-    '</style>' +
-    tcEl.innerHTML +
-    '</div>';
+      baseStyles +
+      '<style>' +
+      '.pl-tc-title{font-weight:bold;font-size:11pt;padding-bottom:5pt;margin-bottom:8pt;border-bottom:1pt solid #000;}' +
+      '.pl-tc-cols{display:flex;gap:10pt;}' +
+      '.pl-tc-col{flex:1;font-size:5.5pt;line-height:1.2;}' +
+      '.pl-tc-col p{margin-bottom:0.5pt;}' +
+      '.pl-bank{font-size:7pt;color:#444;border-top:0.5pt solid #ccc;padding-top:3pt;margin-top:8pt;line-height:1.6;}' +
+      '</style>' +
+      signoffHtml +
+      tcEl.innerHTML +
+      '</div>';
 
   var hOpts = {
     margin: 0,
