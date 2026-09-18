@@ -4241,7 +4241,7 @@ function getPdfHtml() {
 
   return '<div style="font-family:Arial,sans-serif;font-size:10pt;color:#000;' +
     'width:210mm;padding:8mm 12mm;box-sizing:border-box;background:#fff;">' +
-    styleOverride + (function(){var _el=document.getElementById('print-layout').cloneNode(true);var _tc=_el.querySelector('.pl-tc-section');if(_tc)_tc.parentNode.removeChild(_tc);return _el.innerHTML;})() +
+    styleOverride + document.getElementById('print-layout').innerHTML +
     '</div>';
 }
 
