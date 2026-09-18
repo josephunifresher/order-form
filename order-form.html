@@ -5007,11 +5007,23 @@ function generateOrderPdfBlob(filename) {
     })
     .then(function(pdf) {
       // pdf is a real jsPDF instance — page 1 already contains the form content.
-      // Now append page 2 with the T&Cs canvas.
-      pdf.addPage();
-      var img2 = c2ref.toDataURL('image/jpeg', 1.0);
-      var h2   = (c2ref.height / c2ref.width) * A4_W;
-      pdf.addImage(img2, 'JPEG', 0, 0, A4_W, h2 > A4_H ? A4_H : h2);
+      // Append TC content, splitting across pages as needed.
+      var tcPagePx = Math.floor(c2ref.width * 295 / 210);
+      var tcRemaining = c2ref.height;
+      var tcSrcY = 0;
+      while (tcRemaining > 0) {
+        pdf.addPage();
+        var tcSliceH = Math.min(tcPagePx, tcRemaining);
+        var tcSliceCanvas = document.createElement('canvas');
+        tcSliceCanvas.width = c2ref.width;
+        tcSliceCanvas.height = tcSliceH;
+        tcSliceCanvas.getContext('2d').drawImage(c2ref, 0, tcSrcY, c2ref.width, tcSliceH, 0, 0, c2ref.width, tcSliceH);
+        var tcSliceImg = tcSliceCanvas.toDataURL('image/jpeg', 1.0);
+        var tcSliceMm = (tcSliceH / c2ref.width) * A4_W;
+        pdf.addImage(tcSliceImg, 'JPEG', 0, 0, A4_W, tcSliceMm);
+        tcSrcY += tcSliceH;
+        tcRemaining -= tcSliceH;
+      }
       return pdf.output('blob');
     });
 }
