@@ -246,9 +246,9 @@
   .pl-signoff-wrap { page-break-inside:avoid; break-inside:avoid; }
   .pl-tc-section { }
   .pl-tc-title { font-weight:bold; font-size:9pt; padding-bottom:2pt; margin-bottom:3pt; border-bottom:1pt solid #000; }
-  .pl-tc-cols { display:block; }
-  .pl-tc-col { font-size:8.5pt; line-height:1.55; color:#222; }
-  .pl-tc-col p { margin-bottom:4pt; }
+  .pl-tc-cols { display:flex; gap:10pt; }
+  .pl-tc-col { flex:1; font-size:5.5pt; line-height:1.2; color:#222; }
+  .pl-tc-col p { margin-bottom:1pt; }
   .pl-bank { font-size:5.5pt; color:#444; border-top:0.5pt solid #ccc; padding-top:3pt; margin-top:4pt; line-height:1.4; }
 
   .last-updated-bar { display:flex; align-items:center; justify-content:flex-end; gap:14px; font-size:10px; color:#aaa; padding:10px 0 0; border-top:1px solid var(--grey-border); margin-top:20px; }
@@ -1061,9 +1061,10 @@
         <p><strong>Publisher Approval</strong> This contract is conditional upon the publisher's approval of Your advertisement copy / artwork. This approval is at the absolute discretion of the publisher who may withdraw it at any stage prior to the publishing. Student Media Ltd may partner with third-party companies to deliver agreed KPIs. Student Media Ltd retains control over any social assets used within Your campaign.</p>
         <p><strong>Confidentiality</strong> Each party shall keep confidential all information of a confidential nature disclosed to it by the other party in connection with this contract, including pricing, campaign strategy and performance data, and shall not disclose it to any third party except: (a) to its employees, agents or subcontractors who need to know it to perform this contract; (b) as required by law, regulation or a competent authority; (c) with the prior written consent of the disclosing party; or (d) as permitted under the Use of Campaign Data clause below. This clause shall survive the termination or expiry of this contract.</p>
         <p><strong>Use of Campaign Data</strong> Notwithstanding the Confidentiality clause above, Student Media Ltd may use campaign performance data (including impressions, click-throughs and other KPI results) for the purposes of marketing, promoting, benchmarking or reporting on its services. Student Media Ltd may refer to You as a client and may use details of Your campaign, including its results, Your company name and logo, in case studies, marketing materials, pitches and its website, for the purpose of promoting Student Media Ltd's services.</p>
-        <p><strong>Data Protection</strong> Each party shall comply with its obligations under the UK General Data Protection Regulation and the Data Protection Act 2018 in connection with any personal data processed under this contract. Where Student Media Ltd processes personal data on Your behalf, it shall do so only to the extent necessary to perform its obligations under this contract and in accordance with Data Protection Legislation. Where Student Media Ltd shares campaign or tracking data with third-party partners, it shall ensure such partners are subject to equivalent data protection obligations.</p>
+        
       </div>
-      <div class="pl-tc-col">
+      <div class="pl-tc-col"><p><strong>Data Protection</strong> Each party shall comply with its obligations under the UK General Data Protection Regulation and the Data Protection Act 2018 in connection with any personal data processed under this contract. Where Student Media Ltd processes personal data on Your behalf, it shall do so only to the extent necessary to perform its obligations under this contract and in accordance with Data Protection Legislation. Where Student Media Ltd shares campaign or tracking data with third-party partners, it shall ensure such partners are subject to equivalent data protection obligations.</p>
+        
         <p><strong>Termination</strong> Student Media Ltd reserves the right to cancel future dated advertisements or to pause Your existing campaign if You do not pay within the agreed payment terms. You agree to fully indemnify Student Media Ltd against all third party costs incurred in pursuit of payment. Student Media Ltd may also terminate this contract immediately by written notice if (a) You commit a material breach of these terms which, if capable of remedy, is not remedied within 14 days of written notice; (b) You enter into liquidation, administration, receivership, a voluntary arrangement, or any analogous insolvency procedure, or You cease or threaten to cease trading; (c) You undergo a change of control which Student Media Ltd reasonably considers may affect Your ability to perform Your obligations.</p>
         <p><strong>Force Majeure, Governing Law and Severability</strong> Student Media Ltd will not be liable for failure to perform any obligation under this agreement if such failure is caused by the occurrence of any unforeseen contingency or circumstances beyond the reasonable control of Student Media Ltd, including without limitation Act of God, war, fire, flood, power supply failure, strike or industrial action. This contract shall be governed in accordance with the laws of England and Wales and You hereby agree to submit to the exclusive jurisdiction of the English courts. If any provision of this contract is found to be invalid, unlawful or unenforceable, that provision shall be deemed deleted, and the validity and enforceability of the remaining provisions shall not be affected.</p>
         <p><strong>Waiver</strong> No failure or delay by either party in exercising any right or remedy under this contract shall operate as a waiver of that right or remedy, nor shall any single or partial exercise of any right or remedy preclude any further exercise of it.</p>
@@ -4221,9 +4222,9 @@ function getPdfHtml() {
       // Page 2: T&Cs get a clean page break and more space — bigger font now they have room
       '.pl-tc-section{page-break-before:always!important;padding-top:12pt!important;}' +
       '.pl-tc-title{font-size:11pt!important;margin-bottom:8pt!important;padding-bottom:5pt!important;}' +
-      '.pl-tc-cols{gap:20pt!important;}' +
-      '.pl-tc-col{font-size:7.5pt!important;line-height:1.5!important;}' +
-      '.pl-tc-col p{margin-bottom:4pt!important;}' +
+      '.pl-tc-cols{gap:10pt!important;}' +
+      '.pl-tc-col{font-size:5.5pt!important;line-height:1.2!important;}' +
+      '.pl-tc-col p{margin-bottom:1pt!important;}' +
       '.pl-bank{font-size:7pt!important;margin-top:10pt!important;padding-top:6pt!important;line-height:1.6!important;}' +
     '</style>';
   } else {
@@ -4957,9 +4958,9 @@ function generateOrderPdfBlob(filename) {
   var page2Html = '<div style="' + outerStyle + '">' +
     '<style>' +
     '.pl-tc-title{font-weight:bold;font-size:11pt;padding-bottom:5pt;margin-bottom:8pt;border-bottom:1pt solid #000;}' +
-    '.pl-tc-cols{display:flex;gap:20pt;}' +
-    '.pl-tc-col{flex:1;font-size:7.5pt;line-height:1.5;}' +
-    '.pl-tc-col p{margin-bottom:4pt;}' +
+    '.pl-tc-cols{display:flex;gap:10pt;}' +
+    '.pl-tc-col{flex:1;font-size:5.5pt;line-height:1.2;}' +
+    '.pl-tc-col p{margin-bottom:1pt;}' +
     '.pl-bank{font-size:7pt;color:#444;border-top:0.5pt solid #ccc;padding-top:3pt;margin-top:8pt;line-height:1.6;}' +
     '</style>' +
     tcEl.innerHTML +
