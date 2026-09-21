@@ -4096,7 +4096,7 @@ function uploadToDrive(accessToken, btn) {
     orderFolderId = ids[0];
     clFolderId    = ids[1];
     // Step 2: generate both PDFs (using html2pdf — same pipeline as Print button)
-    return generateOrderPdfBlob(orderFilename);
+    return generateTextBasedPdfBlob(orderFilename);
   })
   .then(function(blob) {
     orderBlob = blob;
@@ -4629,11 +4629,13 @@ function generateTextBasedPdfBlob(filename) {
             y += 4;
             doc.setFont('helvetica','normal');
             var nl = doc.splitTextToSize(para, cW);
+            if (y + nl.length * 3.5 + 20 > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
             doc.text(nl, margin, y);
             y += nl.length * 3.5 + (pi < _notesParagraphs.length - 1 ? 4 : 3);
           });
         } else {
           var nl = doc.splitTextToSize(notesText, cW);
+          if (y + nl.length * 3.5 + 20 > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
           doc.text(nl, margin, y);
           y += nl.length * 3.5 + 3;
         }
@@ -4643,6 +4645,7 @@ function generateTextBasedPdfBlob(filename) {
         if (accredState && accredState.answer === 'yes') {
           var _accCity = (document.getElementById('accred-city')     || {}).value || '';
           var _accCat  = (document.getElementById('accred-category') || {}).value || '';
+          if (y > doc.internal.pageSize.getHeight() - margin - 30) { doc.addPage(); y = margin; }
           if (_accCity || _accCat) {
             doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
             doc.line(margin, y, pageW - margin, y); y += 4;
@@ -4655,6 +4658,7 @@ function generateTextBasedPdfBlob(filename) {
           }
         }
         // Pay in Instalments (partner-facing)
+        if (y > doc.internal.pageSize.getHeight() - margin - 25) { doc.addPage(); y = margin; }
         if (document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked) {
           doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
           doc.line(margin, y, pageW - margin, y); y += 4;
@@ -4662,6 +4666,7 @@ function generateTextBasedPdfBlob(filename) {
           doc.text('✓ Pay in Instalments', margin, y); y += 5;
           doc.setTextColor(0,0,0); doc.setFont('helvetica','normal');
         }
+        if (y > doc.internal.pageSize.getHeight() - margin - 50) { doc.addPage(); y = margin; }
         // ── Campaign dates ────────────────────────────────────────────────────
       var campRows = [];
       var anyStc   = false;
@@ -4774,14 +4779,14 @@ function generateTextBasedPdfBlob(filename) {
       var _h1 = 0, _h2 = 0;
       tcCol1.forEach(function(p) { _h1 += doc.splitTextToSize(p, colW2).length * tcLnH + tcPGap; });
       tcCol2.forEach(function(p) { _h2 += doc.splitTextToSize(p, colW2).length * tcLnH + tcPGap; });
-      var tcTotalH = 7 + Math.max(_h1, _h2) + 3 + 6;
+      var tcTotalH = 7 + Math.max(_h1, _h2) + 3 + 12;
 
       // ── Sign-off boxes ────────────────────────────────────────────────────
       doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
       doc.line(margin, y, pageW-margin, y);
       y += 5;
       // 56 = approx sign-off block height (italic label + boxes + gap); only page-break if combined truly won't fit
-      if (y + 56 + tcTotalH > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
+      if (y + 62 + tcTotalH > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
 
       doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(0,0,0);
       doc.text('**Please fill in both boxes', margin, y);
