@@ -4095,8 +4095,8 @@ function uploadToDrive(accessToken, btn) {
   .then(function(ids) {
     orderFolderId = ids[0];
     clFolderId    = ids[1];
-    // Step 2: generate both PDFs (text-based so Drive/Acrobat text is selectable)
-    return generateTextBasedPdfBlob(orderFilename);
+    // Step 2: generate both PDFs (using html2pdf — same pipeline as Print button)
+    return generateOrderPdfBlob(orderFilename);
   })
   .then(function(blob) {
     orderBlob = blob;
