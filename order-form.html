@@ -4786,7 +4786,7 @@ function generateTextBasedPdfBlob(filename) {
       doc.line(margin, y, pageW-margin, y);
       y += 5;
       // 56 = approx sign-off block height (italic label + boxes + gap); only page-break if combined truly won't fit
-            if (y + 62 > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
+            if (y + 50 > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
 
 doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(0,0,0);
       doc.text('**Please fill in both boxes', margin, y);
