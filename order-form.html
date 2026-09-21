@@ -4786,7 +4786,48 @@ function generateTextBasedPdfBlob(filename) {
       doc.line(margin, y, pageW-margin, y);
       y += 5;
       // 56 = approx sign-off block height (italic label + boxes + gap); only page-break if combined truly won't fit
-      if (y + 62 + tcTotalH > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
+            if (y + 62 > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
+
+doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(0,0,0);
+      doc.text('**Please fill in both boxes', margin, y);
+      y += 2;
+
+      var boxH = 46;
+      var midX = margin + cW / 2;
+
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+      doc.rect(margin, y, cW/2, boxH);
+      doc.rect(midX, y, cW/2, boxH);
+
+      // Left box — accounts contact
+      var bx = margin + 3;
+      var by = y + 5;
+      doc.setFontSize(8); doc.setFont('helvetica','bold');
+      doc.text('YOUR ACCOUNTS CONTACT DETAILS:', bx, by); by += 4;
+      doc.setFontSize(7.5); doc.setFont('helvetica','italic');
+      doc.text('Contact details for invoicing', bx, by); by += 5;
+      ['CONTACT:', 'EMAIL:', 'TELEPHONE NUMBER:', 'INVOICING ADDRESS:'].forEach(function(lbl) {
+        doc.setFont('helvetica','bold'); doc.text(lbl, bx, by);
+        doc.setDrawColor(180,180,180); doc.setLineWidth(0.2);
+        doc.line(bx + doc.getTextWidth(lbl) + 1, by, midX - 3, by);
+        by += 6;
+      });
+
+      // Right box — campaign contact
+      bx = midX + 3; by = y + 5;
+      doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+      doc.text('CAMPAIGN CONTACT INFORMATION:', bx, by); by += 6;
+      ['SIGNED FOR AND ON BEHALF OF:', 'JOB TITLE:', 'SIGNED:', 'PRINT:', 'DATE:'].forEach(function(lbl) {
+        doc.setFont('helvetica','bold'); doc.text(lbl, bx, by);
+        doc.setDrawColor(180,180,180); doc.setLineWidth(0.2);
+        doc.line(bx + doc.getTextWidth(lbl) + 1, by, pageW - margin - 3, by);
+        by += 6.5;
+      });
+
+      y += boxH + 2;
+
+
+            if (y + tcTotalH > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
 
 // ── T&Cs: height already pre-calculated above ───────────────────────────
       // colW2, tcLnH, tcPGap, tcCol1, tcCol2, tcTotalH already set
@@ -4886,46 +4927,7 @@ function generateTextBasedPdfBlob(filename) {
       y += 4;
       doc.text('Bank: Barclays  |  Address: 62/64 High Street, Watford, Hertfordshire, WD17 2BT  |  Payment Terms: ' + payDays + ' Days', margin, y);
 
-      if (y + 62 > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
-
-      doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(0,0,0);
-      doc.text('**Please fill in both boxes', margin, y);
-      y += 2;
-
-      var boxH = 46;
-      var midX = margin + cW / 2;
-
-      doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
-      doc.rect(margin, y, cW/2, boxH);
-      doc.rect(midX, y, cW/2, boxH);
-
-      // Left box — accounts contact
-      var bx = margin + 3;
-      var by = y + 5;
-      doc.setFontSize(8); doc.setFont('helvetica','bold');
-      doc.text('YOUR ACCOUNTS CONTACT DETAILS:', bx, by); by += 4;
-      doc.setFontSize(7.5); doc.setFont('helvetica','italic');
-      doc.text('Contact details for invoicing', bx, by); by += 5;
-      ['CONTACT:', 'EMAIL:', 'TELEPHONE NUMBER:', 'INVOICING ADDRESS:'].forEach(function(lbl) {
-        doc.setFont('helvetica','bold'); doc.text(lbl, bx, by);
-        doc.setDrawColor(180,180,180); doc.setLineWidth(0.2);
-        doc.line(bx + doc.getTextWidth(lbl) + 1, by, midX - 3, by);
-        by += 6;
-      });
-
-      // Right box — campaign contact
-      bx = midX + 3; by = y + 5;
-      doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
-      doc.text('CAMPAIGN CONTACT INFORMATION:', bx, by); by += 6;
-      ['SIGNED FOR AND ON BEHALF OF:', 'JOB TITLE:', 'SIGNED:', 'PRINT:', 'DATE:'].forEach(function(lbl) {
-        doc.setFont('helvetica','bold'); doc.text(lbl, bx, by);
-        doc.setDrawColor(180,180,180); doc.setLineWidth(0.2);
-        doc.line(bx + doc.getTextWidth(lbl) + 1, by, pageW - margin - 3, by);
-        by += 6.5;
-      });
-
-      y += boxH + 2;
-      resolve(doc.output('blob'));
+            resolve(doc.output('blob'));
     } catch(e) {
       reject(e);
     }
