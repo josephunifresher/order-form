@@ -748,11 +748,10 @@
           <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQmvO1z8uzdgtJ5UoeM8YLPS_ZYbYFDPjoAY68wh_ifheTGJ77OuNKyA9Jnhav5ZHebqLh8cODT4YEf/pubhtml?gid=555597068&single=true" style="width:100%;height:380px;border:none;" title="Partner Map"></iframe>
         </div>
         <div id="accred-yes-panel" class="accred-panel" style="display:none">
-          <div class="accred-fields">
-            <div class="accred-field-row"><label for="accred-city">City</label><div style="display:flex;align-items:center;gap:6px;"><input type="text" id="accred-city" list="accred-city-list" placeholder="e.g. Manchester" oninput="checkAccredOther('city');populatePrintLayout();checkAccredMap()" style="flex:1;"><button type="button" onclick="document.getElementById('accred-city').value='National';populatePrintLayout();" style="background:var(--purple-lighter);border:none;border-radius:6px;padding:3px 8px;color:var(--purple-dark);font-weight:700;cursor:pointer;font-size:11px;white-space:nowrap;">National</button></div><datalist id="accred-city-list"><option value="National"><option value="Aberdeen"><option value="Bath"><option value="Birmingham"><option value="Brighton"><option value="Bristol"><option value="Cambridge"><option value="Cardiff"><option value="Coventry"><option value="Dublin"><option value="Dundee"><option value="Durham"><option value="Edinburgh"><option value="Exeter"><option value="Glasgow"><option value="Leeds"><option value="Leicester"><option value="Liverpool"><option value="London"><option value="Manchester"><option value="Newcastle"><option value="Norwich"><option value="Nottingham"><option value="Oxford"><option value="Plymouth"><option value="Portsmouth"><option value="Reading"><option value="Sheffield"><option value="Southampton"><option value="Stirling"><option value="Swansea"><option value="York"><option value="Other"></datalist><input type="text" id="accred-city-other" placeholder="Please specify city..." style="display:none;margin-top:4px;width:100%;font-size:13px;border:none;border-bottom:1.5px solid var(--purple-lighter);outline:none;padding:2px 4px;font-family:'Lato',Arial,sans-serif;" oninput="populatePrintLayout()"></div>
-            <div class="accred-field-row"><label for="accred-category">Category</label><input type="text" id="accred-category" list="accred-category-list" placeholder="e.g. Things to do" oninput="checkAccredOther('category');populatePrintLayout();checkAccredMap()"><datalist id="accred-category-list"><option value="PBSA"><option value="Lettings"><option value="Restaurant"><option value="Gym"><option value="Nightlife / Venue"><option value="Fitness Activity"><option value="Things to do"><option value="Recruitment Part Time"><option value="Recruitment Full Time"><option value="Taxi"><option value="Transport"><option value="Travel - Holidays"><option value="Beauty"><option value="Retail - Fashion"><option value="Golf Retailer"><option value="Health"><option value="Higher Education"><option value="Other"></datalist><input type="text" id="accred-category-other" placeholder="Please specify category..." style="display:none;margin-top:4px;width:100%;font-size:13px;border:none;border-bottom:1.5px solid var(--purple-lighter);outline:none;padding:2px 4px;font-family:'Lato',Arial,sans-serif;" oninput="populatePrintLayout()"></div>
-          </div>
-          <div id="accred-map-warn" style="display:none;margin-top:8px;padding:7px 10px;border-radius:6px;background:#f8f4fe;border:1px solid var(--purple-lighter);"></div>
+          <div id="accred-entries-list"></div>
+          <button type="button" onclick="addAccredEntry()" style="margin-top:8px;background:var(--purple-lighter);border:1.5px solid var(--purple-light);border-radius:20px;padding:3px 16px;font-size:12px;font-family:'Lato',Arial,sans-serif;cursor:pointer;color:var(--purple-dark);font-weight:700;">+ Add City / Category</button>
+          <datalist id="accred-city-list"><option value="National"><option value="Aberdeen"><option value="Bath"><option value="Birmingham"><option value="Brighton"><option value="Bristol"><option value="Cambridge"><option value="Cardiff"><option value="Coventry"><option value="Dublin"><option value="Dundee"><option value="Durham"><option value="Edinburgh"><option value="Exeter"><option value="Glasgow"><option value="Leeds"><option value="Leicester"><option value="Liverpool"><option value="London"><option value="Manchester"><option value="Newcastle"><option value="Norwich"><option value="Nottingham"><option value="Oxford"><option value="Plymouth"><option value="Portsmouth"><option value="Reading"><option value="Sheffield"><option value="Southampton"><option value="Stirling"><option value="Swansea"><option value="York"><option value="Other"></datalist>
+          <datalist id="accred-category-list"><option value="PBSA"><option value="Lettings"><option value="Restaurant"><option value="Gym"><option value="Nightlife / Venue"><option value="Fitness Activity"><option value="Things to do"><option value="Recruitment Part Time"><option value="Recruitment Full Time"><option value="Taxi"><option value="Transport"><option value="Travel - Holidays"><option value="Beauty"><option value="Retail - Fashion"><option value="Golf Retailer"><option value="Health"><option value="Higher Education"><option value="Other"></datalist>
         </div>
         <div id="accred-no-panel" class="accred-panel" style="display:none">
           <div class="accred-sub-question">
@@ -1446,10 +1445,16 @@ function populatePrintLayout() {
   var plAccredText = document.getElementById('pl-accred-text');
   if (plAccredWrap) {
     if (accredState && accredState.answer === 'yes') {
-      var _accCity = (function(){var v=document.getElementById('accred-city');return v&&v.value==='Other'?((document.getElementById('accred-city-other')||{}).value||'Other'):((v||{}).value||'');})();
-      var _accCat  = (function(){var v=document.getElementById('accred-category');return v&&v.value==='Other'?((document.getElementById('accred-category-other')||{}).value||'Other'):((v||{}).value||'');})();
-      if (plAccredText) plAccredText.textContent = (_accCity || '—') + ' — ' + (_accCat || '—');
-      plAccredWrap.style.display = 'block';
+      var _accEntries = getAccredEntries();
+      if (plAccredWrap && plAccredText) {
+        if (_accEntries.length > 0 && (_accEntries[0].city || _accEntries[0].category)) {
+          plAccredWrap.style.display = 'block';
+          plAccredText.textContent = _accEntries.map(function(e) { return (e.city || '') + (e.city && e.category ? ' / ' : '') + (e.category || ''); }).filter(Boolean).join('; ');
+        } else {
+          plAccredWrap.style.display = 'none';
+          plAccredText.textContent = '';
+        }
+      }
     } else { plAccredWrap.style.display = 'none'; }
   }
   // Pay in Instalments print
@@ -1732,7 +1737,7 @@ updateLastUpdated();
     ['accred-yes-btn','accred-no-btn','accred-pend-yes-btn','accred-pend-no-btn'].forEach(function(id){ var el=document.getElementById(id); if(el) el.className='accred-btn'; });
     ['accred-yes-panel','accred-no-panel','accred-reason-panel','accred-other-panel','accred-cl-group'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display='none'; });
     document.querySelectorAll('[name=accred-reason]').forEach(function(r){ r.checked=false; });
-    ['accred-city','accred-category','accred-other-reason'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+    var _aList=document.getElementById('accred-entries-list'); if(_aList){ _aList.innerHTML=''; addAccredEntry(); }
     var cl16=document.getElementById('cl16'); if(cl16) cl16.checked=false;
     // Reset Pay in Instalments
     var pmEl=document.getElementById('pay-monthly'); if(pmEl) pmEl.checked=false;
@@ -2442,8 +2447,7 @@ function captureFormData() {
     grandTotal:   (document.getElementById('grand-total')     || {}).textContent || '',
     accredAnswer:  accredState ? accredState.answer  : null,
     accredPending: accredState ? accredState.pending : null,
-    accredCity:    (document.getElementById('accred-city')     || {}).value || '',
-    accredCat:     (document.getElementById('accred-category') || {}).value || '',
+    accredEntries: getAccredEntries(),
     accredReason:  (function(){ var r=document.querySelector('[name=accred-reason]:checked'); return r ? r.value : ''; })(),
     accredOther:   (document.getElementById('accred-other-reason') || {}).value || '',
     payMonthly:    !!(document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked),
@@ -2494,10 +2498,9 @@ function restoreFormData(data) {
     if (data.accredAnswer) {
       setAccred(data.accredAnswer);
       if (data.accredAnswer === 'yes') {
-        var _acityEl = document.getElementById('accred-city');
-        var _acatEl  = document.getElementById('accred-category');
-        if (_acityEl) _acityEl.value = data.accredCity || '';
-        if (_acatEl)  _acatEl.value  = data.accredCat  || '';
+        var _aEntries = data.accredEntries || (data.accredCity ? [{ city: data.accredCity || '', category: data.accredCat || '' }] : []);
+        var _aList = document.getElementById('accred-entries-list');
+        if (_aList) { _aList.innerHTML = ''; _aEntries.forEach(function(e) { addAccredEntry(e.city, e.category); }); if (!_aEntries.length) addAccredEntry(); }
       }
       if (data.accredAnswer === 'no' && data.accredPending) {
         setAccredPending(data.accredPending);
@@ -3089,6 +3092,47 @@ function updateClProgress() {
     // ─── Accreditation Scheme ─────────────────────────────────────────
     var accredState = { answer: null, pending: null };
 
+    // ── Accreditation multi-entry helpers ───────────────────────────────────────
+    function addAccredEntry(city, category) {
+      var list = document.getElementById('accred-entries-list');
+      if (!list) return;
+      var idx = list.children.length;
+      var row = document.createElement('div');
+      row.className = 'accred-fields accred-entry-row';
+      row.style.cssText = 'display:flex;gap:12px;align-items:flex-start;margin-bottom:6px;flex-wrap:wrap;';
+      row.innerHTML =
+        '<div class="accred-field-row"><label>City</label>' +
+          '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<input type="text" class="accred-entry-city" list="accred-city-list" placeholder="e.g. Manchester" oninput="populatePrintLayout()" style="flex:1;">' +
+            '<button type="button" onclick="this.parentElement.querySelector('.accred-entry-city').value='National';populatePrintLayout();" style="background:var(--purple-lighter);border:none;border-radius:6px;padding:3px 8px;color:var(--purple-dark);font-weight:700;cursor:pointer;font-size:11px;white-space:nowrap;">National</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="accred-field-row"><label>Category</label>' +
+          '<input type="text" class="accred-entry-category" list="accred-category-list" placeholder="e.g. Things to do" oninput="populatePrintLayout()">' +
+        '</div>' +
+        '<button type="button" onclick="removeAccredEntry(this)" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:16px;font-weight:700;padding:0 4px;align-self:center;" title="Remove this entry">×</button>';
+      list.appendChild(row);
+      if (city) row.querySelector('.accred-entry-city').value = city;
+      if (category) row.querySelector('.accred-entry-category').value = category;
+      populatePrintLayout();
+    }
+
+    function removeAccredEntry(btn) {
+      var row = btn.parentElement;
+      if (row) { row.remove(); populatePrintLayout(); }
+    }
+
+    function getAccredEntries() {
+      var list = document.getElementById('accred-entries-list');
+      if (!list) return [];
+      return Array.from(list.querySelectorAll('.accred-entry-row')).map(function(row) {
+        return {
+          city:     (row.querySelector('.accred-entry-city')     || {}).value || '',
+          category: (row.querySelector('.accred-entry-category') || {}).value || ''
+        };
+      });
+    }
+
     function checkAccredOther(field) {
       var inp   = document.getElementById('accred-' + field);
       var other = document.getElementById('accred-' + field + '-other');
@@ -3144,12 +3188,13 @@ function loadPartnerMapData(cb) {
     }).catch(function(){ _partnerMapData={}; cb && cb({}); });
 }
 function checkAccredMap() {
-  var cityEl=document.getElementById('accred-city');
-  var catEl=document.getElementById('accred-category');
+  var _mapEntries = getAccredEntries(), _mapFirst = _mapEntries[0] || {};
+  var cityEl = _mapFirst.city || '';
+  var catEl = _mapFirst.category || '';
   var warnEl=document.getElementById('accred-map-warn');
   if(!warnEl||!cityEl||!catEl) return;
-  var city=cityEl.value.trim();
-  var cat=catEl.value.trim();
+  var city=cityEl.trim();
+  var cat=catEl.trim();
   if(!city||!cat){warnEl.style.display='none';return;}
   loadPartnerMapData(function(data){
     var cityKey=city.toLowerCase();
@@ -3249,6 +3294,7 @@ function setAccred(val) {
       if (!clGroup) return;
       if (accredState.answer !== 'no') { clGroup.style.display = 'none'; updateClProgress(); return; }
       clGroup.style.display = 'block';
+      var _aeList=document.getElementById('accred-entries-list'); if(_aeList && !_aeList.children.length) addAccredEntry();
       var infoText = 'Not offered. ';
       var lbl16    = 'Accreditation: Not offered — status confirmed';
       if (accredState.pending === 'yes') {
@@ -4642,21 +4688,13 @@ function generateTextBasedPdfBlob(filename) {
       }
 
       // Accreditation Scheme (partner-facing, YES path only)
-        if (accredState && accredState.answer === 'yes') {
-          var _accCity = (document.getElementById('accred-city')     || {}).value || '';
-          var _accCat  = (document.getElementById('accred-category') || {}).value || '';
-          if (y > doc.internal.pageSize.getHeight() - margin - 30) { doc.addPage(); y = margin; }
-          if (_accCity || _accCat) {
-            doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
-            doc.line(margin, y, pageW - margin, y); y += 4;
-            doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
-            doc.text('Accreditation Scheme:', margin, y); y += 4;
-            doc.setFont('helvetica','normal');
-            var _accLine = (_accCity||'—') + ' — ' + (_accCat||'—');
-            var _accLines = doc.splitTextToSize(_accLine, cW);
-            doc.text(_accLines, margin, y); y += _accLines.length * 3.5 + 3;
-          }
+                if (accredState && accredState.answer === 'yes') {
+        var _pdfAccredEntries = getAccredEntries();
+        var _pdfAccredStr = _pdfAccredEntries.map(function(e) { return (e.city || '') + (e.city && e.category ? ' / ' : '') + (e.category || ''); }).filter(Boolean).join('; ');
+        if (_pdfAccredStr) {
+          pdfLines.push({ text: 'Accreditation Scheme: ' + _pdfAccredStr, style: 'body', bold: false });
         }
+      }
         // Pay in Instalments (partner-facing)
         if (y > doc.internal.pageSize.getHeight() - margin - 25) { doc.addPage(); y = margin; }
         if (document.getElementById('pay-monthly') && document.getElementById('pay-monthly').checked) {
