@@ -795,6 +795,21 @@ function renderTable(rows) {
     if (myName) rows = rows.filter(function(r) { return r.user_name === myName; });
   }
 
+  // Deduplicate rows by ref — keep only the most recent per UNI
+  var _refMap = {};
+  rows.forEach(function(r) {
+    var key = (r.ref || '').trim().toLowerCase();
+    if (!key) return;
+    if (!_refMap[key] || (r.created_at || '') > (_refMap[key].created_at || '') || (r.id || 0) > (_refMap[key].id || 0)) {
+      _refMap[key] = r;
+    }
+  });
+  rows = rows.filter(function(r) {
+    var key = (r.ref || '').trim().toLowerCase();
+    if (!key) return true;
+    return _refMap[key] === r;
+  });
+
   if (rows.length === 0) {
     document.getElementById('no-data').style.display = 'block';
     updateCards(0,0,0,0,0,0); return;
