@@ -4167,8 +4167,6 @@ function uploadToDrive(accessToken, btn) {
     if (storedFolderId && initials) folder = ' → ' + initials + '/ (direct)';
     if (data.id) {
       logDriveUpload(refNo, company, checklistFilename, 'Checklist');
-            var _signed = (document.getElementById('signed') || {}).value || '';
-            if (_signed) sendAccountsEmail(refNo, companyFull, user, data.id);
 // auto-save to history list on successful Drive upload
               (function(){ var _u = currentUser(); var _fd = captureFormData(); var _r2b = (document.getElementById('ref-no-2') || {}).value || ''; if (window._mergedRef2 || _r2b) { var _sec = window._mergedRef2 || _r2b; if (_sec && !_fd.ref.includes(_sec)) _fd.ref = _fd.ref + ' & ' + _sec; doSaveHistory(_u, _fd); } else { addToHistory(); } })();
       var driveUrl = 'https://drive.google.com/drive/folders/' + orderFolderId;
